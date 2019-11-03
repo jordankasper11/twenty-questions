@@ -5,15 +5,14 @@
     <meta charset="utf-8">
     <title>Twenty Questions</title>
     <link rel="stylesheet" href="css/default.css" />
-    <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
     <div id="menu">
-        <nav #primary-navigation>
+        <nav id="primary-navigation">
             <ul>
-                <li>
+                <li class="selected">
                     <a href="#" class="icon-games" title="Games">
                         <span>Games</span>
                     </a>
@@ -45,7 +44,25 @@
             </ul>
         </nav>
     </div>
-    <main></main>
+    <main>
+        <ul>
+            <li>
+                <div class="game">
+                    <h3 class="game__username">Aplato</h3>
+                    <img src="images/avatar-aplato.png" class="game__avatar" alt="" />
+                    <div class="game__container">
+                        <span class="game__answer">Piano</span>
+                        <span class="game__status">Your turn</span>
+                        <div class="game__questions">
+                            <span class="game__questions__count">6</span>
+                            <span class="game__questions__remaining">Left</span>
+                        </div>
+                    </div>
+                    <span class="game__last-active">Last play <strong>4 hours ago</strong></span>
+                </div>
+            </li>
+        </ul>
+    </main>
 </body>
 
 </html>

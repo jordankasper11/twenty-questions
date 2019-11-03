@@ -5,10 +5,16 @@
 @import '_components';
 
 body {
+    width: 375px;
+
     padding: 0 0 0 80px;
     background: $color-background;
     color: $color-text;
     font-family: $font-primary;
     font-size: 16px;
     line-height: 1;
+}
+
+main {
+    padding: $padding;
 }

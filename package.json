@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "dependencies": {},
     "devDependencies": {
-        "font-awesome": "^4.7.0",
+        "@fortawesome/fontawesome-free": "^5.11.2",
         "gulp": "^4.0.2",
         "gulp-sass": "^4.0.2"
     }

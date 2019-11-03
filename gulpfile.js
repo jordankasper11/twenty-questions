@@ -11,7 +11,7 @@ gulp.task('sass', function (cb) {
 
 gulp.task('font-awesome', function () {
     return gulp
-        .src('node_modules/font-awesome/fonts/*')
+        .src('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid*')
         .pipe(gulp.dest('fonts'))
 })
 
