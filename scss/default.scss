@@ -1,0 +1,14 @@
+@import '_variables';
+@import '_reset';
+@import '_fonts';
+@import '_icons';
+@import '_components';
+
+body {
+    padding: 0 0 0 80px;
+    background: $color-background;
+    color: $color-text;
+    font-family: $font-primary;
+    font-size: 16px;
+    line-height: 1;
+}
