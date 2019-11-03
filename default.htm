@@ -9,41 +9,43 @@
 </head>
 
 <body>
-    <div id="menu">
-        <nav id="primary-navigation">
-            <ul>
-                <li class="selected">
-                    <a href="#" class="icon-games" title="Games">
-                        <span>Games</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="icon-results" title="Results">
-                        <span>Results</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="icon-friends" title="Friends">
-                        <span>Friends</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <nav id="user-navigation">
-            <ul>
-                <li>
-                    <a href="#" class="icon-settings" title="Settings">
-                        <span>Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="icon-sign-out" title="Sign Out">
-                        <span>Sign Out</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+    <header>
+        <div id="menu">
+            <nav id="primary-navigation">
+                <ul>
+                    <li class="selected">
+                        <a href="#" class="icon-games" title="Games">
+                            <span>Games</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-results" title="Results">
+                            <span>Results</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-friends" title="Friends">
+                            <span>Friends</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <nav id="user-navigation">
+                <ul>
+                    <li>
+                        <a href="#" class="icon-settings" title="Settings">
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-sign-out" title="Sign Out">
+                            <span>Sign Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <main>
         <ul>
             <li>
@@ -51,16 +53,23 @@
                     <h3 class="game__username">Aplato</h3>
                     <img src="images/avatar-aplato.png" class="game__avatar" alt="" />
                     <div class="game__container">
-                        <span class="game__answer">Piano</span>
-                        <span class="game__status">Your turn</span>
-                        <div class="game__questions">
-                            <span class="game__questions__count">6</span>
-                            <span class="game__questions__remaining">Left</span>
-                        </div>
+                        <span class="game__answer">Cruise Ship</span>
+                        <span class="game__questions" title="Question 6 of 20">6</span>
                     </div>
-                    <span class="game__last-active">Last play <strong>4 hours ago</strong></span>
+                    <span class="game__last-active"><strong>Your turn</strong> &bull; Last play <em>4 hours ago</em></span>
                 </div>
             </li>
+            <li>
+                    <div class="game">
+                        <h3 class="game__username">Lenarity</h3>
+                        <img src="images/avatar-lenarity.png" class="game__avatar" alt="" />
+                        <div class="game__container">
+                            <span class="game__answer game__answer--guessing">Guessing</span>
+                            <span class="game__questions" title="Question 6 of 20">6</span>
+                        </div>
+                        <span class="game__last-active"><strong>Waiting</strong> &bull; Last play <em>17 minutes ago</em></span>
+                    </div>
+                </li>
         </ul>
     </main>
 </body>

@@ -5,9 +5,7 @@
 @import '_components';
 
 body {
-    width: 375px;
-
-    padding: 0 0 0 80px;
+    width: 320px;
     background: $color-background;
     color: $color-text;
     font-family: $font-primary;
@@ -16,5 +14,5 @@ body {
 }
 
 main {
-    padding: $padding;
+    padding: 10px;
 }
