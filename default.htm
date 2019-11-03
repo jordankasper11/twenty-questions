@@ -10,8 +10,9 @@
 
 <body>
     <header>
-        <div id="menu">
-            <nav id="primary-navigation">
+        <span class="menu-toggle" aria-label="Menu" role="button"></span>
+        <div class="menu menu--expanded">
+            <nav class="primary-navigation">
                 <ul>
                     <li class="selected">
                         <a href="#" class="icon-games" title="Games">
@@ -30,7 +31,7 @@
                     </li>
                 </ul>
             </nav>
-            <nav id="user-navigation">
+            <nav class="user-navigation">
                 <ul>
                     <li>
                         <a href="#" class="icon-settings" title="Settings">
@@ -45,6 +46,7 @@
                 </ul>
             </nav>
         </div>
+        <div class="menu-overlay"></div>
     </header>
     <main>
         <ul>
