@@ -11,7 +11,7 @@
 <body>
     <header>
         <span class="menu-toggle" aria-label="Menu" role="button"></span>
-        <div class="menu menu--expanded">
+        <div class="menu">
             <nav class="primary-navigation">
                 <ul>
                     <li class="selected">
@@ -46,7 +46,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="menu-overlay"></div>
+        <!-- <div class="menu-overlay"></div> -->
     </header>
     <main>
         <ul>
@@ -58,21 +58,73 @@
                         <span class="game__answer">Cruise Ship</span>
                         <span class="game__questions" title="Question 6 of 20">6</span>
                     </div>
-                    <span class="game__last-active"><strong>Your turn</strong> &bull; Last play <em>4 hours ago</em></span>
+                    <span class="game__last-active"><strong>Your turn</strong> &bull; Last play <em>4 hours
+                            ago</em></span>
                 </div>
             </li>
             <li>
-                    <div class="game">
-                        <h3 class="game__username">Lenarity</h3>
-                        <img src="images/avatar-lenarity.png" class="game__avatar" alt="" />
-                        <div class="game__container">
-                            <span class="game__answer game__answer--guessing">Guessing</span>
-                            <span class="game__questions" title="Question 6 of 20">6</span>
-                        </div>
-                        <span class="game__last-active"><strong>Waiting</strong> &bull; Last play <em>17 minutes ago</em></span>
+                <div class="game">
+                    <h3 class="game__username">Lenarity</h3>
+                    <img src="images/avatar-lenarity.png" class="game__avatar" alt="" />
+                    <div class="game__container">
+                        <span class="game__answer game__answer--guessing">Guessing</span>
+                        <span class="game__questions" title="Question 6 of 20">14</span>
                     </div>
-                </li>
+                    <span class="game__last-active"><strong>Waiting</strong> &bull; Last play <em>17 minutes
+                            ago</em></span>
+                </div>
+            </li>
         </ul>
+        <ol class="guesses">
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Do you use it indoors?</span>
+                    <!-- <span class="guess__answer guess__answer--yes">Yes</span> -->
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Does this object clean things?</span>
+                    <span class="guess__answer guess__answer--no">No</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Is this object used for entertainment?</span>
+                    <span class="guess__answer guess__answer--yes">Yes</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Is it a TV?</span>
+                    <span class="guess__answer guess__answer--probably">Probably</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Is it used for relaxing?</span>
+                    <span class="guess__answer guess__answer--sometimes">Sometimes</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Do you use it indoors?</span>
+                    <span class="guess__answer guess__answer--doubtful">Probably not</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Is it a piano?</span>
+                    <span class="guess__answer guess__answer--win">Correct</span>
+                </div>
+            </li>
+            <li>
+                <div class="guess">
+                    <span class="guess__question">Is it a guitar?</span>
+                    <span class="guess__answer guess__answer--lose">Game Over</span>
+                </div>
+            </li>
+        </ol>
     </main>
 </body>
 
