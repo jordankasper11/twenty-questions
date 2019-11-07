@@ -1,4 +1,4 @@
-import { BaseEntity } from './base.model';
+import { BaseEntity } from './base.models';
 
 export enum QuestionResponse {
     Yes,

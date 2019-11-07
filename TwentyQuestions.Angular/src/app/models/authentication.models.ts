@@ -1,4 +1,4 @@
-import { BaseEntity } from './base.model';
+import { BaseEntity } from './base.models';
 
 export class LoginRequest {
     constructor(public username: string, public password: string) {}
@@ -7,6 +7,7 @@ export class LoginRequest {
 export interface AccessToken {
     userId: string;
     username: string;
+    exp: number;
 }
 
 export class UserEntity extends BaseEntity {
