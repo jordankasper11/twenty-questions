@@ -1,0 +1,42 @@
+<header>
+    <span class="menu-toggle" aria-label="Menu" role="button" (click)="toggleMenu()"></span>
+    <div class="menu" [class.menu--expanded]="menuExpanded">
+        <nav class="primary-navigation">
+            <ul>
+                <li class="selected">
+                    <a href="#" class="icon-games" title="Games">
+                        <span>Games</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="icon-results" title="Results">
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="icon-friends" title="Friends">
+                        <span>Friends</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="user-navigation">
+            <ul>
+                <li>
+                    <a href="#" class="icon-settings" title="Settings">
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="icon-sign-out" title="Sign Out">
+                        <span>Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div *ngIf="menuExpanded" class="menu-overlay" (click)="toggleMenu()"></div>
+</header>
+<main>
+    <router-outlet></router-outlet>
+</main>

@@ -31,6 +31,7 @@
     "@types/node": "~8.9.4",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.5.3"
+    "typescript": "~3.5.3",
+    "@fortawesome/fontawesome-free": "^5.11.2"
   }
 }
