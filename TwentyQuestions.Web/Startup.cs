@@ -88,6 +88,8 @@ namespace TwentyQuestions.Web
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseStatusCodePagesWithReExecute("/");
 
             // Redirect non-file 404 requests to Angular routing
