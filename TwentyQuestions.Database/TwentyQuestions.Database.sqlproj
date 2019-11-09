@@ -67,6 +67,9 @@
     <Build Include="StoredProcedures\User_GetCredentials.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Types\EntityIdsType.sql" />
+    <Build Include="Tables\Games.sql" />
+    <Build Include="Tables\Friends.sql" />
+    <Build Include="StoredProcedures\Game_Get.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />

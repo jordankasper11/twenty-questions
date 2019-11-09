@@ -1,4 +1,4 @@
-import { BaseTrackedEntity } from './base.models';
+import { BaseTrackedEntity, BaseEntityRequest } from './base.models';
 
 export enum QuestionResponse {
     Yes,
@@ -19,9 +19,12 @@ export class QuestionEntity {
 }
 
 export class GameEntity extends BaseTrackedEntity {
-    public creatorId: string;
+    public subject: string;
     public opponentId: string;
     public maxQuestions: number;
     public completed: boolean;
     public questions: Array<QuestionEntity> = [];
+}
+
+export class GameRequest extends BaseEntityRequest<GameEntity> {
 }

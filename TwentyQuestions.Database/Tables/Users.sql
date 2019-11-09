@@ -2,9 +2,9 @@
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[Status] INT NOT NULL,
-    [CreatedDate] DATETIME NULL, 
+    [CreatedDate] DATETIME NOT NULL, 
 	[CreatedBy] UNIQUEIDENTIFIER NULL, 
-    [ModifiedDate] DATETIME NULL, 
+    [ModifiedDate] DATETIME NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NULL,
     [Username] NVARCHAR(32) NOT NULL,
 	[Email] NVARCHAR(256) NOT NULL,

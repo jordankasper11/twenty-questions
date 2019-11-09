@@ -285,10 +285,5 @@ namespace TwentyQuestions.Data.Repositories
                 trackedEntity.ModifiedBy = this.Context.UserId.Value;
             }
         }
-
-        Task<Models.Responses.EntityResponse<TEntity>> IRepository<TEntity, TRequest>.Get(TRequest request)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

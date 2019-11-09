@@ -1,20 +1,20 @@
 <header>
-    <span class="menu-toggle" aria-label="Menu" role="button" (click)="toggleMenu()"></span>
-    <div class="menu" [class.menu--expanded]="menuExpanded">
+    <span *ngIf="signedIn" class="menu-toggle" aria-label="Menu" role="button" (click)="toggleMenu()"></span>
+    <div *ngIf="signedIn" class="menu" [class.menu--expanded]="menuExpanded">
         <nav class="primary-navigation">
             <ul>
                 <li class="selected">
-                    <a href="#" class="icon-games" title="Games">
+                    <a (click)="navigate('/games')" class="icon-games" title="Games">
                         <span>Games</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="icon-results" title="Results">
+                    <a (click)="navigate('/results')" class="icon-results" title="Results">
                         <span>Results</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="icon-friends" title="Friends">
+                    <a (click)="navigate('/friends')" class="icon-friends" title="Friends">
                         <span>Friends</span>
                     </a>
                 </li>
@@ -23,12 +23,12 @@
         <nav class="user-navigation">
             <ul>
                 <li>
-                    <a href="#" class="icon-settings" title="Settings">
+                    <a (click)="navigate('/settings')" class="icon-settings" title="Settings">
                         <span>Settings</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="icon-sign-out" title="Sign Out">
+                    <a class="icon-sign-out" title="Sign Out" (click)="signOut()">
                         <span>Sign Out</span>
                     </a>
                 </li>

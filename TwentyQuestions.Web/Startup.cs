@@ -71,6 +71,7 @@ namespace TwentyQuestions.Web
 
                 return new AuthenticationRepository(sqlConnection, repositoryContext, configurationSettings.Authentication.SecurityKey);
             });
+            services.AddScoped<IGameRepository, GameRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

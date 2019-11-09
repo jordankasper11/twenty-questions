@@ -7,7 +7,7 @@ namespace TwentyQuestions.Data.Models.Entities
 {
     public class GameEntity : BaseTrackedEntity
     {
-        public Guid CreatorId { get; set; }
+        public string Subject { get; set; }
 
         public Guid OpponentId { get; set; }
 
