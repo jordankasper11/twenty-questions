@@ -1,0 +1,21 @@
+<h1>Game</h1>
+
+<form *ngIf="form && friends?.length > 0" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+        <label for="opponentId">Friend</label>
+        <select id="opponentId" required formControlName="opponentId">
+            <option></option>
+            <option *ngFor="let friend of friends" [ngValue]="friend.friendId">{{ friend.username }}</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" required autofocus formControlName="subject" />
+    </div>
+    <div class="form-footer">
+        <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Create Game</button>
+    </div>
+</form>
+<div *ngIf="form && friends?.length == 0">
+    <p>You must add a friend before playing a game</p>
+</div>

@@ -1,5 +1,6 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { GameService } from '@services';
 import { GameRequest } from '@models';
 
@@ -22,7 +23,7 @@ export class GamesComponent implements OnInit {
 }
 
 @NgModule({
-    imports: [CommonModule],
+    imports: [CommonModule, RouterModule],
     declarations: [GamesComponent],
     exports: [GamesComponent]
 })

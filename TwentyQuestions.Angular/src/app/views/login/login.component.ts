@@ -24,18 +24,18 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.buildForm();
     }
 
-    buildForm() {
+    buildForm(): void {
         this.form = new FormGroup({
             username: new FormControl('', [Validators.required]),
             password: new FormControl('', [Validators.required])
         });
     }
 
-    async submit() {
+    async submit(): Promise<void> {
         if (this.form.valid) {
             this.errorMessage = null;
 

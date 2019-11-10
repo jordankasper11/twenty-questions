@@ -71,6 +71,7 @@ namespace TwentyQuestions.Web
 
                 return new AuthenticationRepository(sqlConnection, repositoryContext, configurationSettings.Authentication.SecurityKey);
             });
+            services.AddScoped<IFriendRepository, FriendRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
         }
 

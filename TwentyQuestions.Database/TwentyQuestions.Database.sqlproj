@@ -70,6 +70,7 @@
     <Build Include="Tables\Games.sql" />
     <Build Include="Tables\Friends.sql" />
     <Build Include="StoredProcedures\Game_Get.sql" />
+    <Build Include="StoredProcedures\Friend_Get.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />
