@@ -23,7 +23,7 @@ namespace TwentyQuestions.Data.Repositories
         public override Task<EntityResponse<FriendEntity>> Get(FriendRequest request)
         {
             if (this.Context.UserId == null)
-                throw new InvalidOperationException("This API requires a logged-in user");
+                throw new InvalidOperationException("RepositoryContext.UserId must be populated");
 
             request.UserId = this.Context.UserId.Value;
 

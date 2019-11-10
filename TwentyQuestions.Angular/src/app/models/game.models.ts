@@ -27,4 +27,5 @@ export class GameEntity extends BaseTrackedEntity {
 }
 
 export class GameRequest extends BaseEntityRequest<GameEntity> {
+    userId: string;
 }

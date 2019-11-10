@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TwentyQuestions.Data.Models.Entities;
@@ -36,6 +37,31 @@ namespace TwentyQuestions.Data.Repositories
         {
             if (this.Transaction == null)
                 this.Transaction = this.Connection.BeginTransaction();
+        }
+
+        protected string Serialize<T>(T input)
+        {
+            var options = GetSerializerOptions();
+
+            return  JsonSerializer.Serialize<T>(input, options);
+        }
+
+        protected T Deserialize<T>(string input)
+        {
+            var options = GetSerializerOptions();
+
+            return JsonSerializer.Deserialize<T>(input, options);
+        }
+
+        private JsonSerializerOptions GetSerializerOptions()
+        {
+            var options = new JsonSerializerOptions()
+            {
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            return options;
         }
 
         public void Dispose()
