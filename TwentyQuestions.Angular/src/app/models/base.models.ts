@@ -21,12 +21,17 @@ export abstract class BaseTrackedEntity extends BaseEntity {
     public modifiedBy?: string;
 }
 
-export abstract class BaseEntityRequest<TEntity extends BaseEntity> {
+export class BaseRequest {
+}
+
+export abstract class BaseEntityRequest<TEntity extends BaseEntity> extends BaseRequest {
     sortDirection: SortDirection;
     pageNumber: number;
     pageSize: number;
 
     constructor() {
+        super();
+        
         this.sortDirection = SortDirection.ASC;
         this.pageNumber = 1;
     }

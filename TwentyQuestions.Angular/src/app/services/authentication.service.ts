@@ -47,7 +47,7 @@ export class AuthenticationService extends BaseService {
 
     public login(loginRequest: LoginRequest): Observable<AccessToken> {
         return super
-            .httpPost<string>('/authentication/login', loginRequest)
+            .httpPost<string>('/Authentication/Login', loginRequest)
             .pipe(
                 map(token => {
                     this.token = token;

@@ -4,7 +4,7 @@
     @ModifiedBy			UNIQUEIDENTIFIER,
 	@ModifiedDate		DATETIME = NULL,
 	@OpponentId			UNIQUEIDENTIFIER,
-	@Subject			NVARCHAR(256),	
+	@Subject			NVARCHAR(256) = NULL,	
 	@MaxQuestions		INT,
 	@Completed			BIT,
 	@Questions			NVARCHAR(MAX)
@@ -29,6 +29,9 @@ BEGIN
 	END
 	ELSE
 	BEGIN
+		IF @Subject IS NULL
+			THROW 51000, '@Subject can not be null', 1;
+
 		INSERT INTO Games (Id, [Status], CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, OpponentId, [Subject], MaxQuestions, Completed, Questions)
 			VALUES (@Id, @Status, @ModifiedBy, @ModifiedDate, @ModifiedBy, @ModifiedDate, @OpponentId, @Subject, @MaxQuestions, @Completed, @Questions)
 	END

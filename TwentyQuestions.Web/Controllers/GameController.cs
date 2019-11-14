@@ -17,5 +17,25 @@ namespace TwentyQuestions.Web.Controllers
         public GameController(IGameRepository repository, ConfigurationSettings configurationSettings) : base(repository, configurationSettings)
         {
         }
+
+        [HttpPost("AskQuestion")]
+        public async Task<ActionResult<GameEntity>> AskQuestion([FromBody]AskQuestionRequest request)
+        {
+            await this.Repository.AskQuestion(request);
+
+            var game = await this.Repository.Get(request.GameId);
+
+            return Ok(game);
+        }
+
+        [HttpPost("AnswerQuestion")]
+        public async Task<ActionResult<GameEntity>> AnswerQuestion([FromBody]AnswerQuestionRequest request)
+        {
+            await this.Repository.AnswerQuestion(request);
+
+            var game = await this.Repository.Get(request.GameId);
+
+            return Ok(game);
+        }
     }
 }

@@ -1,6 +1,6 @@
 <ng-container *ngIf="!id">
     <h1>New Game</h1>
-    <form *ngIf="form && friends?.length > 0" [formGroup]="form" (ngSubmit)="submit()">
+    <form *ngIf="form && friends?.length > 0" [formGroup]="form" (ngSubmit)="createGame()">
         <div class="form-row">
             <label for="opponentId">Friend</label>
             <select id="opponentId" required formControlName="opponentId">
@@ -21,6 +21,70 @@
     </div>
 </ng-container>
 <ng-container *ngIf="id && game">
-    <div *ngIf="game.subject">{{ game.subject }}</div>
-    <div *ngIf="!game.subject">Guessing</div>
+    {{ GameMode[gameMode] }}
+    <div *ngIf="game.subject">
+        <div>{{ game.subject }}</div>
+    </div>
+    <ol *ngIf="game.questions?.length">
+        <li *ngFor="let question of game.questions">{{ question.question }}</li>
+    </ol>
+    <ng-container [ngSwitch]="gameMode">
+        <ng-container *ngSwitchCase="GameMode.Guessing">
+            <form *ngIf="form" [formGroup]="form" (ngSubmit)="askQuestion()">
+                <div class="form-row">
+                    <label for="question">Question</label>
+                    <input type="text" id="question" required autofocus formControlName="question" />
+                </div>
+                <div class="form-footer">
+                    <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Ask Question</button>
+                </div>
+            </form>
+        </ng-container>
+        <ng-container *ngSwitchCase="GameMode.Responding">
+            <form *ngIf="form" [formGroup]="form" (ngSubmit)="answerQuestion()">
+                <div class="form-row">
+                    <label for="response">Response</label>
+                    <ul>
+                        <li>
+                            <input type="radio" id="response-yes" name="response" [value]="QuestionResponse.Yes" formControlName="response" />
+                            <label for="response-yes">Yes</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="response-no" name="response" [value]="QuestionResponse.No" formControlName="response" />
+                            <label for="response-no">No</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="response-sometimes" name="response" [value]="QuestionResponse.Sometimes" formControlName="response" />
+                            <label for="response-sometimes">Sometimes</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="response-probably" name="response" [value]="QuestionResponse.Probably" formControlName="response" />
+                            <label for="response-probably">Probably</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="response-probably-not" name="response" [value]="QuestionResponse.ProbablyNot" formControlName="response" />
+                            <label for="response-probably-not">Probably Not</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct" formControlName="response" />
+                            <label for="response-correct">Correct</label>
+                        </li>
+                    </ul>
+                    <div *ngIf="form.controls.response.valid">
+                        <label for="response-explanation" (click)="showExplanation()">Need to explain?</label>
+                        <textarea *ngIf="explanationVisible" id="response-explanation" formControlName="responseExplanation"></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Ask Question</button>
+                </div>
+            </form>
+        </ng-container>
+        <ng-container *ngSwitchCase="GameMode.Waiting">
+            <div>Waiting...</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="GameMode.Completed">
+
+        </ng-container>
+    </ng-container>
 </ng-container>

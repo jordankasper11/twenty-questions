@@ -9,4 +9,22 @@ namespace TwentyQuestions.Data.Models.Requests
     {
         public Guid UserId { get; set; }
     }
+
+    public class AskQuestionRequest : BaseRequest
+    {
+        public Guid GameId { get; set; }
+
+        public string Question { get; set; }
+    }
+
+    public class AnswerQuestionRequest : BaseRequest
+    {
+        public Guid GameId { get; set; }
+
+        public int QuestionId { get; set; }
+
+        public QuestionResponse Response { get; set; }
+
+        public string ResponseExplanation { get; set; }
+    }
 }

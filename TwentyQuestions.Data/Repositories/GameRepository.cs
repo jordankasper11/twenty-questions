@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using TwentyQuestions.Data.Models.Entities;
 using TwentyQuestions.Data.Models.Requests;
@@ -12,6 +13,9 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IGameRepository : IRepository<GameEntity, GameRequest>
     {
+        Task AskQuestion(AskQuestionRequest request);
+
+        Task AnswerQuestion(AnswerQuestionRequest request);
     }
 
     public class GameRepository : BaseRepository<GameEntity, GameRequest>, IGameRepository
@@ -59,6 +63,66 @@ namespace TwentyQuestions.Data.Repositories
             sqlParameters.Add("@MaxQuestions", SqlDbType.Int).Value = entity.MaxQuestions;
             sqlParameters.Add("@Completed", SqlDbType.Bit).Value = entity.Completed;
             sqlParameters.Add("@Questions", SqlDbType.NVarChar).Value = Serialize(entity.Questions);
+        }
+
+        public async Task AskQuestion(AskQuestionRequest request)
+        {
+            var game = await Get(request.GameId);
+
+            if (game == null)
+                throw new InvalidOperationException("Invalid GameId");
+
+            if (game.OpponentId != this.Context.UserId)
+                throw new InvalidOperationException("Only the challenged user can ask a question");
+
+            if (game.ModifiedBy == this.Context.UserId || game.Questions?.LastOrDefault() != null && game.Questions.Last().Response == null)
+                throw new InvalidOperationException("Waiting for opponent to respond");
+
+            if (game.Completed)
+                throw new InvalidOperationException("The game has alreaddy been completed");
+
+            if (game.Questions == null)
+                game.Questions = new List<QuestionEntity>();
+
+            var question = new QuestionEntity();
+
+            question.Id = game.Questions.Count + 1;
+            question.Question = request.Question;
+            question.CreatedDate = DateTime.UtcNow;
+
+            game.Questions.Add(question);
+
+            await Update(game);
+        }
+
+        public async Task AnswerQuestion(AnswerQuestionRequest request)
+        {
+            var game = await Get(request.GameId);
+
+            if (game == null)
+                throw new InvalidOperationException("Invalid GameId");
+
+            if (game.CreatedBy != this.Context.UserId)
+                throw new InvalidOperationException("Only the challenger can respond to a question");
+
+            if (game.ModifiedBy == this.Context.UserId || game.Questions?.LastOrDefault().Response != null)
+                throw new InvalidOperationException("Waiting for opponent to respond");
+
+            if (game.Completed)
+                throw new InvalidOperationException("The game has alreaddy been completed");
+
+            var question = game.Questions?.LastOrDefault();
+
+            if (question == null)
+                throw new InvalidOperationException("Invalid QuestionId");
+
+            if (question.Id != request.QuestionId)
+                throw new InvalidOperationException("This question has already been answered");
+
+            question.Response = request.Response;
+            question.ResponseExplanation = !String.IsNullOrWhiteSpace(request.ResponseExplanation) ? request.ResponseExplanation : null;
+
+            await Update(game);
         }
     }
 }

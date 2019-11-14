@@ -8,6 +8,6 @@ import { BaseEntityService } from './base.service';
 })
 export class FriendService extends BaseEntityService<FriendEntity, FriendRequest> {
     constructor(http: HttpClient) {
-        super(http, '/friend');
+        super(http, '/Friend');
     }
 }

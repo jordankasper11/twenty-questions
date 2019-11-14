@@ -17,11 +17,11 @@ namespace TwentyQuestions.Data.Models.Entities
 
     public class QuestionEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string Question { get; set; }
 
-        public QuestionResponse Response { get; set; }
+        public QuestionResponse? Response { get; set; }
 
         public string ResponseExplanation { get; set; }
 
