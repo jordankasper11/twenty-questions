@@ -1,0 +1,18 @@
+<ol *ngIf="game?.questions?.length" class="questions">
+    <li *ngFor="let question of game.questions">
+        <div class="question">
+            <span class="question__question">{{ question.question }}</span>
+            <ng-container [ngSwitch]="question.response">
+                <span *ngSwitchCase="QuestionResponse.Yes" class="question__answer question__answer--yes">Yes</span>
+                <span *ngSwitchCase="QuestionResponse.No" class="question__answer question__answer--no">No</span>
+                <span *ngSwitchCase="QuestionResponse.Sometimes" class="question__answer question__answer--sometimes">Yes</span>
+                <span *ngSwitchCase="QuestionResponse.Probably" class="question__answer question__answer--probably">Yes</span>
+                <span *ngSwitchCase="QuestionResponse.ProbablyNot" class="question__answer question__answer--probablyNot">Yes</span>
+                <span *ngSwitchCase="QuestionResponse.Correct" class="question__answer question__answer--win">Correct</span>
+                <span *ngSwitchCase="QuestionResponse.GameOver" class="question__answer question__answer--lose">Game Over</span>
+                <span *ngSwitchDefaultCase class="question__answer">Waiting</span>
+            </ng-container>
+            <span *ngIf="question.responseExplanation">{{ question.responseExplanation }}</span>
+        </div>
+    </li>
+</ol>

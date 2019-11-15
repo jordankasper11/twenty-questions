@@ -1,4 +1,4 @@
-ol.guesses {
+ol.questions {
     counter-reset: guess-counter;
 
     > li {
@@ -6,7 +6,7 @@ ol.guesses {
     }
 }
 
-.guess {
+.question {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -78,7 +78,7 @@ ol.guesses {
             }
         }
 
-        &--doubtful {
+        &--probablyNot {
             &:before {
                 content: '\f103';
             }

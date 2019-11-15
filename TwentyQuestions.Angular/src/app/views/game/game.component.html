@@ -4,5 +4,5 @@
     <app-game-guessing *ngSwitchCase="GameMode.Guessing" [game]="game" (gameSaved)="loadGame($event)"></app-game-guessing>
     <app-game-responding *ngSwitchCase="GameMode.Responding" [game]="game" (gameSaved)="loadGame($event)"></app-game-responding>
     <ng-container *ngSwitchCase="GameMode.Waiting"></ng-container>
-    <ng-container *ngSwitchCase="GameMode.Completed"></ng-container>
+    <app-game-completed *ngSwitchCase="GameMode.Completed" [game]="game"></app-game-completed>
 </ng-container>
