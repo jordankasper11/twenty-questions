@@ -7,6 +7,7 @@ import { CreateGameComponentModule } from './create-game/create-game.component';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
+import { setInterval } from 'timers';
 
 enum GameMode {
     Creating,
@@ -26,6 +27,7 @@ export class GameComponent implements OnInit {
     id: string;
     userId: string;
     game: GameEntity;
+    gameTimer: NodeJS.Timer;
 
     get gameMode(): GameMode {
         if (!this.id)
@@ -64,10 +66,15 @@ export class GameComponent implements OnInit {
     }
 
     async loadGame(game?: GameEntity): Promise<void> {
+        clearTimeout(this.gameTimer);
+
         if (game)
             this.game = game;
         else
             this.game = await this.gameService.get(this.id).toPromise();
+
+        if (this.game && this.gameMode == GameMode.Waiting)
+            this.gameTimer = setTimeout(() => this.loadGame(), 30000);
     }
 
 }
