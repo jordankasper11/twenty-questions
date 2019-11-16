@@ -8,5 +8,7 @@ namespace TwentyQuestions.Data.Models.Requests
     public class FriendRequest : BaseRequest<FriendEntity>
     {
         public Guid UserId { get; set; }
+
+        public Guid? FriendId { get; set;  }
     }
 }

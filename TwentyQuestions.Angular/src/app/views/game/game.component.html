@@ -1,8 +1,16 @@
-{{ GameMode[gameMode] }}
-<ng-container [ngSwitch]="gameMode">
-    <app-create-game *ngSwitchCase="GameMode.Creating" [game]="game"></app-create-game>
-    <app-game-guessing *ngSwitchCase="GameMode.Guessing" [game]="game" (gameSaved)="loadGame($event)"></app-game-guessing>
-    <app-game-responding *ngSwitchCase="GameMode.Responding" [game]="game" (gameSaved)="loadGame($event)"></app-game-responding>
-    <ng-container *ngSwitchCase="GameMode.Waiting"></ng-container>
-    <app-game-completed *ngSwitchCase="GameMode.Completed" [game]="game"></app-game-completed>
-</ng-container>
+<div class="game-details">
+    <header *ngIf="gameMode != null && gameMode != GameMode.Creating" class="game-details__heading">
+        <img *ngIf="friend?.avatarUrl" [src]="friend.avatarUrl" alt="" class="game-details__heading__avatar" />
+        <h1 *ngIf="friend?.username" aria-label="Game with" class="game-details__heading__opponent">{{ friend.username }}</h1>
+        <span class="game-details__heading__last-modified">{{ game.modifiedDate | duration }}</span>
+    </header>
+    <ng-container [ngSwitch]="gameMode">
+        <app-create-game *ngSwitchCase="GameMode.Creating" [game]="game"></app-create-game>
+        <app-game-guessing *ngSwitchCase="GameMode.Guessing" [game]="game" (gameSaved)="loadGame($event)">
+        </app-game-guessing>
+        <app-game-responding *ngSwitchCase="GameMode.Responding" [game]="game" (gameSaved)="loadGame($event)">
+        </app-game-responding>
+        <ng-container *ngSwitchCase="GameMode.Waiting"></ng-container>
+        <app-game-completed *ngSwitchCase="GameMode.Completed" [game]="game"></app-game-completed>
+    </ng-container>
+</div>

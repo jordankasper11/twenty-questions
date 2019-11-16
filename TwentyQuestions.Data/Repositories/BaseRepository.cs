@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TwentyQuestions.Data.Extensions;
 using TwentyQuestions.Data.Models.Entities;
 using TwentyQuestions.Data.Models.Requests;
 using TwentyQuestions.Data.Models.Responses;
@@ -177,9 +178,9 @@ namespace TwentyQuestions.Data.Repositories
                 if (trackedEntity != null)
                 {
                     trackedEntity.CreatedBy = dataRow.Field<Guid?>("CreatedBy");
-                    trackedEntity.CreatedDate = dataRow.Field<DateTime?>("CreatedDate");
+                    trackedEntity.CreatedDate = dataRow.GetUtcDateTime("CreatedDate");
                     trackedEntity.ModifiedBy = dataRow.Field<Guid?>("ModifiedBy");
-                    trackedEntity.ModifiedDate = dataRow.Field<DateTime?>("ModifiedDate");
+                    trackedEntity.ModifiedDate = dataRow.GetUtcDateTime("ModifiedDate");
                 }
 
                 PopulateEntity(entity, dataRow, dataSet);

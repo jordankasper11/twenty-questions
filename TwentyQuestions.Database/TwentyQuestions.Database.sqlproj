@@ -72,8 +72,12 @@
     <Build Include="StoredProcedures\Game_Get.sql" />
     <Build Include="StoredProcedures\Friend_Get.sql" />
     <Build Include="StoredProcedures\Game_Save.sql" />
+    <Build Include="StoredProcedures\User_Get.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="TwentyQuestions.Database.refactorlog" />
   </ItemGroup>
 </Project>

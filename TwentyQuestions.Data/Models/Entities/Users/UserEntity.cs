@@ -10,6 +10,17 @@ namespace TwentyQuestions.Data.Models.Entities
 
         public string Email { get; set; }
 
-        public string AvatarUrl { get; set; }
+        public string AvatarFileExtension { get; set; }
+
+        public string AvatarUrl
+        {
+            get
+            {
+                if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileExtension))
+                    return $"/avatars/{this.Id}.{this.AvatarFileExtension}";
+
+                return null;
+            }
+        }
     }
 }

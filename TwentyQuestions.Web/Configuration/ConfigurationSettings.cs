@@ -15,10 +15,17 @@ namespace TwentyQuestions.Web.Configuration
         public string SecurityKey { get; set; }
     }
 
+    public class ConfigurationPaths
+    {
+        public string Avatars { get; set; }
+    }
+
     public class ConfigurationSettings
     {
         public ConfigurationDatabaseSettings Database { get; set; }
 
         public ConfigurationAuthenticationSettings Authentication { get; set; }
+
+        public ConfigurationPaths Paths { get; set; }
     }
 }

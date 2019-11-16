@@ -8,12 +8,12 @@ export abstract class BaseService {
     private _baseUrl: string;
 
     constructor(private http: HttpClient) {
-        this._baseUrl = environment.apiBaseUrl;
+        this._baseUrl = `${environment.requestUrlPrefix}/api`;
     }
 
-    protected httpGet<T>(relativePath: string, parameters? : HttpParams, responseType?: string): Observable<T> {
+    protected httpGet<T>(relativePath: string, parameters?: HttpParams, responseType?: string): Observable<T> {
         return this.http
-            .get<T>(this._baseUrl + relativePath, { params: parameters, responseType: <any>responseType },)
+            .get<T>(this._baseUrl + relativePath, { params: parameters, responseType: <any>responseType })
             .pipe(map(response => this.deserialize(response)));
     }
 
@@ -29,7 +29,7 @@ export abstract class BaseService {
             .pipe(map(response => this.deserialize(response)));
     }
 
-    protected httpDelete<T>(relativePath: string, parameters? : HttpParams): Observable<T> {
+    protected httpDelete<T>(relativePath: string, parameters?: HttpParams): Observable<T> {
         return this.http
             .delete<T>(this._baseUrl + relativePath, { params: parameters })
             .pipe(map(response => this.deserialize(response)));
@@ -48,9 +48,17 @@ export abstract class BaseService {
         if (value instanceof Array)
             (<Array<any>>value).forEach(i => i = this.deserialize(i));
         else if (value instanceof Object)
-            Object.keys(value).forEach(key => value[key] = this.deserialize(value[key]));
+            Object.keys(value).forEach(key => {
+                if (key.endsWith("Url")) {
+                    let url: string = value[key];
+
+                    value[key] = url ? `${environment.requestUrlPrefix}${url}` : null;
+                }
+                else
+                    value[key] = this.deserialize(value[key]);
+            });
         else if (typeof value == "string") {
-            const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z?$/;
+            const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?$/;
 
             if (dateRegex.test(value))
                 value = new Date(value);
@@ -86,7 +94,7 @@ export abstract class BaseEntityService<TEntity extends BaseEntity, TRequest ext
         let params = new HttpParams();
 
         params = params.set('id', id);
-        
+
         return super.httpDelete(this.endPoint, params);
     }
 }

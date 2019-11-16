@@ -10,6 +10,7 @@
 	[Email] NVARCHAR(256) NOT NULL,
 	[PasswordHash] NVARCHAR(256) NOT NULL, 
     [PasswordSalt] NVARCHAR(256) NOT NULL,
-	CONSTRAINT [FK_Users_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),
+	[AvatarFileExtension] VARCHAR(3) NULL, 
+    CONSTRAINT [FK_Users_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),
 	CONSTRAINT [FK_Users_ToUsersModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [Users]([Id])
 )

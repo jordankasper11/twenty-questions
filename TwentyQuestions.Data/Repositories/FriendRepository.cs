@@ -33,6 +33,7 @@ namespace TwentyQuestions.Data.Repositories
         protected override void AddGetParameters(SqlParameterCollection sqlParameters, FriendRequest request)
         {
             sqlParameters.Add("@UserId", SqlDbType.UniqueIdentifier).Value = request.UserId;
+            sqlParameters.Add("@FriendId", SqlDbType.UniqueIdentifier).Value = request.FriendId;
         }
 
         protected override void AddInsertParameters(SqlParameterCollection sqlParameters, FriendEntity entity)
@@ -49,6 +50,7 @@ namespace TwentyQuestions.Data.Repositories
         {
             entity.FriendId = dataRow.Field<Guid>("FriendId");
             entity.Username = dataRow.Field<string>("Username");
+            entity.AvatarFileExtension = dataRow.Field<string>("AvatarFileExtension");
         }
     }
 }

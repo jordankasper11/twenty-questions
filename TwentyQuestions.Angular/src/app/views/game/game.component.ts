@@ -1,8 +1,9 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { GameService, AuthenticationService } from '@services';
-import { GameEntity } from '@models';
+import { GameService, AuthenticationService, FriendService } from '@services';
+import { GameEntity, FriendRequest, FriendEntity } from '@models';
+import { DurationPipeModule } from '@pipes';
 import { CreateGameComponentModule } from './create-game/create-game.component';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
@@ -27,6 +28,7 @@ export class GameComponent implements OnInit {
     userId: string;
     game: GameEntity;
     gameTimer: NodeJS.Timer;
+    friend: FriendEntity;
 
     get gameMode(): GameMode {
         if (!this.id)
@@ -48,6 +50,7 @@ export class GameComponent implements OnInit {
     constructor(
         private gameService: GameService,
         private authenticationService: AuthenticationService,
+        private friendService: FriendService,
         private route: ActivatedRoute
     ) { }
 
@@ -58,8 +61,10 @@ export class GameComponent implements OnInit {
             this.id = params.get('id');
 
             if (this.id) {
-                if (!this.game)
+                if (!this.game) {
                     await this.loadGame();
+                    await this.loadFriend();
+                }
             }
         });
     }
@@ -76,11 +81,22 @@ export class GameComponent implements OnInit {
             this.gameTimer = setTimeout(() => this.loadGame(), 30000);
     }
 
+    async loadFriend(): Promise<void> {
+        const request = new FriendRequest();
+
+        request.friendId = this.game.createdBy == this.userId ? this.game.opponentId : this.game.createdBy;
+
+        const response = await this.friendService.query(request).toPromise();
+
+        if (response != null && response.items != null && response.items.length == 1)
+            this.friend = response.items[0];
+    }
 }
 
 @NgModule({
     imports: [
         CommonModule,
+        DurationPipeModule,
         CreateGameComponentModule,
         GameCompletedComponentModule,
         GameGuessingComponentModule,
@@ -88,6 +104,6 @@ export class GameComponent implements OnInit {
     ],
     declarations: [GameComponent],
     exports: [GameComponent],
-    providers: [GameService]
+    providers: [GameService, AuthenticationService, FriendService]
 })
 export class GameComponentModule { }

@@ -1,6 +1,6 @@
 import { NgModule, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GameEntity, QuestionResponse } from '@models';
+import { GameEntity, QuestionEntity, QuestionResponse } from '@models';
 
 @Component({
     selector: 'app-game-questions',
@@ -11,7 +11,11 @@ export class GameQuestionsComponent {
 
     @Input() game: GameEntity;
 
-    constructor() {}
+    constructor() { }
+
+    toggleResponseExplanation(question: QuestionEntity): void {
+        question['responseExplanationVisible'] = !question['responseExplanationVisible'];
+    }
 }
 
 @NgModule({
