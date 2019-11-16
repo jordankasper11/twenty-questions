@@ -9,5 +9,7 @@ namespace TwentyQuestions.Data.Models.Entities
         public string PasswordSalt { get; set; }
 
         public string PasswordHash { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }

@@ -1,7 +1,32 @@
-import { BaseTrackedEntity } from './base.models';
+import { BaseRequest, BaseResponse, BaseTrackedEntity } from './base.models';
 
-export class LoginRequest {
-    constructor(public username: string, public password: string) {}
+export class LoginRequest extends BaseRequest {
+    public username: string;
+    public password: string;
+
+    constructor(username: string, password: string) {
+        super();
+
+        this.username = username;
+        this.password = password;
+    }
+}
+
+export class LoginResponse extends BaseResponse {
+    public accessToken: string;
+    public refreshToken: string;
+    
+    constructor() {
+        super();
+    }
+}
+
+export class RefreshTokenRequest extends BaseRequest {
+    public refreshToken: string;
+    
+    constructor() {
+        super();
+    }
 }
 
 export interface AccessToken {

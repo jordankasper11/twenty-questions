@@ -6,7 +6,7 @@ using TwentyQuestions.Data.Models.Requests;
 
 namespace TwentyQuestions.Data.Models.Responses
 {
-    public class EntityResponse<TEntity> where TEntity : BaseEntity
+    public class EntityResponse<TEntity> : BaseResponse where TEntity : BaseEntity
     {
         public int? PageNumber { get; set; }
 

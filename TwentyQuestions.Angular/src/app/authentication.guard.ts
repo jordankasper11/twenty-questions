@@ -11,9 +11,14 @@ import { AuthenticationService } from '@services';
     providedIn: 'root'
 })
 export class AuthenticationGuard implements CanActivate {
-    constructor(private authenticationService: AuthenticationService, private router: Router) {}
+    constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
-    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot ): boolean {
+    async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+         if (this.authenticationService.isLoggedIn())
+             return true;
+
+        await this.authenticationService.refreshToken().toPromise();
+
         if (this.authenticationService.isLoggedIn())
             return true;
         else {

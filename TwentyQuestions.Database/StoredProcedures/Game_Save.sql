@@ -30,7 +30,7 @@ BEGIN
 	ELSE
 	BEGIN
 		IF @Subject IS NULL
-			THROW 51000, '@Subject can not be null', 1;
+			THROW 51000, '@Subject cannot be null', 1;
 
 		INSERT INTO Games (Id, [Status], CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, OpponentId, [Subject], MaxQuestions, Completed, Questions)
 			VALUES (@Id, @Status, @ModifiedBy, @ModifiedDate, @ModifiedBy, @ModifiedDate, @OpponentId, @Subject, @MaxQuestions, @Completed, @Questions)

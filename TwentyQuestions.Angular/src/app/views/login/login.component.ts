@@ -55,9 +55,9 @@ export class LoginComponent implements OnInit {
                     this.router.navigateByUrl(returnUrl);
                 }
             } catch (error) {
-                if (error.error)
+                if (error.error && error.status)
                     this.errorMessage = error.error;
-                else if (error.status === 401)
+                else if (error.status == 401)
                     this.errorMessage = 'Invalid credentials';
                 else
                     this.errorMessage = 'An error has occurred. Please try again.';

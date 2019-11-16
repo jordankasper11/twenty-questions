@@ -37,7 +37,10 @@ export abstract class BaseEntityRequest<TEntity extends BaseEntity> extends Base
     }
 }
 
-export class EntityResponse<TEntity extends BaseEntity> {
+export abstract class BaseResponse {
+}
+
+export class EntityResponse<TEntity extends BaseEntity> extends BaseResponse {
     pageNumber: number;
     pageSize: number;
     totalRecords: number;

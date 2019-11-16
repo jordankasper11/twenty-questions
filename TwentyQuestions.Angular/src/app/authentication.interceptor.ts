@@ -1,26 +1,65 @@
 import { Injectable } from '@angular/core';
-import {
-    HttpRequest,
-    HttpHandler,
-    HttpEvent,
-    HttpInterceptor
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
+import { Subject, Observable, throwError } from 'rxjs';
+import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { AuthenticationService } from '@services';
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
-    constructor(private authenticationService: AuthenticationService) {}
+    private refreshingToken = false;
+    private refreshTokenSubject = new Subject<void>();
 
-    intercept(request: HttpRequest<any>, next: HttpHandler ): Observable<HttpEvent<any>> {
+    constructor(private authenticationService: AuthenticationService) { }
+
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        request = this.addRequestHeaders(request);
+
+        return next.handle(request).pipe(
+            catchError(error => {
+                if (error instanceof HttpErrorResponse && error.status == 401)
+                    return this.handleUnauthorizedRequest(request, next, error);
+
+                return throwError(error);
+            })
+        );
+    }
+
+    private addRequestHeaders(request: HttpRequest<any>) {
         if (this.authenticationService.isLoggedIn()) {
             request = request.clone({
                 setHeaders: {
-                    Authorization: `Bearer ${this.authenticationService.token}`
+                    Authorization: `Bearer ${this.authenticationService.accessToken}`
                 }
             });
         }
 
-        return next.handle(request);
+        return request;
+    }
+
+    private handleUnauthorizedRequest(request: HttpRequest<any>, next: HttpHandler, error: any) {
+        if (!this.refreshingToken) {
+            this.refreshingToken = true;
+            this.refreshTokenSubject.next();
+
+            return this.authenticationService.refreshToken().pipe(
+                switchMap(() => {
+                    this.refreshingToken = false;
+                    this.refreshTokenSubject.next();
+
+                    return next.handle(this.addRequestHeaders(request));
+                })
+            );
+
+        } else {
+            return this.refreshTokenSubject.pipe(
+                take(1),
+                switchMap(() => {
+                    if (this.authenticationService.isLoggedIn())
+                        return next.handle(this.addRequestHeaders(request));
+
+                    return throwError(error);
+                })
+            );
+        }
     }
 }

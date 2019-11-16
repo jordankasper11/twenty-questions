@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwentyQuestions.Data.Models.Requests;
+using TwentyQuestions.Data.Models.Responses;
 using TwentyQuestions.Data.Repositories;
 using TwentyQuestions.Web.Configuration;
 
@@ -17,20 +18,34 @@ namespace TwentyQuestions.Web.Controllers
         {
         }
 
-        [Route("Login")]
         [AllowAnonymous]
-        [HttpPost]
-        public async Task<ActionResult<string>> Login([FromBody]LoginRequest request)
+        [HttpPost("Login")]
+        public async Task<ActionResult<LoginResponse>> Login([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var token = await this.Repository.Login(request);
+            var loginResponse = await this.Repository.Login(request);
 
-            if (token != null)
-                return Ok(token);
+            if (loginResponse != null)
+                return Ok(loginResponse);
 
             return Unauthorized();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public async Task<ActionResult<LoginResponse>> RefreshToken([FromBody]RefreshTokenRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var loginResponse = await this.Repository.RefreshToken(request);
+
+            if (loginResponse != null)
+                return Ok(loginResponse);
+
+            return Forbid();
         }
     }
 }
