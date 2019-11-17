@@ -87,10 +87,30 @@
         }
 
         &__last-modified {
+            display: block;
+            margin: 0 0 $margin 0;
             font-style: italic;
             color: $color-text-secondary;
         }
+
+        &__subject {
+            display: block;
+            font-size: 18px;
+            font-style: italic;
+            font-weight: 600;
+        }
     }
+}
+
+.game-waiting {
+    margin: 0 0 $margin 0;
+    border-radius: $border-radius;
+    padding: $padding;
+    background: $color-primary;
+    font-size: 20px;
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
 }
 
 ol.questions {
@@ -113,7 +133,7 @@ ol.questions {
     &:before {
         content: counter(guess-counter);
         flex-grow: 0;
-        margin: 0 20px 0 0;
+        margin: 0 10px 0 0;
         border-radius: 50%;
         width: 30px;
         height: 30px;
@@ -129,9 +149,10 @@ ol.questions {
         flex-basis: 0;
         flex-grow: 1;
         width: auto;
+        line-height: 1.5;
     }
 
-    &__answer {
+    &__response {
         margin: 20px 0 0 0;
         border-radius: $border-radius;
         padding: $padding;
@@ -173,13 +194,13 @@ ol.questions {
             }
         }
 
-        &--probablyNot {
+        &--probably-not {
             &:before {
                 content: '\f103';
             }
         }
 
-        &--win {
+        &--correct {
             background: $color-white;
             color: $color-primary;
 
@@ -188,7 +209,7 @@ ol.questions {
             }
         }
 
-        &--lose {
+        &--game-over {
             background: $color-white;
             color: $color-primary;
 
@@ -209,5 +230,61 @@ ol.questions {
     &__response-explanation {
         margin-top: 20px;
         line-height: 1.25;
+    }
+}
+
+ul.responses {
+    margin: 0 0 $margin 0;
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    > li.response {
+        margin: 20px 0 0 0;
+
+        &--selected {
+            label {
+                border: solid 2px $color-primary-light;
+                background: $color-primary-light;
+                color: $color-white;
+            }
+        }
+
+        &--correct {
+            label {
+                &:before {
+                    content: '\f091';
+                }
+            }
+
+            &.response--selected {
+                label {
+                    border-color: $color-white;
+                    background: $color-white;
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+
+    label {
+        border: dashed 2px $color-primary-light;
+        border-radius: $border-radius;
+        padding: $padding;
+        width: 100%;
+        background: $color-primary-dark;
+        font-weight: 700;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 18px;
+        cursor: pointer;
+
+        &:before {
+            margin: 0 10px 0 0;
+            font-family: 'Font Awesome';
+            font-size: 26px;
+            vertical-align: middle;
+        }
     }
 }

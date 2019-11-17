@@ -3,14 +3,14 @@
         <div class="question">
             <span class="question__question">{{ question.question }}</span>
             <ng-container [ngSwitch]="question.response">
-                <span *ngSwitchCase="QuestionResponse.Yes" class="question__answer question__answer--yes">Yes</span>
-                <span *ngSwitchCase="QuestionResponse.No" class="question__answer question__answer--no">No</span>
-                <span *ngSwitchCase="QuestionResponse.Sometimes" class="question__answer question__answer--sometimes">Sometimes</span>
-                <span *ngSwitchCase="QuestionResponse.Probably" class="question__answer question__answer--probably">Probably</span>
-                <span *ngSwitchCase="QuestionResponse.ProbablyNot" class="question__answer question__answer--probablyNot">Probably not</span>
-                <span *ngSwitchCase="QuestionResponse.Correct" class="question__answer question__answer--win">Correct</span>
-                <span *ngSwitchCase="QuestionResponse.GameOver" class="question__answer question__answer--lose">Game Over</span>
-                <span *ngSwitchDefaultCase class="question__answer">Waiting</span>
+                <span *ngSwitchCase="QuestionResponse.Yes" class="question__response question__response--yes">Yes</span>
+                <span *ngSwitchCase="QuestionResponse.No" class="question__response question__response--no">No</span>
+                <span *ngSwitchCase="QuestionResponse.Sometimes" class="question__response question__response--sometimes">Sometimes</span>
+                <span *ngSwitchCase="QuestionResponse.Probably" class="question__response question__response--probably">Probably</span>
+                <span *ngSwitchCase="QuestionResponse.ProbablyNot" class="question__response question__response--probably-not">Probably not</span>
+                <span *ngSwitchCase="QuestionResponse.Correct" class="question__response question__response--correct">Correct</span>
+                <span *ngSwitchCase="QuestionResponse.GameOver" class="question__response question__response--game-over">Game Over</span>
+                <span *ngSwitchDefaultCase class="question__response">Waiting</span>
             </ng-container>
             <a *ngIf="question.responseExplanation" class="question__response-explanation-toggle" (click)="toggleResponseExplanation(question)">
                 {{ question.responseExplanationVisible ? 'Hide' : 'Show' }} Explanation

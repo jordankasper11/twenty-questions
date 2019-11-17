@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GameService } from '@services';
 import { GameEntity, QuestionEntity, QuestionResponse, AnswerQuestionRequest } from '@models';
+import { GameQuestionsComponentModule } from '../game-questions/game-questions.component';
 
 @Component({
     selector: 'app-game-responding',
@@ -17,7 +18,6 @@ export class GameRespondingComponent implements OnInit {
 
     form: FormGroup;
     question: QuestionEntity;
-    explanationVisible: boolean = false;
 
     constructor(private gameService: GameService) { }
 
@@ -46,14 +46,10 @@ export class GameRespondingComponent implements OnInit {
             this.gameSaved.emit(game);
         }
     }
-
-    showExplanation() {
-        this.explanationVisible = true;
-    }
 }
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, GameQuestionsComponentModule],
     declarations: [GameRespondingComponent],
     exports: [GameRespondingComponent],
     providers: [GameService]

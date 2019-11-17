@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, empty } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AccessToken, LoginRequest, LoginResponse, RefreshTokenRequest } from '@models';
@@ -79,7 +79,7 @@ export class AuthenticationService extends BaseService {
 
     public refreshToken(): Observable<AccessToken> {
         if (!this._refreshToken)
-            return null;
+            return empty();
 
         const request = new RefreshTokenRequest();
 

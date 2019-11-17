@@ -1,48 +1,59 @@
-<ng-container *ngIf="question && form">
-    <div>{{ question.question }}</div>
+<ng-container *ngIf="game && form">
+    <app-game-questions [game]="game"></app-game-questions>
     <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="form-row">
-            <label for="response">Response</label>
-            <ul>
-                <li>
+            <label for="response" class="h2">Response</label>
+            <ul class="responses">
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--yes"
+                    [class.response--selected]="form.value.response == QuestionResponse.Yes">
                     <input type="radio" id="response-yes" name="response" [value]="QuestionResponse.Yes"
                         formControlName="response" />
                     <label for="response-yes">Yes</label>
                 </li>
-                <li>
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--no"
+                    [class.response--selected]="form.value.response == QuestionResponse.No">
                     <input type="radio" id="response-no" name="response" [value]="QuestionResponse.No"
                         formControlName="response" />
                     <label for="response-no">No</label>
                 </li>
-                <li>
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--sometimes"
+                    [class.response--selected]="form.value.response == QuestionResponse.Sometimes">
                     <input type="radio" id="response-sometimes" name="response" [value]="QuestionResponse.Sometimes"
                         formControlName="response" />
                     <label for="response-sometimes">Sometimes</label>
                 </li>
-                <li>
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--probably"
+                    [class.response--selected]="form.value.response == QuestionResponse.Probably">
                     <input type="radio" id="response-probably" name="response" [value]="QuestionResponse.Probably"
                         formControlName="response" />
                     <label for="response-probably">Probably</label>
                 </li>
-                <li>
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--probably-not"
+                    [class.response--selected]="form.value.response == QuestionResponse.ProbablyNot">
                     <input type="radio" id="response-probably-not" name="response"
                         [value]="QuestionResponse.ProbablyNot" formControlName="response" />
                     <label for="response-probably-not">Probably Not</label>
                 </li>
-                <li>
+                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--correct"
+                    [class.response--selected]="form.value.response == QuestionResponse.Correct">
                     <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
                         formControlName="response" />
                     <label for="response-correct">Correct</label>
                 </li>
+                <li *ngIf="game.questions.length >= game.maxQuestions - 1" class="response response--game-over"
+                    [class.response--selected]="form.value.response == QuestionResponse.GameOver">
+                    <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
+                        formControlName="response" />
+                    <label for="response-correct">Game Over</label>
+                </li>
             </ul>
             <div *ngIf="form.controls.response.valid">
-                <label for="response-explanation" (click)="showExplanation()">Need to explain?</label>
-                <textarea *ngIf="explanationVisible" id="response-explanation"
-                    formControlName="responseExplanation"></textarea>
+                <label for="response-explanation" (click)="showExplanation()">Explanation (optional)</label>
+                <textarea id="response-explanation" formControlName="responseExplanation"></textarea>
             </div>
         </div>
         <div class="form-footer">
-            <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Ask Question</button>
+            <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Answer Question</button>
         </div>
     </form>
 </ng-container>

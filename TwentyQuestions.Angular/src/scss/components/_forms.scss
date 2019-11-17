@@ -1,0 +1,83 @@
+label {
+    display: block;
+    margin: 0 0 10px 0;
+    color: $color-text-secondary;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    display: block;
+    outline: none;
+    box-shadow: 4px 5px 4px -1px rgba(0, 0, 0, 0.29);
+    width: 100%;
+    height: 46px;
+    border: solid 2px $color-primary-light;
+    border-radius: $border-radius;
+    padding: 10px;
+    font-family: $font-primary;
+    font-size: 16px;
+    line-height: 1;
+
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+textarea {
+    height: 100px;
+    line-height: 1.5;
+}
+
+button,
+input[type="button"],
+input[type="submit"] {
+    display: block;
+    margin: 0 0 $margin 0;
+    box-shadow: 4px 5px 4px -1px rgba(0, 0, 0, 0.29);
+    width: 100%;
+    border: solid 2px $color-primary-light;
+    border-radius: $border-radius;
+    padding: 20px;
+    background: $color-primary-light;
+    font-family: $font-primary;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    color: $color-white;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover:not(:disabled), &:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: $color-primary;
+        background: $color-primary;
+    }
+
+    &:disabled {
+        box-shadow: none;
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.radio-button-list {
+    > li {
+        margin: 0 0 10px 0;
+    }
+
+    label {
+        display: inline-block;
+        font-weight: normal;
+        color: $color-white;
+    }
+}
+
+.form-row {
+    margin: 0 0 $margin 0;
+}

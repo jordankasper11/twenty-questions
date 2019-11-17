@@ -8,6 +8,7 @@ import { CreateGameComponentModule } from './create-game/create-game.component';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
+import { GameWaitingComponentModule } from './game-waiting/game-waiting.component';
 
 enum GameMode {
     Creating,
@@ -100,7 +101,8 @@ export class GameComponent implements OnInit {
         CreateGameComponentModule,
         GameCompletedComponentModule,
         GameGuessingComponentModule,
-        GameRespondingComponentModule
+        GameRespondingComponentModule,
+        GameWaitingComponentModule
     ],
     declarations: [GameComponent],
     exports: [GameComponent],

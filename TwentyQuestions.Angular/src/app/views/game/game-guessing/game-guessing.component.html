@@ -1,7 +1,8 @@
+<app-game-questions [game]="game"></app-game-questions>
 <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="form-row">
-        <label for="question">Question</label>
-        <input type="text" id="question" required autofocus formControlName="question" />
+        <label for="question" class="h2">Next Question</label>
+        <textarea id="question" required autofocus formControlName="question"></textarea>
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Ask Question</button>

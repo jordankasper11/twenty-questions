@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GameService } from '@services';
 import { GameEntity, QuestionResponse, AskQuestionRequest } from '@models';
+import { GameQuestionsComponentModule } from '../game-questions/game-questions.component';
 
 @Component({
     selector: 'app-game-guessing',
@@ -43,7 +44,7 @@ export class GameGuessingComponent implements OnInit {
 }
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, GameQuestionsComponentModule],
     declarations: [GameGuessingComponent],
     exports: [GameGuessingComponent],
     providers: [GameService]

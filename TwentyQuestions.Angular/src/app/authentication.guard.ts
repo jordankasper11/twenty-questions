@@ -22,7 +22,7 @@ export class AuthenticationGuard implements CanActivate {
         if (this.authenticationService.isLoggedIn())
             return true;
         else {
-            this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+            await this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
 
             return false;
         }

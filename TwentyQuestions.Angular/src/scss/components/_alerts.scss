@@ -1,0 +1,8 @@
+.error-message {
+    margin: 0 0 $margin 0;
+    border-radius: $border-radius;
+    padding: $padding;
+    background: $color-error;
+    color: $color-white;
+    line-height: 1.5;
+}
