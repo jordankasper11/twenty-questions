@@ -1,7 +1,8 @@
 export enum EntityStatus {
     Active = 1,
-    Archived = 2,
-    Deleted = 3
+    Pending = 2,
+    Archived = 4,
+    Deleted = 8
 }
 
 export enum SortDirection {
@@ -25,13 +26,15 @@ export class BaseRequest {
 }
 
 export abstract class BaseEntityRequest<TEntity extends BaseEntity> extends BaseRequest {
-    sortDirection: SortDirection;
-    pageNumber: number;
-    pageSize: number;
+    public ids: Array<string>;
+    public status: EntityStatus;
+    public sortDirection: SortDirection;
+    public pageNumber: number;
+    public pageSize: number;
 
     constructor() {
         super();
-        
+
         this.sortDirection = SortDirection.ASC;
         this.pageNumber = 1;
     }

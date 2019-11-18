@@ -1,6 +1,7 @@
 .game {
     $root: &;
 
+    display: block;
     position: relative;
     margin: 0 0 $margin 0;
     max-width: 300px;
@@ -16,6 +17,7 @@
         height: 90px;
         border: solid 2px $color-white;
         border-radius: 50%;
+        background: $color-white;
     }
 
     &__username {
@@ -35,8 +37,14 @@
     }
 
     &__answer {
+        display: block;
+        max-width: 100%;
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 600;     
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
 
         &--guessing {
             font-style: italic;
@@ -67,6 +75,8 @@
     }
 
     &:hover {
+        text-decoration: none;
+
         #{ $root }__container {
             background: $color-primary-light;
         }    

@@ -53,11 +53,11 @@
                 text-decoration: none;
             }
         }
+    }
 
-        .selected {
-            a {
-                background: $color-background;
-            }
+    &--selected {
+        a {
+            background: $color-background;
         }
     }
 

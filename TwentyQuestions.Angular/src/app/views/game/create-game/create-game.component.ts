@@ -12,8 +12,6 @@ import { FriendRequest, FriendEntity, GameEntity, QuestionResponse } from '@mode
 export class CreateGameComponent implements OnInit {
     QuestionResponse = QuestionResponse;
 
-    @Input() game: GameEntity;
-
     form: FormGroup;
     friends: Array<FriendEntity>;
 

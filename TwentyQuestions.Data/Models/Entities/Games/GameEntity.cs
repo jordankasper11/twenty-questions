@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace TwentyQuestions.Data.Models.Entities
 {
@@ -10,6 +11,24 @@ namespace TwentyQuestions.Data.Models.Entities
         public string Subject { get; set; }
 
         public Guid OpponentId { get; set; }
+
+        public Guid? FriendId { get; set; }
+
+        public string FriendUsername { get; set; }
+
+        [JsonIgnore]
+        public string FriendAvatarFileExtension { get; set; }
+
+        public string FriendAvatarUrl
+        {
+            get
+            {
+                if (this.Id != null && this.FriendId != null && !String.IsNullOrWhiteSpace(this.FriendAvatarFileExtension))
+                    return $"/avatars/{this.FriendId.Value}.{this.FriendAvatarFileExtension}";
+
+                return null;
+            }
+        }
 
         public int MaxQuestions { get; set; }
 

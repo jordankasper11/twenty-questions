@@ -21,6 +21,9 @@ export class QuestionEntity {
 export class GameEntity extends BaseTrackedEntity {
     public subject: string;
     public opponentId: string;
+    public friendId: string;
+    public friendUsername: string;
+    public friendAvatarUrl: string;
     public maxQuestions: number;
     public completed: boolean;
     public questions: Array<QuestionEntity> = [];
@@ -28,6 +31,7 @@ export class GameEntity extends BaseTrackedEntity {
 
 export class GameRequest extends BaseEntityRequest<GameEntity> {
     userId: string;
+    completed: boolean;
 }
 
 export class AskQuestionRequest extends BaseRequest {

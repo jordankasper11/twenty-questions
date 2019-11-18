@@ -8,6 +8,8 @@ namespace TwentyQuestions.Data.Models.Requests
     public class GameRequest : BaseRequest<GameEntity>
     {
         public Guid UserId { get; set; }
+
+        public bool? Completed { get; set; }
     }
 
     public class AskQuestionRequest : BaseRequest

@@ -7,8 +7,9 @@ namespace TwentyQuestions.Data.Models.Entities
     public enum EntityStatus
     {
         Active = 1,
-        Archived = 2,
-        Deleted = 3
+        Pending = 2,
+        Archived = 4,
+        Deleted = 8
     }
 
     public abstract class BaseEntity

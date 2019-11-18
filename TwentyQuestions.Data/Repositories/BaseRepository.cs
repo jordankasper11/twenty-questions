@@ -138,6 +138,7 @@ namespace TwentyQuestions.Data.Repositories
                         sqlCommand.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = request.Ids.Single() });
                 }
 
+                sqlCommand.Parameters.Add(new SqlParameter("@Status", SqlDbType.Int) { Value = request.Status });
                 sqlCommand.Parameters.Add(new SqlParameter("@PageNumber", SqlDbType.Int) { Value = request.PageNumber ?? 1 });
                 sqlCommand.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int) { Value = request.PageSize });
                 sqlCommand.Parameters.Add(new SqlParameter("@TotalRecords", SqlDbType.Int) { Direction = ParameterDirection.Output, Value = request.PageSize });

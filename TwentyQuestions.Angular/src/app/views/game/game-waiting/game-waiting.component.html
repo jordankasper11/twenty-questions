@@ -1,6 +1,6 @@
 <ng-container *ngIf="game">
     <app-game-questions [game]="game"></app-game-questions>
     <div class="game-waiting">
-        {{ friend ? 'Waiting for ' + friend.username : 'Waiting' }}...
+        Waiting for {{ game.friendUsername }}...
     </div>
 </ng-container>

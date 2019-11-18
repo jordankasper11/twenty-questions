@@ -3,17 +3,17 @@
     <div *ngIf="signedIn" class="menu" [class.menu--expanded]="menuExpanded">
         <nav class="primary-navigation">
             <ul>
-                <li class="selected">
+                <li [class.menu--selected]="url == '/' || url == '/games'">
                     <a (click)="navigate('/games')" class="icon-games" title="Games">
                         <span>Games</span>
                     </a>
                 </li>
-                <li>
-                    <a (click)="navigate('/results')" class="icon-results" title="Results">
-                        <span>Results</span>
+                <li [class.menu--selected]="url == '/history'">
+                    <a (click)="navigate('/history')" class="icon-history" title="History">
+                        <span>History</span>
                     </a>
                 </li>
-                <li>
+                <li [class.menu--selected]="url == '/friends'">
                     <a (click)="navigate('/friends')" class="icon-friends" title="Friends">
                         <span>Friends</span>
                     </a>
@@ -22,7 +22,7 @@
         </nav>
         <nav class="user-navigation">
             <ul>
-                <li>
+                <li [class.menu--selected]="url == '/settings'">
                     <a (click)="navigate('/settings')" class="icon-settings" title="Settings">
                         <span>Settings</span>
                     </a>

@@ -19,6 +19,8 @@ namespace TwentyQuestions.Data.Models.Requests
     {
         public IEnumerable<Guid> Ids { get; set; }
 
+        public EntityStatus? Status { get; set; }
+
         public string SortBy { get; set; }
 
         public SortDirection SortDirection { get; set; }

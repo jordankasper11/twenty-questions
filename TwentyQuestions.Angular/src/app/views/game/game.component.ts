@@ -1,8 +1,8 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { GameService, AuthenticationService, FriendService } from '@services';
-import { GameEntity, FriendRequest, FriendEntity } from '@models';
+import { GameService, AuthenticationService } from '@services';
+import { GameEntity } from '@models';
 import { DurationPipeModule } from '@pipes';
 import { CreateGameComponentModule } from './create-game/create-game.component';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
@@ -29,7 +29,6 @@ export class GameComponent implements OnInit {
     userId: string;
     game: GameEntity;
     gameTimer: NodeJS.Timer;
-    friend: FriendEntity;
 
     get gameMode(): GameMode {
         if (!this.id)
@@ -51,7 +50,6 @@ export class GameComponent implements OnInit {
     constructor(
         private gameService: GameService,
         private authenticationService: AuthenticationService,
-        private friendService: FriendService,
         private route: ActivatedRoute
     ) { }
 
@@ -61,12 +59,8 @@ export class GameComponent implements OnInit {
         this.route.paramMap.subscribe(async params => {
             this.id = params.get('id');
 
-            if (this.id) {
-                if (!this.game) {
-                    await this.loadGame();
-                    await this.loadFriend();
-                }
-            }
+            if (this.id && !this.game)
+                await this.loadGame();
         });
     }
 
@@ -80,17 +74,6 @@ export class GameComponent implements OnInit {
 
         if (this.game && this.gameMode == GameMode.Waiting)
             this.gameTimer = setTimeout(() => this.loadGame(), 30000);
-    }
-
-    async loadFriend(): Promise<void> {
-        const request = new FriendRequest();
-
-        request.friendId = this.game.createdBy == this.userId ? this.game.opponentId : this.game.createdBy;
-
-        const response = await this.friendService.query(request).toPromise();
-
-        if (response != null && response.items != null && response.items.length == 1)
-            this.friend = response.items[0];
     }
 }
 
@@ -106,6 +89,6 @@ export class GameComponent implements OnInit {
     ],
     declarations: [GameComponent],
     exports: [GameComponent],
-    providers: [GameService, AuthenticationService, FriendService]
+    providers: [GameService, AuthenticationService]
 })
 export class GameComponentModule { }

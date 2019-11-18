@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[User_Get] (
 	@Id				UNIQUEIDENTIFIER = NULL,
 	@Ids			EntityIdsType READONLY,
+	@Status			INT = NULL,
 	@UserId			UNIQUEIDENTIFIER,
 	@OrderBy		NVARCHAR(64) = 'Username ASC',
 	@PageNumber		INT = 1,
@@ -19,7 +20,7 @@ BEGIN
 				) AS RowNumber
 	INTO		#Users
 	FROM		Users
-	WHERE		[Status] = 1 AND
+	WHERE		((@Status IS NULL AND [Status] = 1) OR (@Status IS NOT NULL AND [Status] & @Status > 0)) AND
 				(@Id IS NULL OR Id = @Id) AND
 				(@FilterIds = 0 OR Id IN (SELECT Id FROM @Ids))
 

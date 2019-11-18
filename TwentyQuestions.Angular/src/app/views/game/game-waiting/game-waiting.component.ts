@@ -1,6 +1,6 @@
 import { NgModule, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GameEntity, FriendEntity } from '@models';
+import { GameEntity } from '@models';
 import { GameQuestionsComponentModule } from '../game-questions/game-questions.component';
 
 @Component({
@@ -9,7 +9,6 @@ import { GameQuestionsComponentModule } from '../game-questions/game-questions.c
 })
 export class GameWaitingComponent {
     @Input() game: GameEntity;
-    @Input() friend: FriendEntity;
 
     constructor() { }
 }

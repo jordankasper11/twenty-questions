@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { AuthenticationService } from '@services';
 
 @Component({
@@ -7,7 +7,8 @@ import { AuthenticationService } from '@services';
     templateUrl: './app.component.html',
     styles: []
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+    url: string;
     menuExpanded: boolean = false;
 
     get signedIn(): boolean {
@@ -17,11 +18,18 @@ export class AppComponent {
     constructor(private authenticationService: AuthenticationService, private router: Router) {
     }
 
+    ngOnInit(): void {
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd)
+                this.url = event.url;
+        });
+    }
+
     toggleMenu(): void {
         this.menuExpanded = !this.menuExpanded;
     }
 
-    navigate(routerLink:string):void{
+    navigate(routerLink: string): void {
         this.menuExpanded = false;
 
         this.router.navigate([routerLink]);

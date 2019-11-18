@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[Friend_Get] (
 	@Id				UNIQUEIDENTIFIER = NULL,
 	@Ids			EntityIdsType READONLY,
+	@Status			INT = NULL,
 	@UserId			UNIQUEIDENTIFIER,
 	@FriendId		UNIQUEIDENTIFIER = NULL,
 	@OrderBy		NVARCHAR(64) = 'Username ASC',
@@ -39,7 +40,7 @@ BEGIN
 	INTO		#Friends
 	FROM		@Friends AS T
 				INNER JOIN Friends AS F ON F.Id = T.Id
-	WHERE		F.[Status] = 1 AND
+	WHERE		((@Status IS NULL AND F.[Status] = 1) OR (@Status IS NOT NULL AND F.[Status] & @Status > 0)) AND
 				(@Id IS NULL OR F.Id = @Id) AND
 				(@FilterIds = 0 OR F.Id IN (SELECT Id FROM @Ids)) AND
 				(@FriendId IS NULL OR T.FriendId = @FriendId)

@@ -5,43 +5,43 @@
             <label for="response" class="h2">Response</label>
             <ul class="responses">
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--yes"
-                    [class.response--selected]="form.value.response == QuestionResponse.Yes">
+                    [class.response--selected]="form.value.response === QuestionResponse.Yes">
                     <input type="radio" id="response-yes" name="response" [value]="QuestionResponse.Yes"
                         formControlName="response" />
                     <label for="response-yes">Yes</label>
                 </li>
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--no"
-                    [class.response--selected]="form.value.response == QuestionResponse.No">
+                    [class.response--selected]="form.value.response === QuestionResponse.No">
                     <input type="radio" id="response-no" name="response" [value]="QuestionResponse.No"
                         formControlName="response" />
                     <label for="response-no">No</label>
                 </li>
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--sometimes"
-                    [class.response--selected]="form.value.response == QuestionResponse.Sometimes">
+                    [class.response--selected]="form.value.response === QuestionResponse.Sometimes">
                     <input type="radio" id="response-sometimes" name="response" [value]="QuestionResponse.Sometimes"
                         formControlName="response" />
                     <label for="response-sometimes">Sometimes</label>
                 </li>
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--probably"
-                    [class.response--selected]="form.value.response == QuestionResponse.Probably">
+                    [class.response--selected]="form.value.response === QuestionResponse.Probably">
                     <input type="radio" id="response-probably" name="response" [value]="QuestionResponse.Probably"
                         formControlName="response" />
                     <label for="response-probably">Probably</label>
                 </li>
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--probably-not"
-                    [class.response--selected]="form.value.response == QuestionResponse.ProbablyNot">
+                    [class.response--selected]="form.value.response === QuestionResponse.ProbablyNot">
                     <input type="radio" id="response-probably-not" name="response"
                         [value]="QuestionResponse.ProbablyNot" formControlName="response" />
                     <label for="response-probably-not">Probably Not</label>
                 </li>
                 <li *ngIf="game.questions.length < game.maxQuestions" class="response response--correct"
-                    [class.response--selected]="form.value.response == QuestionResponse.Correct">
+                    [class.response--selected]="form.value.response === QuestionResponse.Correct">
                     <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
                         formControlName="response" />
                     <label for="response-correct">Correct</label>
                 </li>
                 <li *ngIf="game.questions.length >= game.maxQuestions - 1" class="response response--game-over"
-                    [class.response--selected]="form.value.response == QuestionResponse.GameOver">
+                    [class.response--selected]="form.value.response === QuestionResponse.GameOver">
                     <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
                         formControlName="response" />
                     <label for="response-correct">Game Over</label>

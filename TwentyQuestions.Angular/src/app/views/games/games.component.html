@@ -1,2 +1,20 @@
 <h1>Games</h1>
+<ng-container *ngIf="invitations?.length">
+    <h2>Invitations</h2>
+    <div *ngFor="let game of games">
+        {{ game.id }}
+    </div>
+</ng-container>
+<div *ngFor="let game of games">
+    <a class="game" [routerLink]="['/game', game.id]" [title]="game.subject ? game.subject : 'Guessing'">
+        <h3 class="game__username">{{ game.friendUsername }}</h3>
+        <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" class="game__avatar" alt="" />
+        <div class="game__container">
+            <span *ngIf="game.subject" class="game__answer">{{ game.subject }}</span>
+            <span *ngIf="!game.subject" class="game__answer game__answer--guessing">Guessing</span>
+            <span class="game__questions" [title]="'Question ' + (game.questions ? game.questions.length + 1 : 1) + ' of ' + game.maxQuestions">{{ game.questions ? game.questions.length + 1 : 1 }}</span>
+        </div>
+        <span class="game__last-active"><strong>{{ getStatus(game) }}</strong> • Last updated <em>{{ game.modifiedDate | duration }}</em></span>
+    </a>
+</div>
 <button type="button" routerLink="/game">New Game</button>

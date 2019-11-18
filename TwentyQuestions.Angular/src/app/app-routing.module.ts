@@ -3,17 +3,15 @@ import { Routes, RouterModule } from '@angular/router';
 import {
     GameComponentModule, GameComponent,
     GamesComponentModule, GamesComponent,
-    HomeComponentModule, HomeComponent,
     LoginComponentModule, LoginComponent
 } from '@views';
 import { AuthenticationGuard } from './authentication.guard';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthenticationGuard] },
+    { path: '', component: GamesComponent, canActivate: [AuthenticationGuard] },
     { path: 'game', component: GameComponent, canActivate: [AuthenticationGuard] },
     { path: 'game/:id', component: GameComponent, canActivate: [AuthenticationGuard] },
     { path: 'games', component: GamesComponent, canActivate: [AuthenticationGuard] },
-    { path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard] },
     { path: 'login', component: LoginComponent },
 ];
 
@@ -21,7 +19,6 @@ const routes: Routes = [
     imports: [
         GameComponentModule,
         GamesComponentModule,
-        HomeComponentModule,
         LoginComponentModule,
         RouterModule.forRoot(routes)
     ],
