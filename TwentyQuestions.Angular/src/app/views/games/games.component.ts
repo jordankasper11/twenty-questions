@@ -19,7 +19,7 @@ export class GamesComponent implements OnInit, OnDestroy {
     async ngOnInit(): Promise<void> {
         await this.loadGames();
 
-        this.gamesTimer = setInterval(() => this.loadGames(), 300 * 1000);
+        this.gamesTimer = setInterval(() => this.loadGames(), 30 * 1000);
     }
 
     async ngOnDestroy(): Promise<void> {
