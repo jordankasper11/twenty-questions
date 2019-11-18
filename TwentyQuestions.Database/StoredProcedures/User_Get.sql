@@ -2,7 +2,7 @@
 	@Id				UNIQUEIDENTIFIER = NULL,
 	@Ids			EntityIdsType READONLY,
 	@Status			INT = NULL,
-	@UserId			UNIQUEIDENTIFIER,
+	@Username		NVARCHAR(32) = NULL,
 	@OrderBy		NVARCHAR(64) = 'Username ASC',
 	@PageNumber		INT = 1,
 	@PageSize		INT = 2147483647,
@@ -22,7 +22,8 @@ BEGIN
 	FROM		Users
 	WHERE		((@Id IS NOT NULL OR @FilterIds = 1) OR (@Status IS NULL AND [Status] = 1) OR (@Status IS NOT NULL AND [Status] & @Status > 0)) AND
 				(@Id IS NULL OR Id = @Id) AND
-				(@FilterIds = 0 OR Id IN (SELECT Id FROM @Ids))
+				(@FilterIds = 0 OR Id IN (SELECT Id FROM @Ids)) AND
+				(@Username IS NULL OR Username = @Username)
 
 	SET	@TotalRecords = @@ROWCOUNT
 

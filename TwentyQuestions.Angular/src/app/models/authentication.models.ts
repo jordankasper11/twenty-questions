@@ -1,5 +1,11 @@
 import { BaseRequest, BaseResponse, BaseTrackedEntity } from './base.models';
 
+export class RegistrationRequest extends BaseRequest {
+    public username: string;
+    public email: string;
+    public password: string;
+}
+
 export class LoginRequest extends BaseRequest {
     public username: string;
     public password: string;
@@ -15,7 +21,7 @@ export class LoginRequest extends BaseRequest {
 export class LoginResponse extends BaseResponse {
     public accessToken: string;
     public refreshToken: string;
-    
+
     constructor() {
         super();
     }
@@ -23,7 +29,7 @@ export class LoginResponse extends BaseResponse {
 
 export class RefreshTokenRequest extends BaseRequest {
     public refreshToken: string;
-    
+
     constructor() {
         super();
     }
@@ -33,10 +39,4 @@ export interface AccessToken {
     userId: string;
     username: string;
     exp: number;
-}
-
-export class UserEntity extends BaseTrackedEntity {
-    public username: string;
-    public email: string;
-    public avatarUrl: string;
 }

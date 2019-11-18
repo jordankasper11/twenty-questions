@@ -14,10 +14,11 @@ namespace TwentyQuestions.Data.Repositories
         Guid? UserId { get; set; }
     }
 
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
         SqlConnection Connection { get; }
         IRepositoryContext Context { get; }
+        Task Commit();
     }
 
     public interface IRepository<TEntity, TRequest> : IRepository where TEntity : BaseEntity where TRequest : BaseRequest<TEntity>

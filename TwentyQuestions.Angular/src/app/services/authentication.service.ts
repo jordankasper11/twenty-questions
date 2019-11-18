@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, empty } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
 import { AccessToken, LoginRequest, LoginResponse, RefreshTokenRequest } from '@models';
 import { BaseService } from './base.service';
 

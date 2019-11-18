@@ -17,11 +17,13 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IAuthenticationRepository : IRepository
     {
+        Task SaveUserCredentials(UserCredentialsDto userCredentials);
+
         Task<LoginResponse> Login(LoginRequest request);
 
         Task<LoginResponse> RefreshToken(RefreshTokenRequest request);
 
-        UserCredentials HashPassword(string password);
+        UserCredentialsDto HashPassword(string password);
 
         bool ValidatePassword(string password, string passwordSalt, string passwordHash);
     }
@@ -33,6 +35,31 @@ namespace TwentyQuestions.Data.Repositories
         public AuthenticationRepository(SqlConnection connection, IRepositoryContext context, string securityKey) : base(connection, context)
         {
             _securityKey = securityKey;
+        }
+
+        public async Task SaveUserCredentials(UserCredentialsDto userCredentials)
+        {
+            if (userCredentials.UserId == null)
+                throw new InvalidOperationException("UserId cannot be null");
+
+            if (userCredentials.PasswordHash == null)
+                throw new InvalidOperationException("PasswordHash cannot be null");
+
+            if (userCredentials.PasswordSalt == null)
+                throw new InvalidOperationException("PasswordSalt cannot be null");
+
+            await EnsureConnectionOpen();
+
+            using (var sqlCommand = this.Connection.CreateCommand())
+            {
+                sqlCommand.CommandText = "UserCredentials_Save";
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = userCredentials.UserId });
+                sqlCommand.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.NVarChar) { Value = userCredentials.PasswordHash });
+                sqlCommand.Parameters.Add(new SqlParameter("@PasswordSalt", SqlDbType.NVarChar) { Value = userCredentials.PasswordSalt });
+
+                await sqlCommand.ExecuteNonQueryAsync();
+            }
         }
 
         public async Task<LoginResponse> Login(LoginRequest request)
@@ -49,16 +76,16 @@ namespace TwentyQuestions.Data.Repositories
 
                     if (refreshToken.ValidTo < DateTime.UtcNow)
                     {
-                        userCredentials.RefreshToken = GetRefreshToken(userCredentials.Id);
+                        userCredentials.RefreshToken = GetRefreshToken(userCredentials.UserId.Value);
 
-                        await SaveRefreshToken(userCredentials.Id, userCredentials.RefreshToken);
+                        await SaveRefreshToken(userCredentials.UserId.Value, userCredentials.RefreshToken);
                     }
                 }
                 else
                 {
-                    userCredentials.RefreshToken = GetRefreshToken(userCredentials.Id);
+                    userCredentials.RefreshToken = GetRefreshToken(userCredentials.UserId.Value);
 
-                    await SaveRefreshToken(userCredentials.Id, userCredentials.RefreshToken);
+                    await SaveRefreshToken(userCredentials.UserId.Value, userCredentials.RefreshToken);
                 }
 
                 var loginResponse = new LoginResponse();
@@ -109,7 +136,7 @@ namespace TwentyQuestions.Data.Repositories
 
             var claims = new List<Claim>()
             {
-                new Claim("userId", userCredentials.Id.ToString()),
+                new Claim("userId", userCredentials.UserId.ToString()),
                 new Claim("username", userCredentials.Username),
                 new Claim("email", userCredentials.Email)
             };
@@ -151,7 +178,7 @@ namespace TwentyQuestions.Data.Repositories
 
             using (var sqlCommand = this.Connection.CreateCommand())
             {
-                sqlCommand.CommandText = "User_GetCredentials";
+                sqlCommand.CommandText = "UserCredentials_Get";
                 sqlCommand.CommandType = CommandType.StoredProcedure;
                 sqlCommand.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar) { Value = request?.Username });
                 sqlCommand.Parameters.Add(new SqlParameter("@RefreshToken", SqlDbType.NVarChar) { Value = refreshToken });
@@ -166,7 +193,7 @@ namespace TwentyQuestions.Data.Repositories
                     {
                         var userCredentials = new UserCredentialsDto();
 
-                        userCredentials.Id = dataTable.Rows[0].Field<Guid>("Id");
+                        userCredentials.UserId = dataTable.Rows[0].Field<Guid>("UserId");
                         userCredentials.Username = dataTable.Rows[0].Field<string>("Username");
                         userCredentials.Email = dataTable.Rows[0].Field<string>("Email");
                         userCredentials.PasswordHash = dataTable.Rows[0].Field<string>("PasswordHash");
@@ -187,20 +214,20 @@ namespace TwentyQuestions.Data.Repositories
 
             using (var sqlCommand = this.Connection.CreateCommand())
             {
-                sqlCommand.CommandText = "User_SaveRefreshToken";
+                sqlCommand.CommandText = "UserCredentials_SaveRefreshToken";
                 sqlCommand.CommandType = CommandType.StoredProcedure;
-                sqlCommand.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = userId });
+                sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = userId });
                 sqlCommand.Parameters.Add(new SqlParameter("@RefreshToken", SqlDbType.NVarChar) { Value = refreshToken });
 
                 await sqlCommand.ExecuteNonQueryAsync();
             }
         }
 
-        public UserCredentials HashPassword(string password)
+        public UserCredentialsDto HashPassword(string password)
         {
             using (var hmac = new HMACSHA512())
             {
-                var userCredentials = new UserCredentials();
+                var userCredentials = new UserCredentialsDto();
 
                 userCredentials.PasswordSalt = Convert.ToBase64String(hmac.Key);
                 userCredentials.PasswordHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));

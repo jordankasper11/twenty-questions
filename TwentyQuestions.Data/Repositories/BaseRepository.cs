@@ -28,6 +28,17 @@ namespace TwentyQuestions.Data.Repositories
             this.Context = context;
         }
 
+        public async Task Commit()
+        {
+            if (this.Transaction != null)
+            {
+                await this.Transaction.CommitAsync();
+                await this.Transaction.DisposeAsync();
+
+                this.Transaction = null;
+            }
+        }
+
         protected async Task EnsureConnectionOpen()
         {
             if (!this.Connection.State.HasFlag(ConnectionState.Open))
@@ -291,9 +302,6 @@ namespace TwentyQuestions.Data.Repositories
 
         private void SetBaseProperties(BaseEntity entity)
         {
-            if (this.Context.UserId == null)
-                throw new ArgumentNullException("UserId must not be null");
-
             if (entity.Status == null)
                 entity.Status = EntityStatus.Active;
 
@@ -306,11 +314,11 @@ namespace TwentyQuestions.Data.Repositories
                 if (trackedEntity.CreatedDate == null)
                     trackedEntity.CreatedDate = currentDate;
 
-                if (trackedEntity.CreatedBy == null)
+                if (trackedEntity.CreatedBy == null && this.Context.UserId != null)
                     trackedEntity.CreatedBy = this.Context.UserId.Value;
 
                 trackedEntity.ModifiedDate = currentDate;
-                trackedEntity.ModifiedBy = this.Context.UserId.Value;
+                trackedEntity.ModifiedBy = this.Context.UserId != null ? this.Context.UserId.Value : (Guid?)null;
             }
         }
     }

@@ -3,7 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import {
     GameComponentModule, GameComponent,
     GamesComponentModule, GamesComponent,
-    LoginComponentModule, LoginComponent
+    LoginComponentModule, LoginComponent,
+    RegistrationComponentModule, RegistrationComponent
 } from '@views';
 import { AuthenticationGuard } from './authentication.guard';
 
@@ -13,6 +14,7 @@ const routes: Routes = [
     { path: 'game/:id', component: GameComponent, canActivate: [AuthenticationGuard] },
     { path: 'games', component: GamesComponent, canActivate: [AuthenticationGuard] },
     { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegistrationComponent },
 ];
 
 @NgModule({
@@ -20,6 +22,7 @@ const routes: Routes = [
         GameComponentModule,
         GamesComponentModule,
         LoginComponentModule,
+        RegistrationComponentModule,
         RouterModule.forRoot(routes)
     ],
     exports: [RouterModule]

@@ -4,12 +4,18 @@ using System.Text;
 
 namespace TwentyQuestions.Data.Models.Entities
 {
-    public class UserCredentialsDto : UserCredentials
+    public class UserCredentialsDto
     {
-        public Guid Id { get; set; }
+        public Guid? UserId { get; set; }
 
         public string Username { get; set; }
 
         public string Email { get; set; }
+
+        public string PasswordSalt { get; set; }
+
+        public string PasswordHash { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }

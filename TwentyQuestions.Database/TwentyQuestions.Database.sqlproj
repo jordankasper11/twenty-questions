@@ -64,7 +64,7 @@
     <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="StoredProcedures\User_GetCredentials.sql" />
+    <Build Include="StoredProcedures\UserCredentials_Get.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Types\EntityIdsType.sql" />
     <Build Include="Tables\Games.sql" />
@@ -73,7 +73,10 @@
     <Build Include="StoredProcedures\Friend_Get.sql" />
     <Build Include="StoredProcedures\Game_Save.sql" />
     <Build Include="StoredProcedures\User_Get.sql" />
-    <Build Include="StoredProcedures\User_SaveRefreshToken.sql" />
+    <Build Include="StoredProcedures\User_Save.sql" />
+    <Build Include="Tables\UserCredentials.sql" />
+    <Build Include="StoredProcedures\UserCredentials_Save.sql" />
+    <Build Include="StoredProcedures\UserCredentials_SaveRefreshToken.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />

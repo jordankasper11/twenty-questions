@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace TwentyQuestions.Data.Models.Entities
 {
     public class UserEntity : BaseTrackedEntity
     {
+        [MaxLength(32)]
+        [Required]
         public string Username { get; set; }
 
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         public string AvatarFileExtension { get; set; }
@@ -22,5 +27,9 @@ namespace TwentyQuestions.Data.Models.Entities
                 return null;
             }
         }
+
+        internal string PasswordSalt { get; set; }
+
+        internal string PasswordHash { get; set; }
     }
 }
