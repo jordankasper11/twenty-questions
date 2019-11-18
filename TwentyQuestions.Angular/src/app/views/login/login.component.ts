@@ -1,11 +1,6 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-    ReactiveFormsModule,
-    FormControl,
-    FormGroup,
-    Validators
-} from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoginRequest, AccessToken } from '@models';
 import { AuthenticationService } from '@services';
