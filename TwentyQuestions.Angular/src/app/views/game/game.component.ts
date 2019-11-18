@@ -1,4 +1,4 @@
-import { NgModule, Component, OnInit } from '@angular/core';
+import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { GameService, AuthenticationService } from '@services';
@@ -22,7 +22,7 @@ enum GameMode {
     selector: 'app-game',
     templateUrl: './game.component.html'
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
     GameMode = GameMode;
 
     id: string;
@@ -62,6 +62,10 @@ export class GameComponent implements OnInit {
             if (this.id && !this.game)
                 await this.loadGame();
         });
+    }
+
+    async ngOnDestroy(): Promise<void> {
+        clearInterval(this.gameTimer);
     }
 
     async loadGame(game?: GameEntity): Promise<void> {

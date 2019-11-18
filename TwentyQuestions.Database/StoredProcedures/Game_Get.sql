@@ -27,7 +27,7 @@ BEGIN
 	FROM		Games AS G
 				INNER JOIN Users AS U1 ON U1.Id = G.CreatedBy
 				INNER JOIN Users AS U2 ON U2.Id = G.OpponentId
-	WHERE		((@Status IS NULL AND G.[Status] = 1) OR (@Status IS NOT NULL AND G.[Status] & @Status > 0)) AND
+	WHERE		((@Id IS NOT NULL OR @FilterIds = 1) OR (@Status IS NULL AND G.[Status] = 1) OR (@Status IS NOT NULL AND G.[Status] & @Status > 0)) AND
 				(@Id IS NULL OR G.Id = @Id) AND
 				(@FilterIds = 0 OR G.Id IN (SELECT Id FROM @Ids)) AND
 				(@UserId IS NULL OR G.CreatedBy = @UserId OR G.OpponentId = @UserId) AND

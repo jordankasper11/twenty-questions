@@ -1,8 +1,14 @@
 <h1>Games</h1>
 <ng-container *ngIf="invitations?.length">
     <h2>Invitations</h2>
-    <div *ngFor="let game of games">
-        {{ game.id }}
+    <div *ngFor="let game of invitations" class="invitation">
+        <h3 class="invitation__username">{{ game.friendUsername }}</h3>
+        <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" class="invitation__avatar" alt="" />
+        <div class="invitation__container">
+            <button type="button" class="invitation__button" (click)="acceptInvitation(game)">Accept</button>
+            <button type="button" class="invitation__button" (click)="declineInvitation(game)">Decline</button>
+        </div>
+        <span class="invitation__last-active">Created <em>{{ game.createdDate | duration }}</em></span>
     </div>
 </ng-container>
 <div *ngFor="let game of games">

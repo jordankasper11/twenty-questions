@@ -13,6 +13,10 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IGameRepository : IRepository<GameEntity, GameRequest>
     {
+        Task AcceptInvitation(Guid gameId);
+
+        Task DeclineInvitation(Guid gameId);
+
         Task AskQuestion(AskQuestionRequest request);
 
         Task AnswerQuestion(AnswerQuestionRequest request);
@@ -34,39 +38,19 @@ namespace TwentyQuestions.Data.Repositories
             return base.Get(request);
         }
 
-        protected override void AddGetParameters(SqlParameterCollection sqlParameters, GameRequest request)
+        public override Task<Guid> Insert(GameEntity entity)
         {
-            sqlParameters.Add("@UserId", SqlDbType.UniqueIdentifier).Value = request.UserId;
-            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = request.Completed;
+            entity.Status = EntityStatus.Pending;
+
+            return base.Insert(entity);
         }
 
-        protected override void PopulateEntity(GameEntity entity, DataRow dataRow, DataSet dataSet)
+        public override Task Update(GameEntity entity)
         {
-            entity.OpponentId = dataRow.Field<Guid>("OpponentId");
-            entity.FriendId = dataRow.Field<Guid>("FriendId");
-            entity.FriendUsername = dataRow.Field<string>("FriendUsername");
-            entity.FriendAvatarFileExtension = dataRow.Field<string>("FriendAvatarFileExtension");
-            entity.Subject = dataRow.Field<string>("Subject");
-            entity.MaxQuestions = dataRow.Field<int>("MaxQuestions");
-            entity.Questions = Deserialize<List<QuestionEntity>>(dataRow.Field<string>("Questions"));
-        }
+            if (entity.CreatedBy != this.Context.UserId && entity.OpponentId != this.Context.UserId)
+                throw new InvalidOperationException("Only participants in this game can make updates");
 
-        protected override void AddInsertParameters(SqlParameterCollection sqlParameters, GameEntity entity)
-        {
-            sqlParameters.Add("@OpponentId", SqlDbType.UniqueIdentifier).Value = entity.OpponentId;
-            sqlParameters.Add("@Subject", SqlDbType.NVarChar).Value = entity.Subject;
-            sqlParameters.Add("@MaxQuestions", SqlDbType.Int).Value = entity.MaxQuestions;
-            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = entity.Completed;
-            sqlParameters.Add("@Questions", SqlDbType.NVarChar).Value = Serialize(entity.Questions);
-        }
-
-        protected override void AddUpdateParameters(SqlParameterCollection sqlParameters, GameEntity entity)
-        {
-            sqlParameters.Add("@OpponentId", SqlDbType.UniqueIdentifier).Value = entity.OpponentId;
-            sqlParameters.Add("@Subject", SqlDbType.NVarChar).Value = entity.Subject;
-            sqlParameters.Add("@MaxQuestions", SqlDbType.Int).Value = entity.MaxQuestions;
-            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = entity.Completed;
-            sqlParameters.Add("@Questions", SqlDbType.NVarChar).Value = Serialize(entity.Questions);
+            return base.Update(entity);
         }
 
         public async Task AskQuestion(AskQuestionRequest request)
@@ -127,6 +111,69 @@ namespace TwentyQuestions.Data.Repositories
             question.ResponseExplanation = !String.IsNullOrWhiteSpace(request.ResponseExplanation) ? request.ResponseExplanation : null;
 
             await Update(game);
+        }
+
+        public async Task AcceptInvitation(Guid gameId)
+        {
+            await UpdateStatus(gameId, EntityStatus.Active);
+        }
+
+        public async Task DeclineInvitation(Guid gameId)
+        {
+            await UpdateStatus(gameId, EntityStatus.Deleted);
+        }
+
+        private async Task UpdateStatus(Guid gameId, EntityStatus status)
+        {
+            var game = await Get(gameId);
+
+            if (game == null)
+                throw new InvalidOperationException("Invalid GameId");
+
+            if (game.Status != EntityStatus.Pending)
+                throw new InvalidOperationException("This game is not in pending status");
+
+            if (game.OpponentId != this.Context.UserId)
+                throw new InvalidOperationException("Only the challenged user can accept or decline an invitation");
+
+            game.Status = status;
+
+            await Update(game);
+        }
+
+        protected override void AddGetParameters(SqlParameterCollection sqlParameters, GameRequest request)
+        {
+            sqlParameters.Add("@UserId", SqlDbType.UniqueIdentifier).Value = request.UserId;
+            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = request.Completed;
+        }
+
+        protected override void PopulateEntity(GameEntity entity, DataRow dataRow, DataSet dataSet)
+        {
+            entity.OpponentId = dataRow.Field<Guid>("OpponentId");
+            entity.FriendId = dataRow.Field<Guid>("FriendId");
+            entity.FriendUsername = dataRow.Field<string>("FriendUsername");
+            entity.FriendAvatarFileExtension = dataRow.Field<string>("FriendAvatarFileExtension");
+            entity.Subject = dataRow.Field<string>("Subject");
+            entity.MaxQuestions = dataRow.Field<int>("MaxQuestions");
+            entity.Questions = Deserialize<List<QuestionEntity>>(dataRow.Field<string>("Questions"));
+        }
+
+        protected override void AddInsertParameters(SqlParameterCollection sqlParameters, GameEntity entity)
+        {
+            sqlParameters.Add("@OpponentId", SqlDbType.UniqueIdentifier).Value = entity.OpponentId;
+            sqlParameters.Add("@Subject", SqlDbType.NVarChar).Value = entity.Subject;
+            sqlParameters.Add("@MaxQuestions", SqlDbType.Int).Value = entity.MaxQuestions;
+            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = entity.Completed;
+            sqlParameters.Add("@Questions", SqlDbType.NVarChar).Value = Serialize(entity.Questions);
+        }
+
+        protected override void AddUpdateParameters(SqlParameterCollection sqlParameters, GameEntity entity)
+        {
+            sqlParameters.Add("@OpponentId", SqlDbType.UniqueIdentifier).Value = entity.OpponentId;
+            sqlParameters.Add("@Subject", SqlDbType.NVarChar).Value = entity.Subject;
+            sqlParameters.Add("@MaxQuestions", SqlDbType.Int).Value = entity.MaxQuestions;
+            sqlParameters.Add("@Completed", SqlDbType.Bit).Value = entity.Completed;
+            sqlParameters.Add("@Questions", SqlDbType.NVarChar).Value = Serialize(entity.Questions);
         }
     }
 }

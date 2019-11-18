@@ -20,7 +20,7 @@ BEGIN
 				) AS RowNumber
 	INTO		#Users
 	FROM		Users
-	WHERE		((@Status IS NULL AND [Status] = 1) OR (@Status IS NOT NULL AND [Status] & @Status > 0)) AND
+	WHERE		((@Id IS NOT NULL OR @FilterIds = 1) OR (@Status IS NULL AND [Status] = 1) OR (@Status IS NOT NULL AND [Status] & @Status > 0)) AND
 				(@Id IS NULL OR Id = @Id) AND
 				(@FilterIds = 0 OR Id IN (SELECT Id FROM @Ids))
 

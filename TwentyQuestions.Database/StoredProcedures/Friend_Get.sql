@@ -40,7 +40,7 @@ BEGIN
 	INTO		#Friends
 	FROM		@Friends AS T
 				INNER JOIN Friends AS F ON F.Id = T.Id
-	WHERE		((@Status IS NULL AND F.[Status] = 1) OR (@Status IS NOT NULL AND F.[Status] & @Status > 0)) AND
+	WHERE		((@Id IS NOT NULL OR @FilterIds = 1) OR (@Status IS NULL AND F.[Status] = 1) OR (@Status IS NOT NULL AND F.[Status] & @Status > 0)) AND
 				(@Id IS NULL OR F.Id = @Id) AND
 				(@FilterIds = 0 OR F.Id IN (SELECT Id FROM @Ids)) AND
 				(@FriendId IS NULL OR T.FriendId = @FriendId)

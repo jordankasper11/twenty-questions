@@ -18,6 +18,22 @@ namespace TwentyQuestions.Web.Controllers
         {
         }
 
+        [HttpGet("AcceptInvitation")]
+        public async Task<ActionResult> AcceptInvitation(Guid gameId)
+        {
+            await this.Repository.AcceptInvitation(gameId);
+            
+            return Ok();
+        }
+
+        [HttpGet("DeclineInvitation")]
+        public async Task<ActionResult> DeclineInvitation(Guid gameId)
+        {
+            await this.Repository.DeclineInvitation(gameId);
+
+            return Ok();
+        }
+
         [HttpPost("AskQuestion")]
         public async Task<ActionResult<GameEntity>> AskQuestion([FromBody]AskQuestionRequest request)
         {

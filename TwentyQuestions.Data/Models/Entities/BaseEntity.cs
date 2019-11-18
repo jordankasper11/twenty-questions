@@ -4,6 +4,7 @@ using System.Text;
 
 namespace TwentyQuestions.Data.Models.Entities
 {
+    [Flags]
     public enum EntityStatus
     {
         Active = 1,
