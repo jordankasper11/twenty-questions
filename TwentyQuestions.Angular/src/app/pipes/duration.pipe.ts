@@ -33,7 +33,7 @@ export class DurationPipe implements PipeTransform {
             else {
                 const datePipe = new DatePipe(navigator.language);
 
-                return datePipe.transform(duration, "shortDate");
+                return datePipe.transform(value, "shortDate");
             }
         }
 
