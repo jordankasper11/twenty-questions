@@ -11,6 +11,7 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IUserRepository : IRepository<UserEntity, UserRequest>
     {
+        Task<bool> GetUsernameAvailability(string username);
     }
 
     public class UserRepository : BaseRepository<UserEntity, UserRequest>, IUserRepository
@@ -44,6 +45,23 @@ namespace TwentyQuestions.Data.Repositories
                 HandleSqlException(entity, ex);
 
                 throw;
+            }
+        }
+
+        public async Task<bool> GetUsernameAvailability(string username)
+        {
+            if (String.IsNullOrWhiteSpace(username))
+                throw new InvalidOperationException("Username cannot be null or whitespace");
+
+            await EnsureConnectionOpen();
+
+            using (var sqlCommand = this.Connection.CreateCommand())
+            {
+                sqlCommand.CommandText = "User_GetUsernameAvailability";
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                sqlCommand.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar) { Value = username });
+
+                return (bool)await sqlCommand.ExecuteScalarAsync();
             }
         }
 

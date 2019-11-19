@@ -77,6 +77,7 @@
     <Build Include="Tables\UserCredentials.sql" />
     <Build Include="StoredProcedures\UserCredentials_Save.sql" />
     <Build Include="StoredProcedures\UserCredentials_SaveRefreshToken.sql" />
+    <Build Include="StoredProcedures\User_GetUsernameAvailability.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />

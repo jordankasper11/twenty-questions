@@ -24,6 +24,15 @@ namespace TwentyQuestions.Web.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("GetUsernameAvailability")]
+        public async Task<ActionResult<bool>> GetUsernameAvailability(string username)
+        {
+            var usernameAvailability = await this.Repository.GetUsernameAvailability(username);
+
+            return Ok(usernameAvailability);
+        }
+
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<UserEntity>> Register([FromBody] RegistrationRequest request, [FromServices] IAuthenticationRepository authenticationRepository)
         {

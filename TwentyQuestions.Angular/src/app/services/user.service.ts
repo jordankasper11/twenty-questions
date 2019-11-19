@@ -12,6 +12,10 @@ export class UserService extends BaseEntityService<UserEntity, UserRequest> {
         super(http, '/User');
     }
 
+    public getUsernameAvailability(username: string): Observable<boolean> {
+        return this.httpGet<boolean>(`/User/GetUsernameAvailability?username=${username}`);
+    }
+
     public register(registrationRequest: RegistrationRequest): Observable<UserEntity> {
         return this.httpPost<UserEntity>('/User/Register', registrationRequest);
     }

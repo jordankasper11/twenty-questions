@@ -23,6 +23,7 @@
             "@environments": ["src/environments/environment"],
             "@models": ["src/app/models/exports"],
             "@pipes": ["src/app/pipes/exports"],
+            "@providers": ["src/app/providers/exports"],
             "@services": ["src/app/services/exports"],
             "@views": ["src/app/views/exports"],
             "@app/*": ["src/app/*"]

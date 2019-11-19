@@ -7,6 +7,7 @@
         <label for="username">Username</label>
         <input type="text" id="username" placeholder="Username" required autofocus formControlName="username" />
         <span *ngIf="form.controls.username.errors?.required && form.controls.username.touched" class="validator">Username is required</span>
+        <span *ngIf="form.controls.username.errors?.unavailable && form.controls.username.touched" class="validator">Username is already taken</span>
     </div>
     <div class="form-row">
         <label for="email">Email</label>

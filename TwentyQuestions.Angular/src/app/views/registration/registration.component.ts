@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, A
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationRequest } from '@models';
 import { UserService } from '@services';
+import { FormProvider } from '@providers';
 
 @Component({
     selector: 'app-registration',
@@ -25,12 +26,22 @@ export class RegistrationComponent implements OnInit {
 
     buildForm(): void {
         this.form = new FormGroup({
-            username: new FormControl('', [Validators.required]),
+            username: new FormControl('', { updateOn: 'blur', validators: [FormProvider.validators.requiredTrim], asyncValidators: [this.validateUsernameAvailablity.bind(this)] }),
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(6)]),
             confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)])
         });
     }
+
+    async validateUsernameAvailablity(control: AbstractControl): Promise<ValidationErrors> {
+        const username = control.value;
+        const usernameAvailable = await this.userService.getUsernameAvailability(username).toPromise();
+
+        if (!usernameAvailable)
+            return { 'unavailable': true };
+
+        return null;
+    };
 
     validateComparePassword(control: AbstractControl): ValidationErrors {
         if (this.form) {
@@ -72,6 +83,7 @@ export class RegistrationComponent implements OnInit {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule],
     declarations: [RegistrationComponent],
-    exports: [RegistrationComponent]
+    exports: [RegistrationComponent],
+    providers: [UserService]
 })
 export class RegistrationComponentModule { }
