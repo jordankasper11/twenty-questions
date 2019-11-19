@@ -1,6 +1,6 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationRequest } from '@models';
 import { UserService } from '@services';
@@ -26,10 +26,23 @@ export class RegistrationComponent implements OnInit {
     buildForm(): void {
         this.form = new FormGroup({
             username: new FormControl('', [Validators.required]),
-            email: new FormControl('', [Validators.required]),
-            password: new FormControl('', [Validators.required])
+            email: new FormControl('', [Validators.required, Validators.email]),
+            password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+            confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)])
         });
     }
+
+    validateComparePassword(control: AbstractControl): ValidationErrors {
+        if (this.form) {
+            const password = this.form.get('password').value;
+            const confirmPassword = control.value;
+
+            if (password != confirmPassword)
+                return { 'passwordMatch': true };
+        }
+
+        return null;
+    };
 
     async submit(): Promise<void> {
         if (this.form.valid) {

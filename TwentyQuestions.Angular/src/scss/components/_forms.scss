@@ -78,6 +78,26 @@ input[type="submit"] {
     }
 }
 
+.validator {
+    display: block;
+    border-radius: $border-radius;
+    padding: 10px;
+    background: $color-error;
+    font-size: 14px;
+    color: $color-white;
+}
+
+.ng-invalid.ng-touched {
+    border-color: $color-error;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    + .validator {
+        border-top-left-radius: 0;   
+        border-top-right-radius: 0;
+    }
+}
+
 .form-row {
     margin: 0 0 $margin 0;
 }

@@ -6,14 +6,25 @@
     <div class="form-row">
         <label for="username">Username</label>
         <input type="text" id="username" placeholder="Username" required autofocus formControlName="username" />
+        <span *ngIf="form.controls.username.errors?.required && form.controls.username.touched" class="validator">Username is required</span>
     </div>
     <div class="form-row">
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="Email" required formControlName="email" />
+        <span *ngIf="form.controls.email.errors?.required && form.controls.email.touched" class="validator">Email is required</span>
+        <span *ngIf="form.controls.email.errors?.email && form.controls.email.touched" class="validator">Email is not a valid email address</span>
     </div>
     <div class="form-row">
         <label for="password">Password</label>
         <input formControlName="password" type="password" id="password" placeholder="Password" required />
+        <span *ngIf="form.controls.password.errors?.required && form.controls.password.touched" class="validator">Password is required</span>
+        <span *ngIf="form.controls.password.errors?.minlength && form.controls.password.touched" class="validator">Password must be at least six characters</span>
+    </div>
+    <div class="form-row">
+        <label for="confirm-password">Confirm Password</label>
+        <input formControlName="confirmPassword" type="password" id="confirm-password" placeholder="Confirm Password" required />
+        <span *ngIf="form.controls.confirmPassword.errors?.required && form.controls.confirmPassword.touched" class="validator">Confirm Password is required</span>
+        <span *ngIf="form.controls.confirmPassword.errors?.passwordMatch && form.controls.confirmPassword.touched" class="validator">Passwords do not match</span>
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Create Account</button>
