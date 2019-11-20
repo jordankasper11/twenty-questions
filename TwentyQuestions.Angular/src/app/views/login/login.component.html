@@ -6,10 +6,12 @@
     <div class="form-row">
         <label for="username">Username</label>
         <input type="text" id="username" placeholder="Username" required autofocus formControlName="username" />
+        <span *ngIf="form.controls.username.errors?.required && form.controls.username.touched" class="validator">Username is required</span>
     </div>
     <div class="form-row">
         <label for="password">Password</label>
         <input formControlName="password" type="password" id="password" placeholder="Password" required />
+        <span *ngIf="form.controls.password.errors?.required && form.controls.password.touched" class="validator">Password is required</span>
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Login</button>
