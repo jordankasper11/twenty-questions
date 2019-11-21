@@ -2,8 +2,8 @@ import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RegistrationRequest } from '@models';
-import { UserService } from '@services';
+import { RegistrationRequest, LoginRequest } from '@models';
+import { UserService, AuthenticationService } from '@services';
 import { FormProvider } from '@providers';
 
 @Component({
@@ -14,8 +14,11 @@ export class RegistrationComponent implements OnInit {
     form: FormGroup;
     errorMessage: string;
 
+    private avatar: File;
+
     constructor(
         private userService: UserService,
+        private authenticationService: AuthenticationService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
@@ -29,8 +32,11 @@ export class RegistrationComponent implements OnInit {
             username: new FormControl('', { updateOn: 'blur', validators: [FormProvider.validators.requiredTrim], asyncValidators: [this.validateUsernameAvailablity.bind(this)] }),
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-            confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)])
+            confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)]),
+            avatar: new FormControl('')
         });
+
+        window['test'] = this.form;
     }
 
     async validateUsernameAvailablity(control: AbstractControl): Promise<ValidationErrors> {
@@ -55,6 +61,12 @@ export class RegistrationComponent implements OnInit {
         return null;
     };
 
+    avatarChanged(event: Event) {
+        const fileUpload = <HTMLInputElement>event.target;
+
+        this.avatar = fileUpload.files.length ? fileUpload.files[0] : null;
+    }
+
     async submit(): Promise<void> {
         if (this.form.valid) {
             this.errorMessage = null;
@@ -67,9 +79,14 @@ export class RegistrationComponent implements OnInit {
 
             try {
                 const user = await this.userService.register(request).toPromise();
+                const loginRequest = new LoginRequest(request.username, request.password);
 
-                if (user)
-                    this.router.navigate(['/login']);
+                await this.authenticationService.login(loginRequest).toPromise();
+
+                if (this.avatar)
+                    await this.userService.saveAvatar(user.id, this.avatar).toPromise();
+
+                this.router.navigate(['/']);
             } catch (error) {
                 if (error.error && error.status)
                     this.errorMessage = error.error;
@@ -84,6 +101,6 @@ export class RegistrationComponent implements OnInit {
     imports: [CommonModule, ReactiveFormsModule],
     declarations: [RegistrationComponent],
     exports: [RegistrationComponent],
-    providers: [UserService]
+    providers: [UserService, AuthenticationService]
 })
 export class RegistrationComponentModule { }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TwentyQuestions.Data.Models.Entities;
@@ -56,7 +57,28 @@ namespace TwentyQuestions.Web.Controllers
 
             user = await this.Repository.Get(userId);
 
-            return user;
+            return Ok(user);
+        }
+
+        [HttpPost("SaveAvatar")]
+        public async Task<ActionResult<string>> SaveAvatar(Guid userId)
+        {
+            var file = this.Request.Form.Files?.FirstOrDefault();
+
+            if (file == null)
+                throw new InvalidOperationException("A file upload is required");
+
+            var avatarUrl = await this.Repository.SaveAvatar(userId, file);
+
+            return Ok(avatarUrl);
+        }
+
+        [HttpDelete("RemoveAvatar")]
+        public async Task<ActionResult> RemoveAvatar(Guid userId)
+        {
+            await this.Repository.RemoveAvatar(userId);
+
+            return NoContent();
         }
     }
 }

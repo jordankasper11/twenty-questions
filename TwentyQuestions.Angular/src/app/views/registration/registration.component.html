@@ -27,6 +27,10 @@
         <span *ngIf="form.controls.confirmPassword.errors?.required && form.controls.confirmPassword.touched" class="validator">Confirm Password is required</span>
         <span *ngIf="form.controls.confirmPassword.errors?.passwordMatch && form.controls.confirmPassword.touched" class="validator">Passwords do not match</span>
     </div>
+    <div class="form-row">
+        <label for="avatar">Avatar</label>
+        <input formControlName="avatar" type="file" id="avatar" placeholder="Avatar" (change)="avatarChanged($event)" />
+    </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Create Account</button>
     </div>

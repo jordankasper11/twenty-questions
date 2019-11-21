@@ -74,7 +74,13 @@ namespace TwentyQuestions.Web
             });
             services.AddScoped<IFriendRepository, FriendRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>(serviceProvider =>
+            {
+                var sqlConnection = serviceProvider.GetService<SqlConnection>();
+                var repositoryContext = serviceProvider.GetService<IRepositoryContext>();
+
+                return new UserRepository(sqlConnection, repositoryContext, configurationSettings.Paths.Avatars);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

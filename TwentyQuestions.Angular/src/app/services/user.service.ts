@@ -19,4 +19,16 @@ export class UserService extends BaseEntityService<UserEntity, UserRequest> {
     public register(registrationRequest: RegistrationRequest): Observable<UserEntity> {
         return this.httpPost<UserEntity>('/User/Register', registrationRequest);
     }
+
+    public saveAvatar(userId: string, avatar: File) {
+        const formData = new FormData();
+
+        formData.set('avatar', avatar);
+
+        return this.httpPost<UserEntity>(`/User/SaveAvatar?userId=${userId}`, formData);
+    }
+
+    public removeAvatar(userId: string) {
+        return this.httpDelete<UserEntity>(`/User/RemoveAvatar?userId=${userId}`);
+    }
 }

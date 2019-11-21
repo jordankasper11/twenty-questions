@@ -8,7 +8,7 @@
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
     [Username] NVARCHAR(32) NOT NULL,
 	[Email] NVARCHAR(256) NOT NULL,
-	[AvatarFileExtension] VARCHAR(3) NULL, 
+	[AvatarFileExtension] VARCHAR(5) NULL, 
 	CONSTRAINT [UC_Users] UNIQUE (Username),
     CONSTRAINT [FK_Users_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),
 	CONSTRAINT [FK_Users_ToUsersModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [Users]([Id])

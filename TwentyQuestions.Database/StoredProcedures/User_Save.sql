@@ -5,7 +5,7 @@
 	@ModifiedDate			DATETIME = NULL,
 	@Username				NVARCHAR(32),
 	@Email					NVARCHAR(256),
-	@AvatarFileExtension	VARCHAR(3) = NULL
+	@AvatarFileExtension	VARCHAR(5) = NULL
 )
 AS
 BEGIN

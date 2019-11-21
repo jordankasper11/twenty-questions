@@ -22,7 +22,7 @@ namespace TwentyQuestions.Data.Models.Entities
             get
             {
                 if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileExtension))
-                    return $"/avatars/{this.Id}.{this.AvatarFileExtension}";
+                    return $"/avatars/{this.Id}{this.AvatarFileExtension}";
 
                 return null;
             }
