@@ -109,7 +109,7 @@ namespace TwentyQuestions.Data.Repositories
 
             var fileInfo = new FileInfo(filePath);
 
-            user.AvatarFileName = fileInfo.Extension;
+            user.AvatarFileName = fileInfo.Name;
 
             await this.Update(user);
 
