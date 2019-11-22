@@ -1,8 +1,8 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { LoginRequest, AccessToken } from '@models';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { LoginRequest } from '@models';
 import { AuthenticationService } from '@services';
 
 @Component({
@@ -19,7 +19,9 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+        await this.authenticationService.logout();
+
         this.buildForm();
     }
 
@@ -34,10 +36,7 @@ export class LoginComponent implements OnInit {
         if (this.form.valid) {
             this.errorMessage = null;
 
-            const loginRequest: LoginRequest = new LoginRequest(
-                this.form.value.username,
-                this.form.value.password
-            );
+            const loginRequest: LoginRequest = new LoginRequest(this.form.value.username, this.form.value.password);
 
             try {
                 const accessToken = await this.authenticationService.login(loginRequest).toPromise();
@@ -45,7 +44,7 @@ export class LoginComponent implements OnInit {
                 if (accessToken) {
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-                    this.router.navigateByUrl(returnUrl);
+                    await this.router.navigateByUrl(returnUrl);
                 }
             } catch (error) {
                 if (error.error && error.status)
@@ -60,7 +59,7 @@ export class LoginComponent implements OnInit {
 }
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
     declarations: [LoginComponent],
     exports: [LoginComponent]
 })

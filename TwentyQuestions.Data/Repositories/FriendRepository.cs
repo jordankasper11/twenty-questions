@@ -50,7 +50,7 @@ namespace TwentyQuestions.Data.Repositories
         {
             entity.FriendId = dataRow.Field<Guid>("FriendId");
             entity.Username = dataRow.Field<string>("Username");
-            entity.AvatarFileExtension = dataRow.Field<string>("AvatarFileExtension");
+            entity.AvatarFileName = dataRow.Field<string>("AvatarFileName");
         }
     }
 }

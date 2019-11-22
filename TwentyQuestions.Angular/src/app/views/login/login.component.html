@@ -1,5 +1,5 @@
-<h1>Login</h1>
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Login</h1>
     <div *ngIf="errorMessage" class="error-message">
         {{errorMessage}}
     </div>
@@ -15,5 +15,6 @@
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Login</button>
+        <a [routerLink]="['/register']" >Create Account</a>
     </div>
 </form>

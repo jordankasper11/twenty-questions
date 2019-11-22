@@ -17,14 +17,14 @@ namespace TwentyQuestions.Data.Models.Entities
         public string FriendUsername { get; set; }
 
         [JsonIgnore]
-        public string FriendAvatarFileExtension { get; set; }
+        public string FriendAvatarFileName { get; set; }
 
         public string FriendAvatarUrl
         {
             get
             {
-                if (this.Id != null && this.FriendId != null && !String.IsNullOrWhiteSpace(this.FriendAvatarFileExtension))
-                    return $"/avatars/{this.FriendId.Value}.{this.FriendAvatarFileExtension}";
+                if (this.Id != null && this.FriendId != null && !String.IsNullOrWhiteSpace(this.FriendAvatarFileName))
+                    return $"/avatars/{this.FriendId.Value}/{this.FriendAvatarFileName}";
 
                 return null;
             }

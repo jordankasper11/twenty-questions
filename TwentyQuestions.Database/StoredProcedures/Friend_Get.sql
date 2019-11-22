@@ -17,14 +17,14 @@ BEGIN
 		Id					UNIQUEIDENTIFIER,
 		FriendId			UNIQUEIDENTIFIER,
 		Username			NVARCHAR(32),
-		AvatarFileExtension	VARCHAR(3)
+		AvatarFileName		VARCHAR(256)
 	)
 
-	INSERT INTO @Friends (Id, FriendId, Username, AvatarFileExtension)
+	INSERT INTO @Friends (Id, FriendId, Username, AvatarFileName)
 		SELECT	F.Id,
 				CASE WHEN F.CreatedBy = @UserId THEN F.FriendId ELSE F.CreatedBy END,
 				CASE WHEN F.CreatedBy = @UserId THEN U2.Username ELSE U1.Username END,
-				CASE WHEN F.CreatedBy = @UserId THEN U2.AvatarFileExtension ELSE U1.AvatarFileExtension END
+				CASE WHEN F.CreatedBy = @UserId THEN U2.AvatarFileName ELSE U1.AvatarFileName END
 		FROM	Friends AS F
 				INNER JOIN Users AS U1 ON U1.Id = F.CreatedBy
 				INNER JOIN Users AS U2 ON U2.Id = F.FriendId
@@ -32,7 +32,7 @@ BEGIN
 				F.FriendId = @UserId
 
 	SELECT		F.Id, F.[Status], F.CreatedBy, F.CreatedDate, F.ModifiedBy, F.ModifiedDate,
-				T.FriendId, T.Username, T.AvatarFileExtension,
+				T.FriendId, T.Username, T.AvatarFileName,
 				ROW_NUMBER() OVER (ORDER BY
 					CASE WHEN @OrderBy = 'Username ASC' THEN T.Username END ASC,
 					CASE WHEN @OrderBy = 'Username DESC' THEN T.Username END DESC

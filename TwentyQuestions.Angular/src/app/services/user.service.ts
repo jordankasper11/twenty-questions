@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserEntity, UserRequest, RegistrationRequest } from '@models';
+import { UserEntity, UserRequest, RegistrationRequest, UpdateSettingsRequest } from '@models';
 import { BaseEntityService } from './base.service';
 
 @Injectable({
@@ -12,12 +12,16 @@ export class UserService extends BaseEntityService<UserEntity, UserRequest> {
         super(http, '/User');
     }
 
-    public getUsernameAvailability(username: string): Observable<boolean> {
-        return this.httpGet<boolean>(`/User/GetUsernameAvailability?username=${username}`);
+    public getUsernameAvailability(username: string, userId?: string): Observable<boolean> {
+        return this.httpGet<boolean>(`/User/GetUsernameAvailability?username=${username}&userId=${userId}`);
     }
 
     public register(registrationRequest: RegistrationRequest): Observable<UserEntity> {
         return this.httpPost<UserEntity>('/User/Register', registrationRequest);
+    }
+
+    public updateSettings(updateSettingsRequest: UpdateSettingsRequest): Observable<UserEntity> {
+        return this.httpPost<UserEntity>('/User/UpdateSettings', updateSettingsRequest);
     }
 
     public saveAvatar(userId: string, avatar: File) {

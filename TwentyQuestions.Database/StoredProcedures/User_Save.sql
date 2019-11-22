@@ -5,7 +5,7 @@
 	@ModifiedDate			DATETIME = NULL,
 	@Username				NVARCHAR(32),
 	@Email					NVARCHAR(256),
-	@AvatarFileExtension	VARCHAR(5) = NULL
+	@AvatarFileName			NVARCHAR(256) = NULL
 )
 AS
 BEGIN
@@ -26,12 +26,12 @@ BEGIN
 				ModifiedDate = @ModifiedDate,
 				Username = @Username,
 				Email = @Email,
-				AvatarFileExtension = @AvatarFileExtension
+				AvatarFileName = @AvatarFileName
 		WHERE	Id = @Id
 	END
 	ELSE
 	BEGIN
-		INSERT INTO Users (Id, [Status], CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, Username, Email, AvatarFileExtension)
-			VALUES (@Id, @Status, @ModifiedBy, @ModifiedDate, @ModifiedBy, @ModifiedDate, @Username, @Email, @AvatarFileExtension)
+		INSERT INTO Users (Id, [Status], CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, Username, Email, AvatarFileName)
+			VALUES (@Id, @Status, @ModifiedBy, @ModifiedDate, @ModifiedBy, @ModifiedDate, @Username, @Email, @AvatarFileName)
 	END
 END

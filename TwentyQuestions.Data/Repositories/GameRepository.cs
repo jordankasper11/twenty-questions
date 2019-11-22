@@ -152,7 +152,7 @@ namespace TwentyQuestions.Data.Repositories
             entity.OpponentId = dataRow.Field<Guid>("OpponentId");
             entity.FriendId = dataRow.Field<Guid>("FriendId");
             entity.FriendUsername = dataRow.Field<string>("FriendUsername");
-            entity.FriendAvatarFileExtension = dataRow.Field<string>("FriendAvatarFileExtension");
+            entity.FriendAvatarFileName = dataRow.Field<string>("FriendAvatarFileName");
             entity.Subject = dataRow.Field<string>("Subject");
             entity.MaxQuestions = dataRow.Field<int>("MaxQuestions");
             entity.Questions = Deserialize<List<QuestionEntity>>(dataRow.Field<string>("Questions"));

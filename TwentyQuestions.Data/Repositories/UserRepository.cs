@@ -14,7 +14,7 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IUserRepository : IRepository<UserEntity, UserRequest>
     {
-        Task<bool> GetUsernameAvailability(string username);
+        Task<bool> GetUsernameAvailability(string username, Guid? userId);
 
         Task<string> SaveAvatar(Guid userId, IFormFile file);
 
@@ -61,7 +61,7 @@ namespace TwentyQuestions.Data.Repositories
             }
         }
 
-        public async Task<bool> GetUsernameAvailability(string username)
+        public async Task<bool> GetUsernameAvailability(string username, Guid? userId)
         {
             if (String.IsNullOrWhiteSpace(username))
                 throw new InvalidOperationException("Username cannot be null or whitespace");
@@ -72,6 +72,7 @@ namespace TwentyQuestions.Data.Repositories
             {
                 sqlCommand.CommandText = "User_GetUsernameAvailability";
                 sqlCommand.CommandType = CommandType.StoredProcedure;
+                sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = userId });
                 sqlCommand.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar) { Value = username });
 
                 return (bool)await sqlCommand.ExecuteScalarAsync();
@@ -88,18 +89,18 @@ namespace TwentyQuestions.Data.Repositories
             if (String.IsNullOrWhiteSpace(this.AvatarPath))
                 throw new InvalidOperationException("AvatarPath cannot be null or whitespace");
 
-            if (!Directory.Exists(this.AvatarPath))
-                Directory.CreateDirectory(this.AvatarPath);
-
             if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Invalid file type");
 
-            var fileExtension = MimeUtility.GetFileExtension(file.ContentType);
+            if (!Directory.Exists(this.AvatarPath))
+                Directory.CreateDirectory(this.AvatarPath);
 
-            if (String.IsNullOrWhiteSpace(fileExtension))
-                throw new InvalidOperationException("Invalid file type");
+            var userPath = Path.Combine(this.AvatarPath, userId.ToString());
 
-            var filePath = Path.Combine(this.AvatarPath, $"{userId}{fileExtension}");
+            if (!Directory.Exists(userPath))
+                Directory.CreateDirectory(userPath);
+
+            var filePath = Path.Combine(userPath, file.FileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
@@ -108,7 +109,7 @@ namespace TwentyQuestions.Data.Repositories
 
             var fileInfo = new FileInfo(filePath);
 
-            user.AvatarFileExtension = fileInfo.Extension;
+            user.AvatarFileName = fileInfo.Extension;
 
             await this.Update(user);
 
@@ -127,13 +128,13 @@ namespace TwentyQuestions.Data.Repositories
             if (String.IsNullOrWhiteSpace(this.AvatarPath))
                 throw new InvalidOperationException("AvatarPath cannot be null or whitespace");
 
-            var filePath = Path.Combine(this.AvatarPath, $"{userId}.{user.AvatarFileExtension}");
+            var filePath = Path.Combine(this.AvatarPath, userId.ToString(), user.AvatarFileName);
             var fileInfo = new FileInfo(filePath);
 
             if (fileInfo.Exists)
                 fileInfo.Delete();
 
-            user.AvatarFileExtension = null;
+            user.AvatarFileName = null;
 
             await this.Update(user);
         }
@@ -153,21 +154,21 @@ namespace TwentyQuestions.Data.Repositories
         {
             entity.Username = dataRow.Field<string>("Username");
             entity.Email = dataRow.Field<string>("Email");
-            entity.AvatarFileExtension = dataRow.Field<string>("AvatarFileExtension");
+            entity.AvatarFileName = dataRow.Field<string>("AvatarFileName");
         }
 
         protected override void AddInsertParameters(SqlParameterCollection sqlParameters, UserEntity entity)
         {
             sqlParameters.Add("@Username", SqlDbType.NVarChar).Value = entity.Username;
-            sqlParameters.Add("@Email", SqlDbType.NVarChar).Value = entity.Username;
-            sqlParameters.Add("@AvatarFileExtension", SqlDbType.NVarChar).Value = entity.AvatarFileExtension;
+            sqlParameters.Add("@Email", SqlDbType.NVarChar).Value = entity.Email;
+            sqlParameters.Add("@AvatarFileName", SqlDbType.NVarChar).Value = entity.AvatarFileName;
         }
 
         protected override void AddUpdateParameters(SqlParameterCollection sqlParameters, UserEntity entity)
         {
             sqlParameters.Add("@Username", SqlDbType.NVarChar).Value = entity.Username;
-            sqlParameters.Add("@Email", SqlDbType.NVarChar).Value = entity.Username;
-            sqlParameters.Add("@AvatarFileExtension", SqlDbType.NVarChar).Value = entity.AvatarFileExtension;
+            sqlParameters.Add("@Email", SqlDbType.NVarChar).Value = entity.Email;
+            sqlParameters.Add("@AvatarFileName", SqlDbType.NVarChar).Value = entity.AvatarFileName;
         }
     }
 }

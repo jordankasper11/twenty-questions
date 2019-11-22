@@ -1,20 +1,22 @@
 import { NgModule, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RegistrationRequest, LoginRequest } from '@models';
+import { UpdateSettingsRequest, UserEntity } from '@models';
 import { UserService, AuthenticationService } from '@services';
 import { FormProvider } from '@providers';
 
 @Component({
-    selector: 'app-registration',
-    templateUrl: './registration.component.html'
+    selector: 'app-settings',
+    templateUrl: './settings.component.html'
 })
-export class RegistrationComponent implements OnInit {
+export class SettingsComponent implements OnInit {
     form: FormGroup;
     errorMessage: string;
 
+    private user: UserEntity;
     private avatar: File;
+    private removedAvatar = false;
 
     constructor(
         private userService: UserService,
@@ -23,14 +25,23 @@ export class RegistrationComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
-    ngOnInit(): void {
-        this.buildForm();
+    async ngOnInit(): Promise<void> {
+        await this.loadUser();
     }
 
-    buildForm(): void {
+    async loadUser(): Promise<void> {
+        const userId = this.authenticationService.getAccessToken().userId;
+        const user = await this.userService.get(userId).toPromise();
+
+        this.buildForm(user);
+
+        this.user = user;
+    }
+
+    buildForm(user: UserEntity): void {
         this.form = new FormGroup({
-            username: new FormControl('', { updateOn: 'blur', validators: [FormProvider.validators.requiredTrim], asyncValidators: [this.validateUsernameAvailablity.bind(this)] }),
-            email: new FormControl('', [Validators.required, Validators.email]),
+            username: new FormControl(user.username, { updateOn: 'blur', validators: [FormProvider.validators.requiredTrim], asyncValidators: [this.validateUsernameAvailablity.bind(this)] }),
+            email: new FormControl(user.email, [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(6)]),
             confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)]),
             avatar: new FormControl('')
@@ -39,7 +50,8 @@ export class RegistrationComponent implements OnInit {
 
     async validateUsernameAvailablity(control: AbstractControl): Promise<ValidationErrors> {
         const username = control.value;
-        const usernameAvailable = await this.userService.getUsernameAvailability(username).toPromise();
+        const userId = this.authenticationService.getAccessToken().userId;
+        const usernameAvailable = await this.userService.getUsernameAvailability(username, userId).toPromise();
 
         if (!usernameAvailable)
             return { 'unavailable': true };
@@ -59,6 +71,12 @@ export class RegistrationComponent implements OnInit {
         return null;
     };
 
+    removeAvatar(): void {
+        this.user.avatarUrl = null;
+
+        this.removedAvatar = true;
+    }
+
     avatarChanged(event: Event) {
         const fileUpload = <HTMLInputElement>event.target;
 
@@ -69,20 +87,22 @@ export class RegistrationComponent implements OnInit {
         if (this.form.valid) {
             this.errorMessage = null;
 
-            const request = new RegistrationRequest();
-
-            request.username = this.form.value.username;
-            request.email = this.form.value.email;
-            request.password = this.form.value.password;
-
             try {
-                const user = await this.userService.register(request).toPromise();
-                const loginRequest = new LoginRequest(request.username, request.password);
+                const userId = this.authenticationService.getAccessToken().userId;
+                const request = new UpdateSettingsRequest();
 
-                await this.authenticationService.login(loginRequest).toPromise();
+                request.userId = userId
+                request.username = this.form.value.username;
+                request.email = this.form.value.email;
+                request.password = this.form.value.password;
+                request.newPassword = this.form.value.newPassword;
+
+                const user = await this.userService.updateSettings(request).toPromise();
 
                 if (this.avatar)
                     await this.userService.saveAvatar(user.id, this.avatar).toPromise();
+                else if (this.removeAvatar)
+                    await this.userService.removeAvatar(userId).toPromise();
 
                 this.router.navigate(['/']);
             } catch (error) {
@@ -97,8 +117,8 @@ export class RegistrationComponent implements OnInit {
 
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule],
-    declarations: [RegistrationComponent],
-    exports: [RegistrationComponent],
+    declarations: [SettingsComponent],
+    exports: [SettingsComponent],
     providers: [UserService, AuthenticationService]
 })
-export class RegistrationComponentModule { }
+export class SettingsComponentModule { }

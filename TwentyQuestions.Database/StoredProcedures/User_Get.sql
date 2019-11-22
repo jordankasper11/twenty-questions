@@ -13,7 +13,7 @@ BEGIN
 	DECLARE	@FilterIds BIT = CASE WHEN EXISTS(SELECT Id FROM @Ids) THEN 1 ELSE 0 END
 
 	SELECT		Id, [Status], CreatedBy, CreatedDate, ModifiedBy, ModifiedDate,
-				Username, Email, AvatarFileExtension,
+				Username, Email, AvatarFileName,
 				ROW_NUMBER() OVER (ORDER BY
 					CASE WHEN @OrderBy = 'Username ASC' THEN Username END ASC,
 					CASE WHEN @OrderBy = 'Username DESC' THEN Username END DESC

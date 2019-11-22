@@ -11,14 +11,14 @@ namespace TwentyQuestions.Data.Models.Entities
 
         public string Username { get; set; }
 
-        public string AvatarFileExtension { get; set; }
+        public string AvatarFileName { get; set; }
 
         public string AvatarUrl
         {
             get
             {
-                if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileExtension))
-                    return $"/avatars/{this.FriendId}.{this.AvatarFileExtension}";
+                if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileName))
+                    return $"/avatars/{this.FriendId}/{this.AvatarFileName}";
 
                 return null;
             }

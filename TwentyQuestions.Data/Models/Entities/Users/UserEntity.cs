@@ -15,14 +15,14 @@ namespace TwentyQuestions.Data.Models.Entities
         [EmailAddress]
         public string Email { get; set; }
 
-        public string AvatarFileExtension { get; set; }
+        public string AvatarFileName { get; set; }
 
         public string AvatarUrl
         {
             get
             {
-                if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileExtension))
-                    return $"/avatars/{this.Id}{this.AvatarFileExtension}";
+                if (this.Id != null && !String.IsNullOrWhiteSpace(this.AvatarFileName))
+                    return $"/avatars/{this.Id}/{this.AvatarFileName}";
 
                 return null;
             }

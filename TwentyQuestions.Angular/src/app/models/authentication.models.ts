@@ -1,11 +1,5 @@
 import { BaseRequest, BaseResponse, BaseTrackedEntity } from './base.models';
 
-export class RegistrationRequest extends BaseRequest {
-    public username: string;
-    public email: string;
-    public password: string;
-}
-
 export class LoginRequest extends BaseRequest {
     public username: string;
     public password: string;

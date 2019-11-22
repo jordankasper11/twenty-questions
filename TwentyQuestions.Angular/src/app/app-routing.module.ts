@@ -4,7 +4,8 @@ import {
     GameComponentModule, GameComponent,
     GamesComponentModule, GamesComponent,
     LoginComponentModule, LoginComponent,
-    RegistrationComponentModule, RegistrationComponent
+    RegistrationComponentModule, RegistrationComponent,
+    SettingsComponentModule, SettingsComponent
 } from '@views';
 import { AuthenticationGuard } from './authentication.guard';
 
@@ -15,6 +16,7 @@ const routes: Routes = [
     { path: 'games', component: GamesComponent, canActivate: [AuthenticationGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegistrationComponent },
+    { path: 'settings', component: SettingsComponent, canActivate: [AuthenticationGuard] },
 ];
 
 @NgModule({
@@ -23,6 +25,7 @@ const routes: Routes = [
         GamesComponentModule,
         LoginComponentModule,
         RegistrationComponentModule,
+        SettingsComponentModule,
         RouterModule.forRoot(routes)
     ],
     exports: [RouterModule]

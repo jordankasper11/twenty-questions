@@ -17,7 +17,7 @@ BEGIN
 				CASE WHEN G.CreatedBy = @UserId THEN G.[Subject] ELSE NULL END AS [Subject],
 				CASE WHEN G.CreatedBy = @UserId THEN U2.Id ELSE U1.Id END AS FriendId,
 				CASE WHEN G.CreatedBy = @UserId THEN U2.Username ELSE U1.Username END AS FriendUsername,
-				CASE WHEN G.CreatedBy = @UserId THEN U2.AvatarFileExtension ELSE U1.AvatarFileExtension END AS FriendAvatarFileExtension,
+				CASE WHEN G.CreatedBy = @UserId THEN U2.AvatarFileName ELSE U1.AvatarFileName END AS FriendAvatarFileName,
 				G.MaxQuestions, G.Completed, G.Questions,
 				ROW_NUMBER() OVER (ORDER BY
 					CASE WHEN @OrderBy = 'ModifiedDate ASC' THEN G.ModifiedDate END ASC,

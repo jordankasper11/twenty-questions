@@ -25,7 +25,7 @@ namespace TwentyQuestions.Data.Repositories
 
         UserCredentialsDto HashPassword(string password);
 
-        bool ValidatePassword(string password, string passwordSalt, string passwordHash);
+        Task<bool> ValidateCredentials(Guid? userId, string username, string password);
     }
 
     public class AuthenticationRepository : BaseRepository, IAuthenticationRepository
@@ -128,6 +128,31 @@ namespace TwentyQuestions.Data.Repositories
             return null;
         }
 
+        public UserCredentialsDto HashPassword(string password)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                var userCredentials = new UserCredentialsDto();
+
+                userCredentials.PasswordSalt = Convert.ToBase64String(hmac.Key);
+                userCredentials.PasswordHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
+
+                return userCredentials;
+            }
+        }
+
+        public async Task<bool> ValidateCredentials(Guid? userId, string username, string password)
+        {
+            var loginRequest = new LoginRequest();
+
+            loginRequest.Username = username;
+            loginRequest.Password = password;
+
+            var userCredentials = await GetUserCredentials(loginRequest);
+
+            return userCredentials != null && ValidatePassword(loginRequest.Password, userCredentials.PasswordSalt, userCredentials.PasswordHash);
+        }
+
         private string GetAccessToken(UserCredentialsDto userCredentials)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKey));
@@ -223,20 +248,7 @@ namespace TwentyQuestions.Data.Repositories
             }
         }
 
-        public UserCredentialsDto HashPassword(string password)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                var userCredentials = new UserCredentialsDto();
-
-                userCredentials.PasswordSalt = Convert.ToBase64String(hmac.Key);
-                userCredentials.PasswordHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
-
-                return userCredentials;
-            }
-        }
-
-        public bool ValidatePassword(string password, string passwordSalt, string passwordHash)
+        private bool ValidatePassword(string password, string passwordSalt, string passwordHash)
         {
             using (var hmac = new HMACSHA512(Convert.FromBase64String(passwordSalt)))
             {

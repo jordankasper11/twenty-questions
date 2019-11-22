@@ -101,3 +101,11 @@ input[type="submit"] {
 .form-row {
     margin: 0 0 $margin 0;
 }
+
+.form-footer {
+    text-align: center;
+
+    a {
+        color: $color-text-secondary;
+    }
+}

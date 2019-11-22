@@ -19,6 +19,11 @@ namespace TwentyQuestions.Web.Controllers
         {
         }
 
+        public override Task<ActionResult<UserEntity>> Put([FromBody] UserEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Task<ActionResult<UserEntity>> Post([FromBody] UserEntity entity)
         {
             throw new NotImplementedException();
@@ -26,9 +31,9 @@ namespace TwentyQuestions.Web.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetUsernameAvailability")]
-        public async Task<ActionResult<bool>> GetUsernameAvailability(string username)
+        public async Task<ActionResult<bool>> GetUsernameAvailability(string username, Guid? userId = null)
         {
-            var usernameAvailability = await this.Repository.GetUsernameAvailability(username);
+            var usernameAvailability = await this.Repository.GetUsernameAvailability(username, userId);
 
             return Ok(usernameAvailability);
         }
@@ -56,6 +61,37 @@ namespace TwentyQuestions.Web.Controllers
             await authenticationRepository.SaveUserCredentials(userCredentials);
 
             user = await this.Repository.Get(userId);
+
+            return Ok(user);
+        }
+
+        [HttpPost("UpdateSettings")]
+        public async Task<ActionResult<UserEntity>> UpdateSettings([FromBody] UpdateSettingsRequest request, [FromServices] IAuthenticationRepository authenticationRepository)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await authenticationRepository.ValidateCredentials(request.UserId, null, request.Password))
+                throw new UnauthorizedAccessException("Invalid password");
+
+            var user = await this.Repository.Get(request.UserId.Value);
+
+            user.Username = request.Username;
+            user.Email = request.Email;
+
+            await this.Repository.Update(user);
+            await this.Repository.Commit();
+
+            if (request.NewPassword != null)
+            {
+                var userCredentials = authenticationRepository.HashPassword(request.Password);
+
+                userCredentials.UserId = user.Id.Value;
+
+                await authenticationRepository.SaveUserCredentials(userCredentials);
+            }
+
+            user = await this.Repository.Get(user.Id.Value);
 
             return Ok(user);
         }
