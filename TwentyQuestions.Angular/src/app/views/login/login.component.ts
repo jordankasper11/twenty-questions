@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
                 const accessToken = await this.authenticationService.login(loginRequest).toPromise();
 
                 if (accessToken) {
-                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 
                     await this.router.navigateByUrl(returnUrl);
                 }

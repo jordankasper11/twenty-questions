@@ -14,19 +14,19 @@ export class AuthenticationGuard implements CanActivate {
     constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
     async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+        if (this.authenticationService.isLoggedIn())
+            return true;
+
         try {
-            if (this.authenticationService.isLoggedIn())
-                return true;
-
             await this.authenticationService.refreshToken().toPromise();
-
-            if (this.authenticationService.isLoggedIn())
-                return true;
         }
-        finally {
-            await this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+        catch { }
 
-            return false;
-        }
+        if (this.authenticationService.isLoggedIn())
+            return true;
+
+        await this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+
+        return false;
     }
 }
