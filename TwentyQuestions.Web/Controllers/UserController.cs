@@ -71,7 +71,9 @@ namespace TwentyQuestions.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await authenticationRepository.ValidateCredentials(request.UserId, null, request.Password))
+            var userCredentials = await authenticationRepository.ValidateCredentials(request.UserId, null, request.Password);
+
+            if (userCredentials == null)
                 throw new UnauthorizedAccessException("Invalid password");
 
             var user = await this.Repository.Get(request.UserId.Value);
@@ -84,7 +86,7 @@ namespace TwentyQuestions.Web.Controllers
 
             if (request.NewPassword != null)
             {
-                var userCredentials = authenticationRepository.HashPassword(request.Password);
+                userCredentials = authenticationRepository.HashPassword(request.NewPassword);
 
                 userCredentials.UserId = user.Id.Value;
 

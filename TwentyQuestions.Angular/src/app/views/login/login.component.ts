@@ -1,4 +1,4 @@
-import { NgModule, Component, OnInit } from '@angular/core';
+import { NgModule, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     ) { }
 
     async ngOnInit(): Promise<void> {
-        await this.authenticationService.logout();
+        setTimeout(async () => await this.authenticationService.logout());
 
         this.buildForm();
     }

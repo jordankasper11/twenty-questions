@@ -42,9 +42,20 @@ export class SettingsComponent implements OnInit {
         this.form = new FormGroup({
             username: new FormControl(user.username, { updateOn: 'blur', validators: [FormProvider.validators.requiredTrim], asyncValidators: [this.validateUsernameAvailablity.bind(this)] }),
             email: new FormControl(user.email, [Validators.required, Validators.email]),
-            password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-            confirmPassword: new FormControl('', [Validators.required, this.validateComparePassword.bind(this)]),
+            password: new FormControl('', [Validators.required]),
+            newPassword: new FormControl('', [Validators.minLength(6)]),
+            confirmNewPassword: new FormControl({ value: '', disabled: true }, [this.validateCompareNewPassword.bind(this)]),
             avatar: new FormControl('')
+        });
+
+        const newPassword = this.form.get('newPassword');
+        const confirmNewPassword = this.form.get('confirmNewPassword');
+
+        newPassword.valueChanges.subscribe(value => {
+            if (value)
+                confirmNewPassword.enable();
+            else
+                confirmNewPassword.disable();
         });
     }
 
@@ -59,12 +70,14 @@ export class SettingsComponent implements OnInit {
         return null;
     };
 
-    validateComparePassword(control: AbstractControl): ValidationErrors {
+    validateCompareNewPassword(control: AbstractControl): ValidationErrors {
         if (this.form) {
-            const password = this.form.get('password').value;
-            const confirmPassword = control.value;
+            const newPassword = this.form.get('newPassword').value;
+            const confirmNewPassword = control.value;
 
-            if (password != confirmPassword)
+            if (newPassword && !confirmNewPassword)
+                return { 'required': true };
+            else if (newPassword != confirmNewPassword)
                 return { 'passwordMatch': true };
         }
 
@@ -95,13 +108,13 @@ export class SettingsComponent implements OnInit {
                 request.username = this.form.value.username;
                 request.email = this.form.value.email;
                 request.password = this.form.value.password;
-                request.newPassword = this.form.value.newPassword;
+                request.newPassword = this.form.value.newPassword ?this.form.value.newPassword : null;
 
                 const user = await this.userService.updateSettings(request).toPromise();
 
                 if (this.avatar)
                     await this.userService.saveAvatar(user.id, this.avatar).toPromise();
-                else if (this.removeAvatar)
+                else if (this.removedAvatar)
                     await this.userService.removeAvatar(userId).toPromise();
 
                 this.router.navigate(['/']);

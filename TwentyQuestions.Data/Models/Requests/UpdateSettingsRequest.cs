@@ -22,7 +22,6 @@ namespace TwentyQuestions.Data.Models.Requests
         public string Password { get; set; }
 
         [MinLength(6)]
-        [Required]
         public string NewPassword { get; set; }
     }
 }

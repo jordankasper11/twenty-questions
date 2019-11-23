@@ -24,13 +24,17 @@
             <label for="password">Password</label>
             <input formControlName="password" type="password" id="password" placeholder="Password" required />
             <span *ngIf="form.controls.password.errors?.required && form.controls.password.touched" class="validator">Password is required</span>
-            <span *ngIf="form.controls.password.errors?.minlength && form.controls.password.touched" class="validator">Password must be at least six characters</span>
         </div>
         <div class="form-row">
-            <label for="confirm-password">Confirm Password</label>
-            <input formControlName="confirmPassword" type="password" id="confirm-password" placeholder="Confirm Password" required />
-            <span *ngIf="form.controls.confirmPassword.errors?.required && form.controls.confirmPassword.touched" class="validator">Confirm Password is required</span>
-            <span *ngIf="form.controls.confirmPassword.errors?.passwordMatch && form.controls.confirmPassword.touched" class="validator">Passwords do not match</span>
+            <label for="password">New Password</label>
+            <input formControlName="newPassword" type="password" id="new-password" placeholder="New Password (optional)" />
+            <span *ngIf="form.controls.newPassword.errors?.minlength && form.controls.newPassword.touched" class="validator">New Password must be at least six characters</span>
+        </div>
+        <div class="form-row">
+            <label for="confirm-new-password">Confirm New Password</label>
+            <input formControlName="confirmNewPassword" type="password" id="confirm-new-password" placeholder="Confirm Password" [required]="form.value.newPassword" />
+            <span *ngIf="form.controls.confirmNewPassword.errors?.required && form.controls.confirmNewPassword.touched" class="validator">Confirm New Password is required</span>
+            <span *ngIf="form.controls.confirmNewPassword.errors?.passwordMatch && form.controls.confirmNewPassword.touched" class="validator">Passwords do not match</span>
         </div>
         <div class="form-row">
             <label for="avatar">Avatar</label>

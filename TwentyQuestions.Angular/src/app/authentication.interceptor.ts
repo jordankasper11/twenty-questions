@@ -14,9 +14,11 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         request = this.addRequestHeaders(request);
 
+        const url = request.url.toLowerCase().replace(/https?:\/\/[^/]+/, '');
+
         return next.handle(request).pipe(
             catchError(error => {
-                if (error instanceof HttpErrorResponse && error.status == 401)
+                if (error instanceof HttpErrorResponse && error.status == 401 && url != '/api/authentication/login')
                     return this.handleUnauthorizedRequest(request, next, error);
 
                 return throwError(error);

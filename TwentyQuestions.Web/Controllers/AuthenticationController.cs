@@ -30,7 +30,7 @@ namespace TwentyQuestions.Web.Controllers
             if (loginResponse != null)
                 return Ok(loginResponse);
 
-            return Unauthorized();
+            return Unauthorized("Invalid credentials");
         }
 
         [AllowAnonymous]

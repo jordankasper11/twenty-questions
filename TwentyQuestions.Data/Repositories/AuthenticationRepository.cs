@@ -25,7 +25,7 @@ namespace TwentyQuestions.Data.Repositories
 
         UserCredentialsDto HashPassword(string password);
 
-        Task<bool> ValidateCredentials(Guid? userId, string username, string password);
+        Task<UserCredentialsDto> ValidateCredentials(Guid? userId, string username, string password);
     }
 
     public class AuthenticationRepository : BaseRepository, IAuthenticationRepository
@@ -57,6 +57,7 @@ namespace TwentyQuestions.Data.Repositories
                 sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = userCredentials.UserId });
                 sqlCommand.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.NVarChar) { Value = userCredentials.PasswordHash });
                 sqlCommand.Parameters.Add(new SqlParameter("@PasswordSalt", SqlDbType.NVarChar) { Value = userCredentials.PasswordSalt });
+                sqlCommand.Parameters.Add(new SqlParameter("@ModifiedBy", SqlDbType.UniqueIdentifier) { Value = this.Context.UserId });
 
                 await sqlCommand.ExecuteNonQueryAsync();
             }
@@ -64,9 +65,9 @@ namespace TwentyQuestions.Data.Repositories
 
         public async Task<LoginResponse> Login(LoginRequest request)
         {
-            var userCredentials = await GetUserCredentials(request);
+            var userCredentials = await ValidateCredentials(null, request.Username, request.Password);
 
-            if (userCredentials != null && ValidatePassword(request.Password, userCredentials.PasswordSalt, userCredentials.PasswordHash))
+            if (userCredentials != null)
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -141,16 +142,14 @@ namespace TwentyQuestions.Data.Repositories
             }
         }
 
-        public async Task<bool> ValidateCredentials(Guid? userId, string username, string password)
+        public async Task<UserCredentialsDto> ValidateCredentials(Guid? userId, string username, string password)
         {
-            var loginRequest = new LoginRequest();
+            var userCredentials = await GetUserCredentials(userId, username, null);
 
-            loginRequest.Username = username;
-            loginRequest.Password = password;
+            if (userCredentials != null && ValidatePassword(password, userCredentials.PasswordSalt, userCredentials.PasswordHash))
+                return userCredentials;
 
-            var userCredentials = await GetUserCredentials(loginRequest);
-
-            return userCredentials != null && ValidatePassword(loginRequest.Password, userCredentials.PasswordSalt, userCredentials.PasswordHash);
+            return null;
         }
 
         private string GetAccessToken(UserCredentialsDto userCredentials)
@@ -189,15 +188,15 @@ namespace TwentyQuestions.Data.Repositories
 
         private async Task<UserCredentialsDto> GetUserCredentials(string refreshToken)
         {
-            return await GetUserCredentials(null, refreshToken);
+            return await GetUserCredentials(null, null, refreshToken);
         }
 
-        private async Task<UserCredentialsDto> GetUserCredentials(LoginRequest request)
+        private async Task<UserCredentialsDto> GetUserCredentials(string username, string password)
         {
-            return await GetUserCredentials(request, null);
+            return await GetUserCredentials(null, username, null);
         }
 
-        private async Task<UserCredentialsDto> GetUserCredentials(LoginRequest request, string refreshToken)
+        private async Task<UserCredentialsDto> GetUserCredentials(Guid? userId, string username, string refreshToken)
         {
             await EnsureConnectionOpen();
 
@@ -205,7 +204,8 @@ namespace TwentyQuestions.Data.Repositories
             {
                 sqlCommand.CommandText = "UserCredentials_Get";
                 sqlCommand.CommandType = CommandType.StoredProcedure;
-                sqlCommand.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar) { Value = request?.Username });
+                sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = userId });
+                sqlCommand.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar) { Value = username });
                 sqlCommand.Parameters.Add(new SqlParameter("@RefreshToken", SqlDbType.NVarChar) { Value = refreshToken });
 
                 using (var sqlDataReader = await sqlCommand.ExecuteReaderAsync())
