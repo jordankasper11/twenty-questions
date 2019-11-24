@@ -63,7 +63,7 @@ namespace TwentyQuestions.Data.Repositories
             if (game.OpponentId != this.Context.UserId)
                 throw new InvalidOperationException("Only the challenged user can ask a question");
 
-            if (game.ModifiedBy == this.Context.UserId || game.Questions?.LastOrDefault() != null && game.Questions.Last().Response == null)
+            if (game.Questions?.Any() == true && game.Questions.Last().Response == null)
                 throw new InvalidOperationException("Waiting for opponent to respond");
 
             if (game.Completed)
@@ -93,8 +93,8 @@ namespace TwentyQuestions.Data.Repositories
             if (game.CreatedBy != this.Context.UserId)
                 throw new InvalidOperationException("Only the challenger can respond to a question");
 
-            if (game.ModifiedBy == this.Context.UserId || game.Questions?.LastOrDefault().Response != null)
-                throw new InvalidOperationException("Waiting for opponent to respond");
+            if (game.Questions?.LastOrDefault()?.Response != null)
+                throw new InvalidOperationException("Waiting for opponent to ask a question");
 
             if (game.Completed)
                 throw new InvalidOperationException("The game has alreaddy been completed");

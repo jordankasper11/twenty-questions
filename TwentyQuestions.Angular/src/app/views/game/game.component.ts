@@ -33,12 +33,12 @@ export class GameComponent implements OnInit, OnDestroy {
         if (this.game) {
             if (this.game.completed)
                 return GameMode.Completed;
-            else if (this.game.modifiedBy == this.userId)
-                return GameMode.Waiting;
-            else if (this.game.createdBy == this.userId)
+            else if (this.game.opponentId == this.userId && (this.game.questions == null || this.game.questions.length == 0 || this.game.questions[this.game.questions.length - 1].response != null))
+                return GameMode.Guessing;
+            else if (this.game.createdBy == this.userId && (this.game.questions != null && this.game.questions.length && this.game.questions[this.game.questions.length - 1].response == null))
                 return GameMode.Responding;
             else
-                return GameMode.Guessing;
+                return GameMode.Waiting;
         }
 
         return null;
