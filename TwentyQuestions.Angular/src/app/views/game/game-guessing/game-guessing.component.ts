@@ -2,6 +2,7 @@ import { NgModule, Component, OnInit, Output, Input, EventEmitter } from '@angul
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GameService } from '@services';
+import { FormProvider } from '@providers';
 import { GameEntity, QuestionResponse, AskQuestionRequest } from '@models';
 import { GameQuestionsComponentModule } from '../game-questions/game-questions.component';
 
@@ -26,7 +27,7 @@ export class GameGuessingComponent implements OnInit {
 
     buildForm(): void {
         this.form = new FormGroup({
-            question: new FormControl('', [Validators.required])
+            question: new FormControl('', [FormProvider.validators.requiredTrim])
         });
     }
 
