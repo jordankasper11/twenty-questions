@@ -13,6 +13,7 @@ import { FriendRequest, FriendEntity, EntityStatus, UserEntity, UserRequest } fr
 export class FriendsSearchComponent implements OnInit {
     form: FormGroup;
     users: Array<UserEntity>;
+    searchCompleted = false;
 
     constructor(
         private userService: UserService,
@@ -42,6 +43,8 @@ export class FriendsSearchComponent implements OnInit {
 
         if (response)
             this.users = response.items;
+
+        this.searchCompleted = true;
     }
 
     async addFriend(user: UserEntity): Promise<void> {

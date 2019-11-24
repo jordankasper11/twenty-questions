@@ -15,3 +15,6 @@
         <button type="button" class="invitation__button" (click)="addFriend(user)">Add Friend</button>
     </div>
 </div>
+<p *ngIf="searchCompleted && !users?.length">
+    No users found
+</p>
