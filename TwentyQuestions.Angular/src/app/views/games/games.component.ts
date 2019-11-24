@@ -30,7 +30,6 @@ export class GamesComponent implements OnInit, OnDestroy {
         const request = new GameRequest();
 
         request.status = EntityStatus.Active | EntityStatus.Pending;
-        request.completed = false;
 
         const response = await this.gameService.query(request).toPromise();
         const userId = this.authenticationService.getAccessToken().userId;

@@ -31,7 +31,8 @@ BEGIN
 				(@Id IS NULL OR G.Id = @Id) AND
 				(@FilterIds = 0 OR G.Id IN (SELECT Id FROM @Ids)) AND
 				(@UserId IS NULL OR G.CreatedBy = @UserId OR G.OpponentId = @UserId) AND
-				(@Completed IS NULL OR G.Completed = @Completed)
+				(@Completed IS NULL OR G.Completed = @Completed) AND
+				(@Completed IS NOT NULL OR (G.Completed = 0 OR G.ModifiedDate <= DATEADD(DAY, 7, GETUTCDATE())))
 
 	SET	@TotalRecords = @@ROWCOUNT
 
