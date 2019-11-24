@@ -1,12 +1,12 @@
 <h1>Friends</h1>
 <div *ngFor="let friend of friends" class="friend">
-    <h3 class="invitation__username">{{ friend.username }}</h3>
-    <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="invitation__avatar" alt="" />
-    <img *ngIf="!friend.avatarUrl" [src]="defaultAvatarUrl" class="invitation__avatar" alt="" />
-    <div class="invitation__container">
-        <button type="button" class="invitation__button" (click)="removeFriend(friend)">Remove</button>
+    <h3 class="friend__username">{{ friend.username }}</h3>
+    <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="friend__avatar" alt="" />
+    <img *ngIf="!friend.avatarUrl" [src]="defaultAvatarUrl" class="friend__avatar" alt="" />
+    <div class="friend__container">
+        <button type="button" class="friend__button" (click)="removeFriend(friend)">Remove</button>
     </div>
-    <span class="invitation__created">Added <em>{{ friend.createdDate | duration }}</em></span>
+    <span class="friend__created">Added <em>{{ friend.createdDate | duration }}</em></span>
 </div>
 <ng-container *ngIf="invitations?.length">
     <h2>Invitations</h2>
