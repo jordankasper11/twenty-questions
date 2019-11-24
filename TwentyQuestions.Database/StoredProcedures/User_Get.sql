@@ -1,12 +1,13 @@
 ﻿CREATE PROCEDURE [dbo].[User_Get] (
-	@Id				UNIQUEIDENTIFIER = NULL,
-	@Ids			EntityIdsType READONLY,
-	@Status			INT = NULL,
-	@Username		NVARCHAR(32) = NULL,
-	@OrderBy		NVARCHAR(64) = 'Username ASC',
-	@PageNumber		INT = 1,
-	@PageSize		INT = 2147483647,
-	@TotalRecords	INT = NULL OUTPUT
+	@Id					UNIQUEIDENTIFIER = NULL,
+	@Ids				EntityIdsType READONLY,
+	@Status				INT = NULL,
+	@Username			NVARCHAR(32) = NULL,
+	@FriendSearchUserId	UNIQUEIDENTIFIER = NULL,
+	@OrderBy			NVARCHAR(64) = 'Username ASC',
+	@PageNumber			INT = 1,
+	@PageSize			INT = 2147483647,
+	@TotalRecords		INT = NULL OUTPUT
 )
 AS
 BEGIN
@@ -23,7 +24,13 @@ BEGIN
 	WHERE		((@Id IS NOT NULL OR @FilterIds = 1) OR (@Status IS NULL AND [Status] = 1) OR (@Status IS NOT NULL AND [Status] & @Status > 0)) AND
 				(@Id IS NULL OR Id = @Id) AND
 				(@FilterIds = 0 OR Id IN (SELECT Id FROM @Ids)) AND
-				(@Username IS NULL OR Username = @Username)
+				(@Username IS NULL OR Username = @Username) AND
+				(@FriendSearchUserId IS NULL OR (Id != @FriendSearchUserId AND Id NOT IN (
+					SELECT	CASE WHEN CreatedBy = @FriendSearchUserId THEN FriendId ELSE CreatedBy END
+					FROM	Friends
+					WHERE	(CreatedBy = @FriendSearchUserId OR FriendId = @FriendSearchUserId) AND
+							[Status] != 8
+				)))
 
 	SET	@TotalRecords = @@ROWCOUNT
 

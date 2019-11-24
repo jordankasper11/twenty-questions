@@ -23,7 +23,9 @@ export class RegistrationComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+        setTimeout(async () => await this.authenticationService.logout());
+        
         this.buildForm();
     }
 

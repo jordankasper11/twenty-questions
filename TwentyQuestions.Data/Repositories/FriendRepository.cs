@@ -12,6 +12,9 @@ namespace TwentyQuestions.Data.Repositories
 {
     public interface IFriendRepository : IRepository<FriendEntity, FriendRequest>
     {
+        Task AcceptInvitation(Guid gameId);
+
+        Task DeclineInvitation(Guid gameId);
     }
 
     public class FriendRepository : BaseRepository<FriendEntity, FriendRequest>, IFriendRepository
@@ -30,6 +33,35 @@ namespace TwentyQuestions.Data.Repositories
             return base.Get(request);
         }
 
+        public override Task<Guid> Insert(FriendEntity entity)
+        {
+            entity.Status = EntityStatus.Pending;
+
+            return base.Insert(entity);
+        }
+
+        public override async Task Delete(Guid id)
+        {
+            var friend = await Get(id);
+
+            if (friend != null)
+            {
+                friend.Status = EntityStatus.Deleted;
+
+                await Update(friend);
+            }
+        }
+
+        public async Task AcceptInvitation(Guid gameId)
+        {
+            await UpdateStatus(gameId, EntityStatus.Active);
+        }
+
+        public async Task DeclineInvitation(Guid gameId)
+        {
+            await UpdateStatus(gameId, EntityStatus.Deleted);
+        }
+
         protected override void AddGetParameters(SqlParameterCollection sqlParameters, FriendRequest request)
         {
             sqlParameters.Add("@UserId", SqlDbType.UniqueIdentifier).Value = request.UserId;
@@ -38,12 +70,11 @@ namespace TwentyQuestions.Data.Repositories
 
         protected override void AddInsertParameters(SqlParameterCollection sqlParameters, FriendEntity entity)
         {
-            throw new NotImplementedException();
+            sqlParameters.Add("@FriendId", SqlDbType.UniqueIdentifier).Value = entity.FriendId;
         }
 
         protected override void AddUpdateParameters(SqlParameterCollection sqlParameters, FriendEntity entity)
         {
-            throw new NotImplementedException();
         }
 
         protected override void PopulateEntity(FriendEntity entity, DataRow dataRow, DataSet dataSet)
@@ -51,6 +82,18 @@ namespace TwentyQuestions.Data.Repositories
             entity.FriendId = dataRow.Field<Guid>("FriendId");
             entity.Username = dataRow.Field<string>("Username");
             entity.AvatarFileName = dataRow.Field<string>("AvatarFileName");
+        }
+
+        private async Task UpdateStatus(Guid id, EntityStatus status)
+        {
+            var friend = await Get(id);
+
+            if (friend == null)
+                throw new InvalidOperationException("Invalid Id");
+
+            friend.Status = status;
+
+            await Update(friend);
         }
     }
 }

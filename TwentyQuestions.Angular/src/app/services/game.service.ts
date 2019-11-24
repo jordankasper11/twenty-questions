@@ -12,12 +12,12 @@ export class GameService extends BaseEntityService<GameEntity, GameRequest> {
         super(http, '/Game');
     }
 
-    acceptInvitation(gameId: string): Observable<void> {
-        return this.httpGet(`${this.endPoint}/AcceptInvitation?gameId=${gameId}`);
+    acceptInvitation(id: string): Observable<void> {
+        return this.httpGet(`${this.endPoint}/AcceptInvitation?id=${id}`);
     }
 
-    declineInvitation(gameId: string): Observable<void> {
-        return this.httpGet(`${this.endPoint}/DeclineInvitation?gameId=${gameId}`);
+    declineInvitation(id: string): Observable<void> {
+        return this.httpGet(`${this.endPoint}/DeclineInvitation?id=${id}`);
     }
 
     askQuestion(request: AskQuestionRequest): Observable<GameEntity> {

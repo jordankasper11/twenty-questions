@@ -1,0 +1,17 @@
+<h1>Find Friends</h1>
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+        <label for="username">Username</label>
+        <input type="search" id="username" required formControlName="username" />
+    </div>
+    <div class="form-footer">
+        <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Search</button>
+    </div>
+</form>
+<div *ngFor="let user of users" class="invitation">
+    <h3 class="invitation__username">{{ user.username }}</h3>
+    <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" class="invitation__avatar" alt="" />
+    <div class="invitation__container">
+        <button type="button" class="invitation__button" (click)="addFriend(user)">Add Friend</button>
+    </div>
+</div>

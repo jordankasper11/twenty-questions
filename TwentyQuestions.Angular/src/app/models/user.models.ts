@@ -8,6 +8,7 @@ export class UserEntity extends BaseTrackedEntity {
 
 export class UserRequest extends BaseEntityRequest<UserEntity> {
     public username: string;
+    public friendSearch: boolean;
 }
 
 export class RegistrationRequest extends BaseRequest {

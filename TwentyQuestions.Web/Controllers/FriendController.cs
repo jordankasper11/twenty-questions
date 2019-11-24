@@ -17,5 +17,21 @@ namespace TwentyQuestions.Web.Controllers
         public FriendController(IFriendRepository repository, ConfigurationSettings configurationSettings) : base(repository, configurationSettings)
         {
         }
+
+        [HttpGet("AcceptInvitation")]
+        public async Task<ActionResult> AcceptInvitation(Guid id)
+        {
+            await this.Repository.AcceptInvitation(id);
+
+            return Ok();
+        }
+
+        [HttpGet("DeclineInvitation")]
+        public async Task<ActionResult> DeclineInvitation(Guid id)
+        {
+            await this.Repository.DeclineInvitation(id);
+
+            return Ok();
+        }
     }
 }

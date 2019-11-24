@@ -148,6 +148,7 @@ namespace TwentyQuestions.Data.Repositories
         protected override void AddGetParameters(SqlParameterCollection sqlParameters, UserRequest request)
         {
             sqlParameters.Add("@Username", SqlDbType.NVarChar).Value = request.Username;
+            sqlParameters.Add("@FriendSearchUserId", SqlDbType.UniqueIdentifier).Value = request.FriendSearch == true ? this.Context.UserId : null;
         }
 
         protected override void PopulateEntity(UserEntity entity, DataRow dataRow, DataSet dataSet)
