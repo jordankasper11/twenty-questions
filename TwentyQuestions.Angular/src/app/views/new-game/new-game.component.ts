@@ -6,10 +6,10 @@ import { GameService, FriendService } from '@services';
 import { FriendRequest, FriendEntity, GameEntity, QuestionResponse } from '@models';
 
 @Component({
-    selector: 'app-create-game',
-    templateUrl: './create-game.component.html'
+    selector: 'app-new-game',
+    templateUrl: './new-game.component.html'
 })
-export class CreateGameComponent implements OnInit {
+export class NewGameComponent implements OnInit {
     QuestionResponse = QuestionResponse;
 
     form: FormGroup;
@@ -51,14 +51,14 @@ export class CreateGameComponent implements OnInit {
 
             game = await this.gameService.upsert(game).toPromise();
 
-            this.router.navigate(['/game', game.id]);
+            this.router.navigate(['/games', game.id]);
         }
     }
 }
 
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule],
-    declarations: [CreateGameComponent],
-    exports: [CreateGameComponent]
+    declarations: [NewGameComponent],
+    exports: [NewGameComponent]
 })
-export class CreateGameComponentModule { }
+export class NewGameComponentModule { }

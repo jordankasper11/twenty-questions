@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService, AuthenticationService } from '@services';
 import { GameEntity } from '@models';
 import { DurationPipeModule } from '@pipes';
-import { CreateGameComponentModule } from './create-game/create-game.component';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
@@ -31,9 +30,7 @@ export class GameComponent implements OnInit, OnDestroy {
     gameTimer: NodeJS.Timer;
 
     get gameMode(): GameMode {
-        if (!this.id)
-            return GameMode.Creating;
-        else if (this.game) {
+        if (this.game) {
             if (this.game.completed)
                 return GameMode.Completed;
             else if (this.game.modifiedBy == this.userId)
@@ -85,7 +82,6 @@ export class GameComponent implements OnInit, OnDestroy {
     imports: [
         CommonModule,
         DurationPipeModule,
-        CreateGameComponentModule,
         GameCompletedComponentModule,
         GameGuessingComponentModule,
         GameRespondingComponentModule,

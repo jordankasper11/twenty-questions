@@ -6,10 +6,12 @@
             <option></option>
             <option *ngFor="let friend of friends" [ngValue]="friend.friendId">{{ friend.username }}</option>
         </select>
+        <span *ngIf="form.controls.opponentId.errors?.required && form.controls.opponentId.touched" class="validator">Friend is required</span>
     </div>
     <div class="form-row">
         <label for="subject">Subject</label>
         <input type="text" id="subject" required autofocus formControlName="subject" />
+        <span *ngIf="form.controls.subject.errors?.required && form.controls.subject.touched" class="validator">Subject is required</span>
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Create Game</button>

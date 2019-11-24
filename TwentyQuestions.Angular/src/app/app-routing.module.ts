@@ -6,6 +6,7 @@ import {
     GameComponentModule, GameComponent,
     GamesComponentModule, GamesComponent,
     LoginComponentModule, LoginComponent,
+    NewGameComponentModule, NewGameComponent,
     RegistrationComponentModule, RegistrationComponent,
     SettingsComponentModule, SettingsComponent
 } from '@views';
@@ -15,9 +16,9 @@ const routes: Routes = [
     { path: '', component: GamesComponent, canActivate: [AuthenticationGuard] },
     { path: 'friends', component: FriendsComponent, canActivate: [AuthenticationGuard] },
     { path: 'friends/search', component: FriendsSearchComponent, canActivate: [AuthenticationGuard] },
-    { path: 'game', component: GameComponent, canActivate: [AuthenticationGuard] },
-    { path: 'game/:id', component: GameComponent, canActivate: [AuthenticationGuard] },
     { path: 'games', component: GamesComponent, canActivate: [AuthenticationGuard] },
+    { path: 'games/new', component: NewGameComponent, canActivate: [AuthenticationGuard] },
+    { path: 'games/:id', component: GameComponent, canActivate: [AuthenticationGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegistrationComponent },
     { path: 'settings', component: SettingsComponent, canActivate: [AuthenticationGuard] },
@@ -30,6 +31,7 @@ const routes: Routes = [
         GameComponentModule,
         GamesComponentModule,
         LoginComponentModule,
+        NewGameComponentModule,
         RegistrationComponentModule,
         SettingsComponentModule,
         RouterModule.forRoot(routes)

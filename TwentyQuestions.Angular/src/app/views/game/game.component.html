@@ -1,4 +1,3 @@
-<app-create-game *ngIf="!id && !game"></app-create-game>
 <div *ngIf="game" class="game-details">
     <header *ngIf="gameMode != null && gameMode != GameMode.Creating" class="game-details__heading">
         <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" alt="" class="game-details__heading__avatar" />
