@@ -4,6 +4,7 @@
     <div *ngFor="let game of invitations" class="invitation">
         <h3 class="invitation__username">{{ game.friendUsername }}</h3>
         <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" class="invitation__avatar" alt="" />
+        <img *ngIf="!game.friendAvatarUrl" [src]="defaultAvatarUrl" class="invitation__avatar" alt="" />
         <div class="invitation__container">
             <button type="button" class="invitation__button" (click)="acceptInvitation(game)">Accept</button>
             <button type="button" class="invitation__button" (click)="declineInvitation(game)">Decline</button>
@@ -14,6 +15,7 @@
 <a *ngFor="let game of games" class="game" [routerLink]="['/games', game.id]" [title]="game.subject ? game.subject : 'Guessing'">
     <h3 class="game__username">{{ game.friendUsername }}</h3>
     <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" class="game__avatar" alt="" />
+    <img *ngIf="!game.friendAvatarUrl" [src]="defaultAvatarUrl" class="game__avatar" alt="" />
     <div class="game__container">
         <span *ngIf="game.subject" class="game__answer">{{ game.subject }}</span>
         <span *ngIf="!game.subject" class="game__answer game__answer--guessing">Guessing</span>

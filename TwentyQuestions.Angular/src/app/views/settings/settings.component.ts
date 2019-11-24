@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UpdateSettingsRequest, UserEntity } from '@models';
 import { UserService, AuthenticationService } from '@services';
 import { FormProvider } from '@providers';
+import { environment } from '@environments';
 
 @Component({
     selector: 'app-settings',
@@ -12,6 +13,7 @@ import { FormProvider } from '@providers';
 })
 export class SettingsComponent implements OnInit {
     form: FormGroup;
+    defaultAvatarUrl = environment.defaultAvatarUrl;
     errorMessage: string;
 
     private user: UserEntity;

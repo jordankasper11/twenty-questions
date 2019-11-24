@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService, FriendService } from '@services';
 import { FriendRequest, FriendEntity, EntityStatus } from '@models';
+import { environment } from '@environments';
 
 @Component({
     selector: 'app-friends',
@@ -11,6 +12,7 @@ import { FriendRequest, FriendEntity, EntityStatus } from '@models';
 })
 export class FriendsComponent implements OnInit {
     userId: string;
+    defaultAvatarUrl = environment.defaultAvatarUrl;
     invitations: Array<FriendEntity>;
     friends: Array<FriendEntity>;
 

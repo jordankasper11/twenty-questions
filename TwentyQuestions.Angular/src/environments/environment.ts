@@ -4,7 +4,8 @@
 
 export const environment = {
     production: false,
-    requestUrlPrefix: 'https://localhost:44375'
+    requestUrlPrefix: 'https://localhost:44375',
+    defaultAvatarUrl: '/assets/images/avatar-default.png'
 };
 
 /*

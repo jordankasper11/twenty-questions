@@ -4,12 +4,14 @@ import { RouterModule } from '@angular/router';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService } from '@services';
 import { GameRequest, GameEntity, EntityStatus } from '@models';
+import { environment } from '@environments';
 
 @Component({
     selector: 'app-games',
     templateUrl: './games.component.html'
 })
 export class GamesComponent implements OnInit, OnDestroy {
+    defaultAvatarUrl = environment.defaultAvatarUrl;
     invitations: Array<GameEntity>;
     games: Array<GameEntity>;
     gamesTimer: NodeJS.Timer;

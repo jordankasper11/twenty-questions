@@ -1,6 +1,7 @@
 <div *ngIf="game" class="game-details">
     <header *ngIf="gameMode != null && gameMode != GameMode.Creating" class="game-details__heading">
         <img *ngIf="game.friendAvatarUrl" [src]="game.friendAvatarUrl" alt="" class="game-details__heading__avatar" />
+        <img *ngIf="!game.friendAvatarUrl" [src]="defaultAvatarUrl" alt="" class="game-details__heading__avatar" />
         <h1 *ngIf="game.friendUsername" aria-label="Game with" class="game-details__heading__opponent">{{ game.friendUsername }}</h1>
         <span class="game-details__heading__last-modified">
             {{ game.completed ? 'Completed' : 'Last updated' }}

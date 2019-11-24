@@ -3,6 +3,7 @@
         <div class="user-details__heading">
             <h1>Settings</h1>
             <img *ngIf="user?.avatarUrl" [src]="user.avatarUrl" class="user-details__heading__avatar" />
+            <img *ngIf="!user?.avatarUrl" [src]="defaultAvatarUrl" class="user-details__heading__avatar" />            
             <a *ngIf="user?.avatarUrl" (click)="removeAvatar()">Remove Avatar</a>
         </div>
         <div *ngIf="errorMessage" class="error-message">

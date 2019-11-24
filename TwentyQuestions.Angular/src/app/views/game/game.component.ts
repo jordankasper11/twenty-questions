@@ -8,6 +8,7 @@ import { GameCompletedComponentModule } from './game-completed/game-completed.co
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
 import { GameWaitingComponentModule } from './game-waiting/game-waiting.component';
+import { environment } from '@environments';
 
 enum GameMode {
     Creating,
@@ -25,6 +26,7 @@ export class GameComponent implements OnInit, OnDestroy {
     GameMode = GameMode;
 
     id: string;
+    defaultAvatarUrl = environment.defaultAvatarUrl;
     userId: string;
     game: GameEntity;
     gameTimer: NodeJS.Timer;
