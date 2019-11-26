@@ -12,11 +12,11 @@ import { environment } from '@environments';
     templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
+    user: UserEntity;
     form: FormGroup;
     defaultAvatarUrl = environment.defaultAvatarUrl;
     errorMessage: string;
-
-    private user: UserEntity;
+    
     private avatar: File;
     private removedAvatar = false;
 

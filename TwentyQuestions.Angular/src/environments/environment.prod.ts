@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    requestUrlPrefix: ''
+    requestUrlPrefix: '',
+    defaultAvatarUrl: '/assets/images/avatar-default.png'
 };
