@@ -19,7 +19,7 @@ namespace TwentyQuestions.Web
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, configurationBuilder) => configurationBuilder.AddEnvironmentVariables(prefix: "20Q."))
+                .ConfigureAppConfiguration((context, configurationBuilder) => configurationBuilder.AddEnvironmentVariables(prefix: "20Q_"))
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
         }
     }

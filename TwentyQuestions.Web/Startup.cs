@@ -39,9 +39,9 @@ namespace TwentyQuestions.Web
         {
             var configurationSettings = new ConfigurationSettings();
 
-            configurationSettings.Database.ConnectionString = this.Configuration["Database.ConnectionString"] ?? "Server=localhosdsfht;Database=TwentyQuestions;Trusted_Connection=True;";
-            configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication.SecurityKey"] ?? "20QDevSecurityKey";
-            configurationSettings.Paths.Avatars = this.Configuration["Paths.Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
+            configurationSettings.Database.ConnectionString = this.Configuration["Database_ConnectionString"] ?? "Server=localhosdsfht;Database=TwentyQuestions;Trusted_Connection=True;";
+            configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication_SecurityKey"] ?? "20QDevSecurityKey";
+            configurationSettings.Paths.Avatars = this.Configuration["Paths_Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
 
             //throw new Exception(configurationSettings.Authentication.SecurityKey);
 
