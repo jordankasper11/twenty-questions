@@ -37,8 +37,13 @@ namespace TwentyQuestions.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var configurationSettings = this.Configuration.GetSection("ConfigurationSettings")
-                .Get<ConfigurationSettings>();
+            var configurationSettings = new ConfigurationSettings();
+
+            configurationSettings.Database.ConnectionString = this.Configuration["Database.ConnectionString"] ?? "Server=localhosdsfht;Database=TwentyQuestions;Trusted_Connection=True;";
+            configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication.SecurityKey"] ?? "20QDevSecurityKey";
+            configurationSettings.Paths.Avatars = this.Configuration["Paths.Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
+
+            //throw new Exception(configurationSettings.Authentication.SecurityKey);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -97,11 +102,11 @@ namespace TwentyQuestions.Web
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(configurationSettings.Paths.Avatars),
-                RequestPath = new PathString("/avatars")
-            });
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(configurationSettings.Paths.Avatars),
+            //    RequestPath = new PathString("/avatars")
+            //});
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());

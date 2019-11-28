@@ -1,3 +1,4 @@
+# Compile Angular app with CLI
 FROM node:13 as node-build
 WORKDIR /usr/src/app
 
@@ -7,17 +8,18 @@ RUN npm install
 COPY ./TwentyQuestions.Angular/. .
 RUN npm run ng build -- --prod
 
+# Compile ASP.NET Core
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS dotnetcore-build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
+# Copy csproj files and restore NuGet packages
 COPY *.sln ./
 COPY TwentyQuestions.Data/*.csproj ./TwentyQuestions.Data/
 COPY TwentyQuestions.Database/*.sqlproj ./TwentyQuestions.Database/
 COPY TwentyQuestions.Web/*.csproj ./TwentyQuestions.Web/
 RUN dotnet restore
 
-# Copy everything else and build
+# Copy remaining code files and build
 COPY ./TwentyQuestions.Data/ ./TwentyQuestions.Data/
 COPY ./TwentyQuestions.Database/ ./TwentyQuestions.Database/
 COPY ./TwentyQuestions.Web/ ./TwentyQuestions.Web/

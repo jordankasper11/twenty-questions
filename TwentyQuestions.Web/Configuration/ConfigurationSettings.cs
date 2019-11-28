@@ -27,5 +27,12 @@ namespace TwentyQuestions.Web.Configuration
         public ConfigurationAuthenticationSettings Authentication { get; set; }
 
         public ConfigurationPaths Paths { get; set; }
+
+        public ConfigurationSettings()
+        {
+            this.Database = new ConfigurationDatabaseSettings();
+            this.Authentication = new ConfigurationAuthenticationSettings();
+            this.Paths = new ConfigurationPaths();
+        }
     }
 }
