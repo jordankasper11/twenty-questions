@@ -20,7 +20,12 @@ namespace TwentyQuestions.Web
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, configurationBuilder) => configurationBuilder.AddEnvironmentVariables(prefix: "20Q_"))
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+                .ConfigureLogging(logging =>
+                 {
+                     logging.ClearProviders();
+                     logging.AddConsole();
+                 });
         }
     }
 }

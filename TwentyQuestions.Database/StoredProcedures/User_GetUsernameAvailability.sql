@@ -16,4 +16,3 @@ BEGIN
 
 	SELECT @UsernameAvailable AS UsernameAvailable
 END
-GO

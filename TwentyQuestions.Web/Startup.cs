@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using DbUp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using TwentyQuestions.Data.Caching;
 using TwentyQuestions.Data.Repositories;
@@ -26,7 +29,7 @@ namespace TwentyQuestions.Web
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; private set; }
+        private IConfiguration Configuration { get; set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -39,7 +42,7 @@ namespace TwentyQuestions.Web
         {
             var configurationSettings = new ConfigurationSettings();
 
-            configurationSettings.Database.ConnectionString = this.Configuration["Database_ConnectionString"] ?? "Server=localhosdsfht;Database=TwentyQuestions;Trusted_Connection=True;";
+            configurationSettings.Database.ConnectionString = this.Configuration["Database_ConnectionString"] ?? "Server=localhost;Database=20Q;Trusted_Connection=True;";
             configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication_SecurityKey"] ?? "20QDevSecurityKey";
             configurationSettings.Paths.Avatars = this.Configuration["Paths_Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
 
@@ -89,11 +92,11 @@ namespace TwentyQuestions.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, ConfigurationSettings configurationSettings)
         {
-            var configurationSettings = app.ApplicationServices.GetService<ConfigurationSettings>();
+            applicationLifetime.ApplicationStarted.Register(() => UpdateDatabase(configurationSettings.Database.ConnectionString, logger));
 
-            if (env.IsDevelopment())
+            if (environment.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
                 app.UseHsts();
@@ -102,11 +105,11 @@ namespace TwentyQuestions.Web
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    FileProvider = new PhysicalFileProvider(configurationSettings.Paths.Avatars),
-            //    RequestPath = new PathString("/avatars")
-            //});
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(configurationSettings.Paths.Avatars),
+                RequestPath = new PathString("/avatars")
+            });
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
@@ -122,11 +125,45 @@ namespace TwentyQuestions.Web
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.ContentType = "text/html";
 
-                    await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+                    await context.Response.SendFileAsync(Path.Combine(environment.WebRootPath, "index.html"));
                 }
                 else
                     await next();
             });
+        }
+
+        private void UpdateDatabase(string connectionString, ILogger<Startup> logger)
+        {
+            logger.LogInformation("Checking database status");
+
+            EnsureDatabase.For.SqlDatabase(connectionString);
+
+            var upgradeEngine = DeployChanges.To
+                .SqlDatabase(connectionString)
+                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), scriptName => scriptName.StartsWith("TwentyQuestions.Web.Scripts."))
+                .WithTransaction()
+                .JournalToSqlTable("dbo", "DbUp")
+                .LogToConsole()                
+                .Build();
+
+            if (upgradeEngine.IsUpgradeRequired())
+            {
+                logger.LogInformation("Database changes detected");
+
+                var upgradeResult = upgradeEngine.PerformUpgrade();
+
+                if (upgradeResult.Successful)
+                {
+                    logger.LogInformation("Database updated successfully");
+
+                    foreach (var script in upgradeResult.Scripts)
+                        logger.LogInformation($"Executed script {script.Name}");
+                }
+                else
+                    logger.LogError(upgradeResult.Error, "Error updating database");
+            }
+            else
+                logger.LogInformation("No database changes detected");
         }
     }
 }
