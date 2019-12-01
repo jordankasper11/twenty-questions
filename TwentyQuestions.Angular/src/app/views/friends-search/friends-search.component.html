@@ -8,11 +8,11 @@
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Search</button>
     </div>
 </form>
-<div *ngFor="let user of users" class="invitation">
-    <h3 class="invitation__username">{{ user.username }}</h3>
-    <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" class="invitation__avatar" alt="" />
-    <div class="invitation__container">
-        <button type="button" class="invitation__button" (click)="addFriend(user)">Add Friend</button>
+<div *ngFor="let user of users" class="list-item">
+    <h3 class="list-item__username">{{ user.username }}</h3>
+    <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" class="list-item__avatar" alt="" />
+    <div class="list-item__container">
+        <button type="button" class="list-item__button" (click)="addFriend(user)">Add Friend</button>
     </div>
 </div>
 <p *ngIf="searchCompleted && !users?.length">

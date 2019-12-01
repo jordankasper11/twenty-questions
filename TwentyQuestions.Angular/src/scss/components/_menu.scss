@@ -16,6 +16,10 @@
     &:hover {
         background: $color-primary-light;
     }
+
+    @include responsive-tablet {
+        display: none;
+    }
 }
 
 .menu {
@@ -65,6 +69,20 @@
         display: flex;
         z-index: 100;
     }
+
+    @include responsive-tablet {
+        display: flex;
+        width: 120px;
+
+        nav {
+            span {
+                display: block;
+                margin: 20px 0 0 0;
+                font-family: $font-primary;
+                font-weight: normal;
+            }
+        }
+    }
 }
 
 .menu-overlay {
@@ -76,4 +94,17 @@
     bottom: 0;
     background: $color-white;
     opacity: 0.8;
+
+    @include responsive-tablet {
+        display: none;
+    }
+}
+
+.logo {
+    display: block;
+    margin: 0 auto $margin auto;
+
+    @include responsive-tablet {
+        margin-top: $margin;
+    }
 }

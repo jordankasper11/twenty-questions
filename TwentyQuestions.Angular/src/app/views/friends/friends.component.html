@@ -1,24 +1,25 @@
 <h1>Friends</h1>
-<div *ngFor="let friend of friends" class="friend">
-    <h3 class="friend__username">{{ friend.username }}</h3>
-    <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="friend__avatar" alt="" />
-    <img *ngIf="!friend.avatarUrl" [src]="defaultAvatarUrl" class="friend__avatar" alt="" />
-    <div class="friend__container">
-        <button type="button" class="friend__button" (click)="removeFriend(friend)">Remove</button>
+<div *ngFor="let friend of friends" class="list-item">
+    <h3 class="list-item__username">{{ friend.username }}</h3>
+    <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="list-item__avatar" alt="" />
+    <img *ngIf="!friend.avatarUrl" [src]="defaultAvatarUrl" class="list-item__avatar" alt="" />
+    <div class="list-item__container">
+        <button type="button" class="list-item__button" (click)="removeFriend(friend)">Remove</button>
     </div>
-    <span class="friend__created">Added <em>{{ friend.createdDate | duration }}</em></span>
+    <span class="list-item__information">Added <em>{{ friend.createdDate | duration }}</em></span>
 </div>
 <ng-container *ngIf="invitations?.length">
     <h2>Invitations</h2>
-    <div *ngFor="let friend of invitations" class="invitation">
-        <h3 class="invitation__username">{{ friend.username }}</h3>
-        <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="invitation__avatar" alt="" />
-        <div class="invitation__container">
-            <button *ngIf="friend.createdBy != userId" type="button" class="invitation__button" (click)="acceptInvitation(friend)">Accept</button>
-            <button *ngIf="friend.createdBy != userId" type="button" class="invitation__button" (click)="declineInvitation(friend)">Decline</button>
-            <button *ngIf="friend.createdBy == userId" type="button" class="invitation__button" (click)="cancelInvitation(friend)">Cancel</button>
+    <div *ngFor="let friend of invitations" class="list-item">
+        <h3 class="list-item__username">{{ friend.username }}</h3>
+        <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" class="list-item__avatar" alt="" />
+        <img *ngIf="!friend.avatarUrl" [src]="defaultAvatarUrl" class="list-item__avatar" alt="" />
+        <div class="list-item__container">
+            <button *ngIf="friend.createdBy != userId" type="button" class="list-item__button" (click)="acceptInvitation(friend)">Accept</button>
+            <button *ngIf="friend.createdBy != userId" type="button" class="list-item__button" (click)="declineInvitation(friend)">Decline</button>
+            <button *ngIf="friend.createdBy == userId" type="button" class="list-item__button" (click)="cancelInvitation(friend)">Cancel</button>
         </div>
-        <span class="invitation__created">{{ friend.createdBy == userId ? 'Sent' : 'Received' }} <em>{{ friend.createdDate | duration }}</em></span>
+        <span class="list-item__information">{{ friend.createdBy == userId ? 'Sent' : 'Received' }} <em>{{ friend.createdDate | duration }}</em></span>
     </div>
 </ng-container>
 <button type="button" routerLink="/friends/search">Find Friends</button>

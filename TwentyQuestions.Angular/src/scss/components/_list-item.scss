@@ -1,3 +1,143 @@
+.list-item {
+    $root: &;
+
+    display: block;
+    position: relative;
+    margin: 0 0 $margin 0;
+    padding-left: 90px;
+    cursor: pointer;
+
+    &__avatar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 110px;
+        height: 110px;
+        border: solid 2px $color-white;
+        border-radius: 50%;
+        background: $color-white;
+    }
+
+    &__username {
+        display: block;
+        margin: 0 0 5px $padding;
+        font-size: 14px;
+        font-weight: 600;
+        color: $color-text-secondary;
+    }
+
+    &__container  {
+        margin: 0 0 5px 0;
+        border: solid 2px $color-white;
+        border-radius: 0 $border-radius $border-radius 0;
+        padding: 20px 55px 20px 30px;
+        background: $color-primary;
+    }
+
+    &__subject {
+        display: block;
+        max-width: 100%;
+        font-size: 18px;
+        font-weight: 600;     
+        line-height: 30px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+        &--guessing {
+            font-style: italic;
+        }
+    }
+
+    &__button {
+        display: inline-block;
+        margin: 0;
+        width: auto;
+        padding: 5px 10px;
+
+        &:first-of-type {
+            margin-right: 10px;
+        }
+    }
+
+    &__counter {
+        position: absolute;
+        top: 40px;
+        right: 10px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        background: $color-white;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 30px;
+        text-align: center;
+        color: $color-primary;
+    }
+
+    &__information {
+        display: block;
+        padding: 0 10px 0 0;
+        font-size: 12px;
+        text-align: right;
+        color: $color-text-secondary;
+    }
+
+    &--clickable:hover {
+        text-decoration: none;
+
+        #{ $root }__container {
+            background: $color-primary-light;
+        }    
+    }
+
+    @include responsive-tablet {
+        padding-left: 110px;
+
+        &__avatar {
+            width: 140px;
+            height: 140px;
+        }
+
+        &__username {
+            margin: 0 0 10px 40px;
+            font-size: 16px;
+        }
+    
+        &__container  {
+            margin-bottom: 10px;
+            padding: 20px 110px 20px 40px;
+        }
+
+        &__subject {
+            line-height: 44px;
+        }
+
+        &__button {
+            padding: 10px;
+    
+            &:first-of-type {
+                margin-right: 20px;
+            }
+        }
+
+        &__counter {
+            top: 47px;
+            right: 25px;
+            width: 49px;
+            height: 46px;
+            font-size: 22px;
+            line-height: 40px;
+       }
+    
+        &__information {
+            padding: 0 10px 0 0;
+            font-size: 16px;
+        }
+    }
+}
+
 .game-details {
     &__heading {
         margin: 0 0 $margin 0;

@@ -1,4 +1,4 @@
-@import '_variables';
+@import '_includes';
 @import '_reset';
 @import '_fonts';
 @import '_typography';
@@ -6,7 +6,6 @@
 @import '_components';
 
 body {
-    width: 320px;
     background: $color-background;
     color: $color-text;
     font-family: $font-primary;
@@ -15,5 +14,22 @@ body {
 }
 
 main {
+    margin: 0 auto;
+    max-width: 600px;
     padding: 10px;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+@include responsive-tablet {
+    body {
+        padding-left: 120px;
+    }
+
+    main {
+        padding: $padding;
+    }
 }

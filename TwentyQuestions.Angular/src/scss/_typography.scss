@@ -4,6 +4,11 @@ h1, .h1 {
     font-size: 28px;
     text-align: center;
     color: $color-white;
+
+    @include responsive-tablet {
+        margin-bottom: $margin;
+        font-size: 36px;
+    }
 }
 
 h2, .h2 {
@@ -13,6 +18,11 @@ h2, .h2 {
     font-style: italic;
     text-align: center;
     color: $color-white;
+
+    @include responsive-tablet {
+        margin-bottom: $margin;
+        font-size: 26px;
+    }
 }
 
 a {
