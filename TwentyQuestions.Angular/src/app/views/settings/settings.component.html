@@ -39,7 +39,7 @@
         </div>
         <div class="form-row">
             <label for="avatar">Avatar</label>
-            <input formControlName="avatar" type="file" id="avatar" placeholder="Avatar" (change)="avatarChanged($event)" />
+            <input formControlName="avatar" type="file" id="avatar" accept="image/*" placeholder="Avatar" (change)="avatarChanged($event)" />
         </div>
         <div class="form-footer">
             <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Update Settings</button>
