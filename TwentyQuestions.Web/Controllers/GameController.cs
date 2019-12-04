@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,18 @@ using TwentyQuestions.Data.Models.Entities;
 using TwentyQuestions.Data.Models.Requests;
 using TwentyQuestions.Data.Repositories;
 using TwentyQuestions.Web.Configuration;
+using TwentyQuestions.Web.SignalR;
 
 namespace TwentyQuestions.Web.Controllers
 {
     [Route("api/Game")]
     public class GameController : BaseController<IGameRepository, GameEntity, GameRequest>
     {
-        public GameController(IGameRepository repository, ConfigurationSettings configurationSettings) : base(repository, configurationSettings)
+        private IHubContext<NotificationHub> _notificationHub;
+
+        public GameController(IGameRepository repository, ConfigurationSettings configurationSettings, IHubContext<NotificationHub> notificationHub) : base(repository, configurationSettings)
         {
+            _notificationHub = notificationHub;
         }
 
         [HttpGet("AcceptInvitation")]
@@ -41,6 +46,8 @@ namespace TwentyQuestions.Web.Controllers
 
             var game = await this.Repository.Get(request.GameId);
 
+            await _notificationHub.UpdateGame(game.Id.Value, game.CreatedBy.Value);
+
             return Ok(game);
         }
 
@@ -50,6 +57,8 @@ namespace TwentyQuestions.Web.Controllers
             await this.Repository.AnswerQuestion(request);
 
             var game = await this.Repository.Get(request.GameId);
+
+            await _notificationHub.UpdateGame(game.Id.Value, game.OpponentId);
 
             return Ok(game);
         }

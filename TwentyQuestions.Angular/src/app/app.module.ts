@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { NotificationProvider } from '@providers';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthenticationInterceptor } from './authentication.interceptor';
@@ -16,6 +17,7 @@ import { AuthenticationInterceptor } from './authentication.interceptor';
         AppRoutingModule
     ],
     providers: [
+        NotificationProvider,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthenticationInterceptor,

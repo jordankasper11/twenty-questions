@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthenticationService } from '@services';
+import { NotificationProvider } from '@providers';
 
 @Component({
     selector: 'app-root',
@@ -15,7 +16,7 @@ export class AppComponent implements OnInit {
         return this.authenticationService.isLoggedIn();
     }
 
-    constructor(private authenticationService: AuthenticationService, private router: Router) {
+    constructor(private authenticationService: AuthenticationService, private notificationProvider: NotificationProvider, private router: Router) {
     }
 
     ngOnInit(): void {

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ using TwentyQuestions.Data.Repositories;
 using TwentyQuestions.Web.Caching;
 using TwentyQuestions.Web.Configuration;
 using TwentyQuestions.Web.Middleware;
+using TwentyQuestions.Web.SignalR;
 
 namespace TwentyQuestions.Web
 {
@@ -59,6 +61,22 @@ namespace TwentyQuestions.Web
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationSettings.Authentication.SecurityKey))
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            if (context.HttpContext.Request.Path.StartsWithSegments("/hubs", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+
+                                if (!String.IsNullOrWhiteSpace(accessToken))
+                                    context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddMvc()
@@ -70,6 +88,7 @@ namespace TwentyQuestions.Web
 
             services.AddMemoryCache();
             services.AddSingleton<ConfigurationSettings>(configurationSettings);
+            services.AddSingleton<IUserIdProvider, UserIdProvider>();
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddTransient<SqlConnection>(serviceProvider => new SqlConnection(configurationSettings.Database.ConnectionString));
             services.AddScoped<IRepositoryContext, RepositoryContext>();
@@ -89,6 +108,7 @@ namespace TwentyQuestions.Web
 
                 return new UserRepository(sqlConnection, repositoryContext, configurationSettings.Paths.Avatars);
             });
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,7 +122,13 @@ namespace TwentyQuestions.Web
                 app.UseHsts();
 
             app.ConfigureExceptionMiddleware();
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(c => c
+                //.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .SetIsOriginAllowed(host => true)
+            );
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
@@ -112,6 +138,7 @@ namespace TwentyQuestions.Web
             });
             app.UseRouting();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapHub<NotificationHub>("/hubs/notifications"));
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseStatusCodePagesWithReExecute("/");
 
@@ -143,7 +170,7 @@ namespace TwentyQuestions.Web
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), scriptName => scriptName.StartsWith("TwentyQuestions.Web.Scripts."))
                 .WithTransaction()
                 .JournalToSqlTable("dbo", "DbUp")
-                .LogToConsole()                
+                .LogToConsole()
                 .Build();
 
             if (upgradeEngine.IsUpgradeRequired())

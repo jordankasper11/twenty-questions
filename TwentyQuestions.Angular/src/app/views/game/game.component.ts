@@ -1,6 +1,7 @@
 import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { GameService, AuthenticationService } from '@services';
 import { GameEntity } from '@models';
 import { DurationPipeModule } from '@pipes';
@@ -9,6 +10,7 @@ import { GameGuessingComponentModule } from './game-guessing/game-guessing.compo
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
 import { GameWaitingComponentModule } from './game-waiting/game-waiting.component';
 import { environment } from '@environments';
+import { NotificationProvider } from '@providers';
 
 enum GameMode {
     Creating,
@@ -29,7 +31,8 @@ export class GameComponent implements OnInit, OnDestroy {
     defaultAvatarUrl = environment.defaultAvatarUrl;
     userId: string;
     game: GameEntity;
-    gameTimer: NodeJS.Timer;
+
+    private notificationSubscription: Subscription;
 
     get gameMode(): GameMode {
         if (this.game) {
@@ -49,6 +52,7 @@ export class GameComponent implements OnInit, OnDestroy {
     constructor(
         private gameService: GameService,
         private authenticationService: AuthenticationService,
+        private notificationProvider: NotificationProvider,
         private route: ActivatedRoute
     ) { }
 
@@ -61,22 +65,23 @@ export class GameComponent implements OnInit, OnDestroy {
             if (this.id && !this.game)
                 await this.loadGame();
         });
+
+        this.notificationSubscription = this.notificationProvider.gameUpdated.subscribe(async gameId => {
+            if (gameId == this.id)
+                await this.loadGame();
+        })
     }
 
     async ngOnDestroy(): Promise<void> {
-        clearInterval(this.gameTimer);
+        if (this.notificationSubscription)
+            this.notificationSubscription.unsubscribe();
     }
 
     async loadGame(game?: GameEntity): Promise<void> {
-        clearTimeout(this.gameTimer);
-
         if (game)
             this.game = game;
         else
             this.game = await this.gameService.get(this.id).toPromise();
-
-        if (this.game && this.gameMode == GameMode.Waiting)
-            this.gameTimer = setTimeout(() => this.loadGame(), 30000);
     }
 }
 
