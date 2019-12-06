@@ -4,7 +4,7 @@
         <nav class="primary-navigation">
             <ul>
                 <li [class.menu--selected]="url == '/' || url == '/games'">
-                    <a (click)="navigate('/games')" class="icon-games" title="Games">
+                    <a (click)="navigate('/games')" class="icon-games" [class.notifications]="notifications?.gameNotifications" title="Games">
                         <span>Games</span>
                     </a>
                 </li>
@@ -14,7 +14,7 @@
                     </a>
                 </li> -->
                 <li [class.menu--selected]="url == '/friends'">
-                    <a (click)="navigate('/friends')" class="icon-friends" title="Friends">
+                    <a (click)="navigate('/friends')" class="icon-friends" [class.notifications]="notifications?.friendNotifications" title="Friends">
                         <span>Friends</span>
                     </a>
                 </li>

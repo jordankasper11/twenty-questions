@@ -26,15 +26,21 @@ namespace TwentyQuestions.Web.Controllers
         [HttpGet("AcceptInvitation")]
         public async Task<ActionResult> AcceptInvitation(Guid id)
         {
+            var game = await this.Repository.Get(id);
+
             await this.Repository.AcceptInvitation(id);
-            
+            await _notificationHub.UpdateGamesList(game.CreatedBy.Value, game.OpponentId);
+
             return Ok();
         }
 
         [HttpGet("DeclineInvitation")]
         public async Task<ActionResult> DeclineInvitation(Guid id)
         {
+            var game = await this.Repository.Get(id);
+
             await this.Repository.DeclineInvitation(id);
+            await _notificationHub.UpdateGamesList(game.CreatedBy.Value, game.OpponentId);
 
             return Ok();
         }
@@ -46,7 +52,7 @@ namespace TwentyQuestions.Web.Controllers
 
             var game = await this.Repository.Get(request.GameId);
 
-            await _notificationHub.UpdateGame(game.Id.Value, game.CreatedBy.Value);
+            await _notificationHub.UpdateGame(game.Id.Value, game.CreatedBy.Value, game.OpponentId);
 
             return Ok(game);
         }
@@ -58,7 +64,7 @@ namespace TwentyQuestions.Web.Controllers
 
             var game = await this.Repository.Get(request.GameId);
 
-            await _notificationHub.UpdateGame(game.Id.Value, game.OpponentId);
+            await _notificationHub.UpdateGame(game.Id.Value, game.CreatedBy.Value, game.OpponentId);
 
             return Ok(game);
         }

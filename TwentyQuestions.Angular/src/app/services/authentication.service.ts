@@ -5,9 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { AccessToken, LoginRequest, LoginResponse, RefreshTokenRequest } from '@models';
 import { BaseService } from './base.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class AuthenticationService extends BaseService {
     constructor(http: HttpClient) {
         super(http);

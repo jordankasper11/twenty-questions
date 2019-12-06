@@ -4,9 +4,7 @@ import { Observable } from 'rxjs';
 import { UserEntity, UserRequest, RegistrationRequest, UpdateSettingsRequest } from '@models';
 import { BaseEntityService } from './base.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class UserService extends BaseEntityService<UserEntity, UserRequest> {
     constructor(http: HttpClient) {
         super(http, '/User');

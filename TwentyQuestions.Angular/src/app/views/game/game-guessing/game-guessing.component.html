@@ -3,6 +3,7 @@
     <div class="form-row">
         <label for="question" class="h2">Next Question</label>
         <textarea id="question" required autofocus formControlName="question"></textarea>
+        <span *ngIf="form.controls.question.errors?.required && form.controls.question.touched" class="validator">Question is required</span>
     </div>
     <div class="form-footer">
         <button type="submit" [attr.disabled]="!form.valid ? 'disabled' : null">Ask Question</button>

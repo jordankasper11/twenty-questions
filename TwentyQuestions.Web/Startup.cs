@@ -38,8 +38,6 @@ namespace TwentyQuestions.Web
             this.Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             var configurationSettings = new ConfigurationSettings();
@@ -47,8 +45,6 @@ namespace TwentyQuestions.Web
             configurationSettings.Database.ConnectionString = this.Configuration["Database_ConnectionString"] ?? "Server=localhost;Database=20Q;Trusted_Connection=True;";
             configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication_SecurityKey"] ?? "20QDevSecurityKey";
             configurationSettings.Paths.Avatars = this.Configuration["Paths_Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
-
-            //throw new Exception(configurationSettings.Authentication.SecurityKey);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -101,6 +97,7 @@ namespace TwentyQuestions.Web
             });
             services.AddScoped<IFriendRepository, FriendRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<INotificationsRepository, NotificationsRepository>();
             services.AddScoped<IUserRepository, UserRepository>(serviceProvider =>
             {
                 var sqlConnection = serviceProvider.GetService<SqlConnection>();
@@ -111,7 +108,6 @@ namespace TwentyQuestions.Web
             services.AddSignalR();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, ConfigurationSettings configurationSettings)
         {
             applicationLifetime.ApplicationStarted.Register(() => UpdateDatabase(configurationSettings.Database.ConnectionString, logger));
@@ -123,7 +119,6 @@ namespace TwentyQuestions.Web
 
             app.ConfigureExceptionMiddleware();
             app.UseCors(c => c
-                //.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()

@@ -4,9 +4,7 @@ import { Observable } from 'rxjs';
 import { FriendEntity, FriendRequest } from '@models';
 import { BaseEntityService } from './base.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class FriendService extends BaseEntityService<FriendEntity, FriendRequest> {
     constructor(http: HttpClient) {
         super(http, '/Friend');

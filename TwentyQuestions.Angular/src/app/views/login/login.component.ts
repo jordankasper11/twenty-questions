@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angula
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { LoginRequest } from '@models';
 import { AuthenticationService } from '@services';
+import { NotificationProvider } from '@providers';
 
 @Component({
     selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private authenticationService: AuthenticationService,
+        private notificationProvider: NotificationProvider,
         private router: Router,
         private route: ActivatedRoute
     ) { }
@@ -44,6 +46,7 @@ export class LoginComponent implements OnInit {
                 if (accessToken) {
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 
+                    await this.notificationProvider.updateNotifications();
                     await this.router.navigateByUrl(returnUrl);
                 }
             } catch (error) {

@@ -36,6 +36,7 @@ const routes: Routes = [
         SettingsComponentModule,
         RouterModule.forRoot(routes)
     ],
+    providers: [AuthenticationGuard],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

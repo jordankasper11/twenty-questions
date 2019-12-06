@@ -4,9 +4,7 @@ import { Observable } from 'rxjs';
 import { GameEntity, GameRequest, AskQuestionRequest, AnswerQuestionRequest } from '@models';
 import { BaseEntityService } from './base.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class GameService extends BaseEntityService<GameEntity, GameRequest> {
     constructor(http: HttpClient) {
         super(http, '/Game');

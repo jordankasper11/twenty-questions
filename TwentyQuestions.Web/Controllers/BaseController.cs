@@ -18,7 +18,19 @@ namespace TwentyQuestions.Web.Controllers
     public abstract class BaseController<TRepository> : Controller where TRepository : IRepository
     {
         protected TRepository Repository { get; private set; }
+
         protected ConfigurationSettings ConfigurationSettings { get; private set; }
+
+        protected Guid? UserId
+        {
+            get
+            {
+                if (Guid.TryParse(this.User?.Claims?.SingleOrDefault(c => c.Type == "userId")?.Value, out Guid userId))
+                    return userId;
+
+                return null;
+            }
+        }
 
         public BaseController(TRepository repository, ConfigurationSettings configurationSettings)
         {

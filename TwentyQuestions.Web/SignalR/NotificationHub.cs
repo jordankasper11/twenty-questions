@@ -15,9 +15,19 @@ namespace TwentyQuestions.Web.SignalR
 
     public static class NotificationHubExtensions
     {
-        public static Task UpdateGame(this IHubContext<NotificationHub> context, Guid gameId, Guid userId)
+        public static Task UpdateFriendsList(this IHubContext<NotificationHub> context, params Guid[] userIds)
         {
-            return context.Clients.User(userId.ToString()).SendAsync("UpdateGame", gameId.ToString());
+            return context.Clients.Users(userIds.Select(i => i.ToString()).ToArray()).SendAsync("UpdateFriendsList");
+        }
+
+        public static Task UpdateGame(this IHubContext<NotificationHub> context, Guid gameId, params Guid[] userIds)
+        {
+            return context.Clients.Users(userIds.Select(i => i.ToString()).ToArray()).SendAsync("UpdateGame", gameId.ToString());
+        }
+
+        public static Task UpdateGamesList(this IHubContext<NotificationHub> context, params Guid[] userIds)
+        {
+            return context.Clients.Users(userIds.Select(i => i.ToString()).ToArray()).SendAsync("UpdateGamesList");
         }
     }
 }

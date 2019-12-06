@@ -1,8 +1,10 @@
 import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService } from '@services';
+import { NotificationProvider } from '@providers';
 import { GameRequest, GameEntity, EntityStatus } from '@models';
 import { environment } from '@environments';
 
@@ -14,21 +16,29 @@ export class GamesComponent implements OnInit, OnDestroy {
     defaultAvatarUrl = environment.defaultAvatarUrl;
     invitations: Array<GameEntity>;
     games: Array<GameEntity>;
-    gamesTimer: NodeJS.Timer;
 
-    constructor(private gameService: GameService, private authenticationService: AuthenticationService) { }
+    private notificationsSubscription: Subscription;
+
+    constructor(
+        private gameService: GameService,
+        private authenticationService: AuthenticationService,
+        private notificationProvider: NotificationProvider
+    ) { }
 
     async ngOnInit(): Promise<void> {
-        await this.loadGames();
+        this.notificationsSubscription = this.notificationProvider.notificationsUpdated.subscribe(async () => await this.loadGames())
 
-        this.gamesTimer = setInterval(() => this.loadGames(), 30 * 1000);
+        await this.loadGames();
     }
 
     async ngOnDestroy(): Promise<void> {
-        clearInterval(this.gamesTimer);
+        if (this.notificationsSubscription)
+            this.notificationsSubscription.unsubscribe();
     }
 
     async loadGames(): Promise<void> {
+        this.notificationProvider.gamesLastChecked = new Date();
+
         const request = new GameRequest();
 
         request.status = EntityStatus.Active | EntityStatus.Pending;
