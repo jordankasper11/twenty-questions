@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using DbUp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +12,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using TwentyQuestions.Data.Caching;
 using TwentyQuestions.Data.Repositories;
 using TwentyQuestions.Web.Caching;
@@ -106,6 +103,7 @@ namespace TwentyQuestions.Web
                 return new UserRepository(sqlConnection, repositoryContext, configurationSettings.Paths.Avatars);
             });
             services.AddSignalR();
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "wwwroot");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, ConfigurationSettings configurationSettings)
@@ -118,12 +116,19 @@ namespace TwentyQuestions.Web
                 app.UseHsts();
 
             app.ConfigureExceptionMiddleware();
-            app.UseCors(c => c
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials()
-                .SetIsOriginAllowed(host => true)
-            );
+
+            if (environment.IsDevelopment())
+            {
+                app.UseCors(c => c
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed(host => true)
+                );
+            }
+            else
+                app.UseCors();
+
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
@@ -137,21 +142,15 @@ namespace TwentyQuestions.Web
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseStatusCodePagesWithReExecute("/");
 
-            // Redirect non-file 404 requests to Angular routing
-            app.Use(async (context, next) =>
+            var contentTypeProvider = new FileExtensionContentTypeProvider();
+
+            contentTypeProvider.Mappings[".webmanifest"] = "application/manifest+json";
+
+            app.UseSpaStaticFiles(new StaticFileOptions()
             {
-                await next();
-
-                if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
-                    context.Response.ContentType = "text/html";
-
-                    await context.Response.SendFileAsync(Path.Combine(environment.WebRootPath, "index.html"));
-                }
-                else
-                    await next();
+                ContentTypeProvider = contentTypeProvider
             });
+            app.UseSpa(spa => spa.Options.SourcePath = "wwwroot");
         }
 
         private void UpdateDatabase(string connectionString, ILogger<Startup> logger)

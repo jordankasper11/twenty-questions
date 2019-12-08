@@ -9,7 +9,7 @@ COPY ./TwentyQuestions.Angular/. .
 RUN npm run ng build -- --prod
 
 # Compile ASP.NET Core
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS dotnetcore-build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnetcore-build
 WORKDIR /app
 
 # Copy csproj files and restore NuGet packages
@@ -26,7 +26,7 @@ COPY ./TwentyQuestions.Web/ ./TwentyQuestions.Web/
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 EXPOSE 80
 COPY --from=dotnetcore-build /app/out .
