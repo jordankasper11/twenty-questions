@@ -1,0 +1,26 @@
+version: '3'
+services:
+  20q-sql:
+    container_name: '20q-sql'
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    volumes:
+      - /20q/volumes/sql:/var/opt/mssql
+    environment:
+      ACCEPT_EULA: 'Yes'
+      SA_PASSWORD: 'M@ttNeedsSytry'
+      MSSQL_PID: 'Express'
+    ports:
+      - '1433:1433'
+  20q-web:
+    container_name: '20q-web'
+    depends_on: ['20q-sql']
+    build:
+      context: ./src
+    volumes:
+      - /20q/volumes/storage:/storage
+    environment:
+      20Q_Database_ConnectionString: 'Server=20q-sql;Database=20Q;User Id=20Q;Password=BringBackTheExpos'
+      20Q_Authentication_SecurityKey: 'MikhailGrabovski#54'
+      20Q_Paths_Avatars: '/storage/avatars'
+    ports:
+      - '80:80'
