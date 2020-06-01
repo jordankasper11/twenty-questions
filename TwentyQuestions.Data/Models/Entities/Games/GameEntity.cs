@@ -36,7 +36,9 @@ namespace TwentyQuestions.Data.Models.Entities
         {
             get
             {
-                return this.Questions?.Any(q => q.Response == QuestionResponse.Correct || q.Response == QuestionResponse.GameOver) == true || this.Questions?.Count >= this.MaxQuestions;
+                return
+                    this.Questions?.Any(q => q.Response == QuestionResponse.Correct || q.Response == QuestionResponse.GameOver) == true ||
+                    (this.Questions?.Count >= this.MaxQuestions && this.Questions.Last().Response != null);
             }
         }
 

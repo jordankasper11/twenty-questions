@@ -34,7 +34,7 @@
                         [value]="QuestionResponse.ProbablyNot" formControlName="response" />
                     <label for="response-probably-not">Probably Not</label>
                 </li>
-                <li *ngIf="game.questions.length < game.maxQuestions" class="response response--correct"
+                <li class="response response--correct"
                     [class.response--selected]="form.value.response === QuestionResponse.Correct">
                     <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
                         formControlName="response" />

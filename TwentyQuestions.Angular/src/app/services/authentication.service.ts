@@ -97,6 +97,6 @@ export class AuthenticationService extends BaseService {
 
     public async logout(): Promise<void> {
         this.accessToken = null;
-        this.refreshToken = null;
+        this._refreshToken = null;
     }
 }
