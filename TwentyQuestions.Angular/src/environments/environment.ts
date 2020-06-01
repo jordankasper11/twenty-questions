@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    requestUrlPrefix: 'https://localhost:44375',
+    requestUrlPrefix: window.location.port == '4200' ? 'https://localhost:44375' : '',
     defaultAvatarUrl: '/assets/images/avatar-default.png'
 };
 

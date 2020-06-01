@@ -150,7 +150,14 @@ namespace TwentyQuestions.Web
             {
                 ContentTypeProvider = contentTypeProvider
             });
-            app.UseSpa(spa => spa.Options.SourcePath = "wwwroot");
+
+            app.UseSpa(builder =>
+            {
+                if (environment.IsDevelopment())
+                    builder.UseProxyToSpaDevelopmentServer($"http://localhost:4200/");
+                else
+                    builder.Options.SourcePath = "wwwroot";
+            });
         }
 
         private void UpdateDatabase(string connectionString, ILogger<Startup> logger)
