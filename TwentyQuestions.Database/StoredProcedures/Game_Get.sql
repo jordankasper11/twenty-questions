@@ -14,7 +14,7 @@ BEGIN
 	DECLARE	@FilterIds BIT = CASE WHEN EXISTS(SELECT Id FROM @Ids) THEN 1 ELSE 0 END
 
 	SELECT		G.Id, G.[Status], G.CreatedBy, G.CreatedDate, G.ModifiedBy, G.ModifiedDate, G.OpponentId,
-				CASE WHEN G.CreatedBy = @UserId THEN G.[Subject] ELSE NULL END AS [Subject],
+				CASE WHEN G.CreatedBy = @UserId OR G.Completed = 1 THEN G.[Subject] ELSE NULL END AS [Subject],
 				CASE WHEN G.CreatedBy = @UserId THEN U2.Id ELSE U1.Id END AS FriendId,
 				CASE WHEN G.CreatedBy = @UserId THEN U2.Username ELSE U1.Username END AS FriendUsername,
 				CASE WHEN G.CreatedBy = @UserId THEN U2.AvatarFileName ELSE U1.AvatarFileName END AS FriendAvatarFileName,
