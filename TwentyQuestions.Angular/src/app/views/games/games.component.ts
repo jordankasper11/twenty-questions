@@ -1,6 +1,6 @@
 import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService } from '@services';
@@ -22,7 +22,8 @@ export class GamesComponent implements OnInit, OnDestroy {
     constructor(
         private gameService: GameService,
         private authenticationService: AuthenticationService,
-        private notificationProvider: NotificationProvider
+        private notificationProvider: NotificationProvider,
+        private router: Router
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -63,7 +64,8 @@ export class GamesComponent implements OnInit, OnDestroy {
 
     async acceptInvitation(game: GameEntity): Promise<void> {
         await this.gameService.acceptInvitation(game.id).toPromise();
-        await this.loadGames();
+        
+        await this.router.navigate(['/games', game.id]);
     }
 
     async declineInvitation(game: GameEntity): Promise<void> {
