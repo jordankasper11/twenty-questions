@@ -1,17 +1,19 @@
-import { NgModule, Component, OnInit } from '@angular/core';
+import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 import { UpdateSettingsRequest, UserEntity } from '@models';
 import { UserService, AuthenticationService } from '@services';
 import { FormProvider } from '@providers';
 import { environment } from '@environments';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html'
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
     user: UserEntity;
     form: FormGroup;
     defaultAvatarUrl = environment.defaultAvatarUrl;
@@ -19,6 +21,7 @@ export class SettingsComponent implements OnInit {
     
     private avatar: File;
     private removedAvatar = false;
+    private componentDestroyed = new Subject<void>();
 
     constructor(
         private userService: UserService,
@@ -29,6 +32,11 @@ export class SettingsComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         await this.loadUser();
+    }
+
+    ngOnDestroy(): void {
+        this.componentDestroyed.next();
+        this.componentDestroyed.complete();
     }
 
     async loadUser(): Promise<void> {
@@ -53,12 +61,16 @@ export class SettingsComponent implements OnInit {
         const newPassword = this.form.get('newPassword');
         const confirmNewPassword = this.form.get('confirmNewPassword');
 
-        newPassword.valueChanges.subscribe(value => {
-            if (value)
-                confirmNewPassword.enable();
-            else
-                confirmNewPassword.disable();
-        });
+        newPassword.valueChanges
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(value => {
+                if (value)
+                    confirmNewPassword.enable();
+                else
+                    confirmNewPassword.disable();
+            });
     }
 
     async validateUsernameAvailablity(control: AbstractControl): Promise<ValidationErrors> {

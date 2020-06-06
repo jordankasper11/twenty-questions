@@ -1,7 +1,8 @@
 import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService } from '@services';
 import { NotificationProvider } from '@providers';
@@ -17,7 +18,7 @@ export class GamesComponent implements OnInit, OnDestroy {
     invitations: Array<GameEntity>;
     games: Array<GameEntity>;
 
-    private notificationsSubscription: Subscription;
+    private componentDestroyed = new Subject<void>();
 
     constructor(
         private gameService: GameService,
@@ -27,14 +28,18 @@ export class GamesComponent implements OnInit, OnDestroy {
     ) { }
 
     async ngOnInit(): Promise<void> {
-        this.notificationsSubscription = this.notificationProvider.notificationsUpdated.subscribe(async () => await this.loadGames())
+        this.notificationProvider.notificationsUpdated
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(async () => await this.loadGames());
 
         await this.loadGames();
     }
 
     async ngOnDestroy(): Promise<void> {
-        if (this.notificationsSubscription)
-            this.notificationsSubscription.unsubscribe();
+        this.componentDestroyed.next();
+        this.componentDestroyed.complete();
     }
 
     async loadGames(): Promise<void> {

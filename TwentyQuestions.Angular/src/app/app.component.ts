@@ -31,10 +31,14 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit(): Promise<void> {
-        this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd)
-                this.url = event.url;
-        });
+        this.router.events
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(event => {
+                if (event instanceof NavigationEnd)
+                    this.url = event.url;
+            });
 
         this.notificationProvider.notificationsUpdated
             .pipe(

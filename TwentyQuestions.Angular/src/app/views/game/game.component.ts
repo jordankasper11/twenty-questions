@@ -60,12 +60,16 @@ export class GameComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.userId = this.authenticationService.getAccessToken().userId;
 
-        this.route.paramMap.subscribe(async params => {
-            this.id = params.get('id');
+        this.route.paramMap
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(async params => {
+                this.id = params.get('id');
 
-            if (this.id && !this.game)
-                await this.loadGame();
-        });
+                if (this.id && !this.game)
+                    await this.loadGame();
+            });
 
         this.notificationProvider.notificationsUpdated
             .pipe(
