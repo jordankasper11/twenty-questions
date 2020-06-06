@@ -1,9 +1,7 @@
 using DbUp;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -11,16 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using TwentyQuestions.Data.Caching;
-using TwentyQuestions.Data.Repositories;
-using TwentyQuestions.Web.Caching;
 using TwentyQuestions.Web.Configuration;
+using TwentyQuestions.Web.Extensions;
 using TwentyQuestions.Web.Middleware;
 using TwentyQuestions.Web.SignalR;
 
@@ -43,35 +38,6 @@ namespace TwentyQuestions.Web
             configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication_SecurityKey"] ?? "20QDevSecurityKey";
             configurationSettings.Paths.Avatars = this.Configuration["Paths_Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationSettings.Authentication.SecurityKey))
-                    };
-
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            if (context.HttpContext.Request.Path.StartsWithSegments("/hubs", StringComparison.OrdinalIgnoreCase))
-                            {
-                                var accessToken = context.Request.Query["access_token"];
-
-                                if (!String.IsNullOrWhiteSpace(accessToken))
-                                    context.Token = accessToken;
-                            }
-
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
-
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -81,39 +47,12 @@ namespace TwentyQuestions.Web
 
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
-            services.AddSingleton<ConfigurationSettings>(configurationSettings);
-            services.AddSingleton<IUserIdProvider, UserIdProvider>();
-            services.AddSingleton<ICacheManager, CacheManager>();
-            services.AddTransient<SqlConnection>(serviceProvider => new SqlConnection(configurationSettings.Database.ConnectionString));
-            services.AddScoped<IRepositoryContext, RepositoryContext>(serviceProvider =>
-            {
-                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-                var user = httpContextAccessor.HttpContext.User;
-                var repositoryContext = new RepositoryContext();
-                
-                repositoryContext.UserId = Guid.TryParse(user.FindFirst("userId")?.Value, out Guid userId) ? userId : (Guid?)null;
-
-                return repositoryContext;
-            });
-            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>(serviceProvider =>
-            {
-                var sqlConnection = serviceProvider.GetService<SqlConnection>();
-                var repositoryContext = serviceProvider.GetService<IRepositoryContext>();
-
-                return new AuthenticationRepository(sqlConnection, repositoryContext, configurationSettings.Authentication.SecurityKey);
-            });
-            services.AddScoped<IFriendRepository, FriendRepository>();
-            services.AddScoped<IGameRepository, GameRepository>();
-            services.AddScoped<INotificationRepository, NotificationRepository>();
-            services.AddScoped<IUserRepository, UserRepository>(serviceProvider =>
-            {
-                var sqlConnection = serviceProvider.GetService<SqlConnection>();
-                var repositoryContext = serviceProvider.GetService<IRepositoryContext>();
-
-                return new UserRepository(sqlConnection, repositoryContext, configurationSettings.Paths.Avatars);
-            });
+            services.AddSingleton<ConfigurationSettings>(configurationSettings);            
+            services.AddTransient<SqlConnection>(serviceProvider => new SqlConnection(configurationSettings.Database.ConnectionString));            
             services.AddSignalR();
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "wwwroot");
+            services.AddCustomAuthentication(configurationSettings.Authentication.SecurityKey);
+            services.AddCustomDependencies(configurationSettings);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, ConfigurationSettings configurationSettings)
