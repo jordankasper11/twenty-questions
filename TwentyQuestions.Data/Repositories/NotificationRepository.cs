@@ -120,7 +120,7 @@ namespace TwentyQuestions.Data.Repositories
                 sqlCommand.Transaction = this.Transaction;
                 sqlCommand.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = (object)request.Id ?? DBNull.Value });
                 sqlCommand.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier) { Value = (object)request.UserId ?? DBNull.Value });
-                sqlCommand.Parameters.Add(new SqlParameter("@Type", SqlDbType.Int) { Value = (object)request.UserId ?? DBNull.Value });
+                sqlCommand.Parameters.Add(new SqlParameter("@Type", SqlDbType.Int) { Value = (object)request.Type ?? DBNull.Value });
                 sqlCommand.Parameters.Add(new SqlParameter("@RecordId", SqlDbType.UniqueIdentifier) { Value = (object)request.RecordId ?? DBNull.Value });
 
                 using (var sqlDataReader = await sqlCommand.ExecuteReaderAsync())
@@ -148,4 +148,3 @@ namespace TwentyQuestions.Data.Repositories
         }
     }
 }
-

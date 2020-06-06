@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
+import { HubConnectionBuilder, HubConnection, HubConnectionState } from '@microsoft/signalr';
 import { AuthenticationService } from '@services';
 import { environment } from '@environments';
 import { NotificationEntity, NotificationType } from '@models';
@@ -56,6 +56,15 @@ export class NotificationProvider {
 
             await this.connect();
         }
+    }
+
+    async removeNotification(options: {
+        id?: string,
+        type?: NotificationType,
+        recordId?: string
+    }): Promise<void> {
+        if(options && this.connection.state == HubConnectionState.Connected)
+            await this.connection.send('RemoveNotification', options.id, options.type, options.recordId);
     }
 
     async connect(): Promise<void> {

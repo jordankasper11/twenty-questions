@@ -27,6 +27,22 @@ namespace TwentyQuestions.Web.SignalR
 
             await this.Clients.User(userId).SendAsync("NotificationsReceived", notifications);
         }
+
+        public async Task RemoveNotification(Guid? id, NotificationType? type, Guid? recordId)
+        {
+            var request = new NotificationDeleteRequest()
+            {
+                Id = id,
+                UserId = Guid.Parse(this.Context.UserIdentifier),
+                Type = type,
+                RecordId = recordId
+            };
+
+            var notifications = await this.NotificationRepository.Delete(request);
+
+            if (notifications?.Any() == true)
+                await this.Clients.User(this.Context.UserIdentifier).SendAsync("NotificationsRemoved", notifications.ToArray());
+        }
     }
 
     public static class NotificationHubExtensions

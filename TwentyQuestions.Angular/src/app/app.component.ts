@@ -41,7 +41,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 takeUntil(this.componentDestroyed)
             )
             .subscribe(notifications => {
-                console.log(notifications);
                 this.friendNotifications = notifications.some(n => n.type == NotificationType.Friend);
                 this.gameNotifications = notifications.some(n => n.type == NotificationType.Game);
             });
