@@ -15,14 +15,24 @@ export class NotificationProvider {
     private notifications: Array<NotificationEntity> = [];
 
     constructor(private authenticationService: AuthenticationService) {
-        this.createConnection();
     }
 
-    async createConnection(): Promise<void> {
+    async connect(): Promise<void> {
+        try {
+            this.connection = await this.createConnection();
+
+            await this.connection.start();
+        }
+        catch {
+            setTimeout(async () => await this.connect(), 60 * 1000);
+        }
+    }
+
+    async createConnection(): Promise<HubConnection> {
         const accessToken = this.authenticationService.accessToken;
 
         if (accessToken) {
-            this.connection = new HubConnectionBuilder()
+            const connection = new HubConnectionBuilder()
                 .withUrl(`${environment.requestUrlPrefix}/hubs/notifications`, { accessTokenFactory: () => accessToken })
                 .withAutomaticReconnect({
                     nextRetryDelayInMilliseconds: retryContext => {
@@ -36,7 +46,7 @@ export class NotificationProvider {
                 })
                 .build();
 
-            this.connection.on('NotificationsReceived', async (notifications: Array<NotificationEntity>) => {
+            connection.on('NotificationsReceived', async (notifications: Array<NotificationEntity>) => {
                 const newNotifications = notifications.filter(n => !this.notifications.some(en => en.id == n.id));
 
                 this.notifications = notifications.concat(newNotifications);
@@ -46,15 +56,15 @@ export class NotificationProvider {
                 notifications.filter(n => n.type == NotificationType.Game).forEach(n => this.refreshGame.next(n.recordId))
             });
 
-            this.connection.on('NotificationsRemoved', async (notifications: Array<NotificationEntity>) => {
+            connection.on('NotificationsRemoved', async (notifications: Array<NotificationEntity>) => {
                 this.notifications = this.notifications.filter(en => !notifications.some(n => n.id == en.id));
 
                 this.notificationsUpdated.next(this.notifications);
             });
 
-            this.connection.on('FriendsListUpdated', async (notifications: Array<NotificationEntity>) => this.refreshFriendsList.next());
+            connection.on('FriendsListUpdated', async (notifications: Array<NotificationEntity>) => this.refreshFriendsList.next());
 
-            await this.connect();
+            return connection;
         }
     }
 
@@ -65,14 +75,5 @@ export class NotificationProvider {
     }): Promise<void> {
         if(options && this.connection.state == HubConnectionState.Connected)
             await this.connection.send('RemoveNotification', options.id, options.type, options.recordId);
-    }
-
-    async connect(): Promise<void> {
-        try {
-            await this.connection.start();
-        }
-        catch{
-            setTimeout(async () => await this.connect(), 60 * 1000);
-        }
     }
 }

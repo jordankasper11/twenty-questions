@@ -48,6 +48,9 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.friendNotifications = notifications.some(n => n.type == NotificationType.Friend);
                 this.gameNotifications = notifications.some(n => n.type == NotificationType.Game);
             });
+
+        if (this.authenticationService.isLoggedIn())
+            await this.notificationProvider.connect();
     }
 
     ngOnDestroy(): void {
