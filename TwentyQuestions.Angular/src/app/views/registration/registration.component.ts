@@ -100,7 +100,6 @@ export class RegistrationComponent implements OnInit {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule],
     declarations: [RegistrationComponent],
-    exports: [RegistrationComponent],
-    providers: [UserService, AuthenticationService]
+    exports: [RegistrationComponent]
 })
 export class RegistrationComponentModule { }

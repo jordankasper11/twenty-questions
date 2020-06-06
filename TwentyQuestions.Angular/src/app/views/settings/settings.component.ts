@@ -145,7 +145,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule],
     declarations: [SettingsComponent],
-    exports: [SettingsComponent],
-    providers: [UserService, AuthenticationService]
+    exports: [SettingsComponent]
 })
 export class SettingsComponentModule { }

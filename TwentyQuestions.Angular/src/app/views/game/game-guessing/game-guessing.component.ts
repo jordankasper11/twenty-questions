@@ -47,7 +47,6 @@ export class GameGuessingComponent implements OnInit {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule, GameQuestionsComponentModule],
     declarations: [GameGuessingComponent],
-    exports: [GameGuessingComponent],
-    providers: [GameService]
+    exports: [GameGuessingComponent]
 })
 export class GameGuessingComponentModule { }

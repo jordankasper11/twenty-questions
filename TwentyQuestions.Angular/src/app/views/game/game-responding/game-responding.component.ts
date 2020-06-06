@@ -51,7 +51,6 @@ export class GameRespondingComponent implements OnInit {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule, GameQuestionsComponentModule],
     declarations: [GameRespondingComponent],
-    exports: [GameRespondingComponent],
-    providers: [GameService]
+    exports: [GameRespondingComponent]
 })
 export class GameRespondingComponentModule { }

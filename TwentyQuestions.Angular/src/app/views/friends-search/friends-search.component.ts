@@ -61,7 +61,6 @@ export class FriendsSearchComponent implements OnInit {
 @NgModule({
     imports: [CommonModule, ReactiveFormsModule, RouterModule, DurationPipeModule],
     declarations: [FriendsSearchComponent],
-    exports: [FriendsSearchComponent],
-    providers: [UserService, FriendService]
+    exports: [FriendsSearchComponent]
 })
 export class FriendsSearchComponentModule { }

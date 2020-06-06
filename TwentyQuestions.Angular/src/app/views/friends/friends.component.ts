@@ -92,7 +92,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
 @NgModule({
     imports: [CommonModule, RouterModule, DurationPipeModule],
     declarations: [FriendsComponent],
-    exports: [FriendsComponent],
-    providers: [GameService, AuthenticationService]
+    exports: [FriendsComponent]
 })
 export class FriendsComponentModule { }

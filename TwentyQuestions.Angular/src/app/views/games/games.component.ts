@@ -80,7 +80,6 @@ export class GamesComponent implements OnInit, OnDestroy {
 @NgModule({
     imports: [CommonModule, RouterModule, DurationPipeModule],
     declarations: [GamesComponent],
-    exports: [GamesComponent],
-    providers: [GameService, AuthenticationService]
+    exports: [GamesComponent]
 })
 export class GamesComponentModule { }

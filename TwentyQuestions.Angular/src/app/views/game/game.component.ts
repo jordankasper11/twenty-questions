@@ -104,7 +104,6 @@ export class GameComponent implements OnInit, OnDestroy {
         GameWaitingComponentModule
     ],
     declarations: [GameComponent],
-    exports: [GameComponent],
-    providers: [GameService, AuthenticationService]
+    exports: [GameComponent]
 })
 export class GameComponentModule { }
