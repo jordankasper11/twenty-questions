@@ -79,7 +79,10 @@
     <Build Include="StoredProcedures\UserCredentials_SaveRefreshToken.sql" />
     <Build Include="StoredProcedures\User_GetUsernameAvailability.sql" />
     <Build Include="StoredProcedures\Friend_Save.sql" />
-    <Build Include="StoredProcedures\Notifications_Get.sql" />
+    <Build Include="StoredProcedures\Notification_Get.sql" />
+    <Build Include="Tables\Notifications.sql" />
+    <Build Include="StoredProcedures\Notification_Save.sql" />
+    <Build Include="StoredProcedures\Notification_Delete.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TwentyQuestions.Database.publish.xml" />

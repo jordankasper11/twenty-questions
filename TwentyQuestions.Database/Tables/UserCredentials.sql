@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[UserCredentials]
 (
 	[UserId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
 	[PasswordHash] NVARCHAR(256) NOT NULL, 
     [PasswordSalt] NVARCHAR(256) NOT NULL,

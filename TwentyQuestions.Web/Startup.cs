@@ -94,7 +94,7 @@ namespace TwentyQuestions.Web
             });
             services.AddScoped<IFriendRepository, FriendRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
-            services.AddScoped<INotificationsRepository, NotificationsRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUserRepository, UserRepository>(serviceProvider =>
             {
                 var sqlConnection = serviceProvider.GetService<SqlConnection>();

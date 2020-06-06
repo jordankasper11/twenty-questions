@@ -2,9 +2,9 @@
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[Status] INT NOT NULL,
-    [CreatedDate] DATETIME NOT NULL, 
+    [CreatedDate] DATETIME2 NOT NULL, 
 	[CreatedBy] UNIQUEIDENTIFIER NOT NULL, 
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
 	[FriendId] UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT [FK_Friends_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),

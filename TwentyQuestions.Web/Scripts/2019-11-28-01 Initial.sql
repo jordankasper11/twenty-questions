@@ -2,9 +2,9 @@
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[Status] INT NOT NULL,
-    [CreatedDate] DATETIME NOT NULL, 
+    [CreatedDate] DATETIME2 NOT NULL, 
 	[CreatedBy] UNIQUEIDENTIFIER NOT NULL, 
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
     [Username] NVARCHAR(32) NOT NULL,
 	[Email] NVARCHAR(256) NOT NULL,
@@ -18,7 +18,7 @@ GO
 CREATE TABLE [dbo].[UserCredentials]
 (
 	[UserId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
 	[PasswordHash] NVARCHAR(256) NOT NULL, 
     [PasswordSalt] NVARCHAR(256) NOT NULL,
@@ -32,9 +32,9 @@ CREATE TABLE [dbo].[Friends]
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[Status] INT NOT NULL,
-    [CreatedDate] DATETIME NOT NULL, 
+    [CreatedDate] DATETIME2 NOT NULL, 
 	[CreatedBy] UNIQUEIDENTIFIER NOT NULL, 
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
 	[FriendId] UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT [FK_Friends_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),
@@ -47,9 +47,9 @@ CREATE TABLE [dbo].[Games]
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[Status] INT NOT NULL,
-    [CreatedDate] DATETIME NOT NULL, 
+    [CreatedDate] DATETIME2 NOT NULL, 
 	[CreatedBy] UNIQUEIDENTIFIER NOT NULL, 
-    [ModifiedDate] DATETIME NOT NULL, 
+    [ModifiedDate] DATETIME2 NOT NULL, 
     [ModifiedBy] UNIQUEIDENTIFIER NOT NULL,
     [Subject] NVARCHAR(256) NOT NULL,
 	[OpponentId] UNIQUEIDENTIFIER NOT NULL,
@@ -59,6 +59,17 @@ CREATE TABLE [dbo].[Games]
 	CONSTRAINT [FK_Games_ToUsersCreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([Id]),
 	CONSTRAINT [FK_Games_ToUsersModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [Users]([Id]),
 	CONSTRAINT [FK_Games_ToUsersOpponentId] FOREIGN KEY ([OpponentId]) REFERENCES [Users]([Id])
+)
+GO
+
+CREATE TABLE [dbo].[Notifications]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[UserId] UNIQUEIDENTIFIER NOT NULL,
+    [CreatedDate] DATETIME2 NOT NULL, 
+	[Type] INT NOT NULL, 
+    [RecordId] UNIQUEIDENTIFIER NULL,
+	CONSTRAINT [FK_Notifications_ToUsersId] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id])
 )
 GO
 
@@ -128,7 +139,7 @@ CREATE PROCEDURE [dbo].[Friend_Save] (
 	@Id				UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status			INT,
     @ModifiedBy		UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate	DATETIME = NULL,
+	@ModifiedDate	DATETIME2 = NULL,
 	@FriendId		UNIQUEIDENTIFIER = NULL
 )
 AS
@@ -211,7 +222,7 @@ CREATE PROCEDURE [dbo].[Game_Save] (
 	@Id					UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status				INT,
     @ModifiedBy			UNIQUEIDENTIFIER,
-	@ModifiedDate		DATETIME = NULL,
+	@ModifiedDate		DATETIME2 = NULL,
 	@OpponentId			UNIQUEIDENTIFIER,
 	@Subject			NVARCHAR(256) = NULL,	
 	@MaxQuestions		INT,
@@ -315,7 +326,7 @@ CREATE PROCEDURE [dbo].[User_Save] (
 	@Id						UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status					INT,
     @ModifiedBy				UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate			DATETIME = NULL,
+	@ModifiedDate			DATETIME2 = NULL,
 	@Username				NVARCHAR(32),
 	@Email					NVARCHAR(256),
 	@AvatarFileName			NVARCHAR(256) = NULL
@@ -373,7 +384,7 @@ GO
 CREATE PROCEDURE [dbo].[UserCredentials_Save] (
 	@UserId			UNIQUEIDENTIFIER,
 	@ModifiedBy		UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate	DATETIME = NULL,
+	@ModifiedDate	DATETIME2 = NULL,
 	@PasswordHash	NVARCHAR(256), 
     @PasswordSalt	NVARCHAR(256)
 )
@@ -411,5 +422,75 @@ BEGIN
 	UPDATE	UserCredentials
 	SET		RefreshToken = @RefreshToken
 	WHERE	UserId = @UserId
+END
+GO
+
+CREATE PROCEDURE [dbo].[Notification_Get]
+	@UserId	UNIQUEIDENTIFIER
+AS
+BEGIN
+	SELECT	Id, UserId, CreatedDate, [Type], RecordId
+	FROM	Notifications
+	WHERE	UserId = @UserId
+END
+GO
+
+CREATE PROCEDURE [dbo].[Notification_Save] (
+	@Id				UNIQUEIDENTIFIER = NULL OUTPUT,
+	@UserId			UNIQUEIDENTIFIER,
+	@Type			INT,
+	@RecordId		UNIQUEIDENTIFIER = NULL,
+	@CreatedDate	DATETIME2 = NULL
+)
+AS
+BEGIN
+	IF (@Id IS NULL)
+		SET @Id = NEWID()
+
+	IF (@CreatedDate IS NULL)
+		SET @CreatedDate = GETUTCDATE()
+
+	INSERT INTO Notifications(Id, UserId, CreatedDate, [Type], RecordId)
+		VALUES (@Id, @UserId, @CreatedDate, @Type, @RecordId)
+
+	SELECT	Id, UserId, [Type], RecordId, CreatedDate
+	FROM	Notifications
+	WHERE	Id = @Id
+END
+GO
+
+CREATE PROCEDURE [dbo].[Notification_Delete] (
+	@Id				UNIQUEIDENTIFIER = NULL,
+	@UserId			UNIQUEIDENTIFIER = NULL,
+	@Type			INT = NULL,
+	@RecordId		UNIQUEIDENTIFIER = NULL
+)
+AS
+BEGIN
+	IF @Id IS NULL AND @UserId IS NULL AND @Type IS NULL AND @RecordId IS NULL
+		THROW 51000, '@Id, @UserId, @Type, and @RecordId cannot all be null', 1;
+
+	DECLARE @Notifications TABLE (
+		Id			UNIQUEIDENTIFIER,
+		UserId		UNIQUEIDENTIFIER,
+		[Type]		INT,
+		RecordId	UNIQUEIDENTIFIER,
+		CreatedDate	DATETIME2
+	)
+
+	INSERT INTO @Notifications (Id, UserId, [Type], RecordId, CreatedDate)
+		SELECT	Id, UserId, [Type], RecordId, CreatedDate
+		FROM	Notifications
+		WHERE	(@Id IS NULL OR Id = @Id) AND
+				(@UserId IS NULL OR UserId = @UserId) AND
+				(@Type IS NULL OR [Type] = @Type) AND
+				(@RecordId IS NULL OR RecordId = @RecordId)
+
+	DELETE	N
+	FROM	Notifications AS N
+			INNER JOIN @Notifications AS I ON I.Id = N.Id
+	
+	SELECT	*
+	FROM	@Notifications
 END
 GO

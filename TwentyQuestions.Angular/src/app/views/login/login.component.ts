@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
                 if (accessToken) {
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 
-                    await this.notificationProvider.updateNotifications();
                     await this.router.navigateByUrl(returnUrl);
                 }
             } catch (error) {

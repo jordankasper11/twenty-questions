@@ -38,8 +38,6 @@ export class GamesComponent implements OnInit, OnDestroy {
     }
 
     async loadGames(): Promise<void> {
-        this.notificationProvider.gamesLastChecked = new Date();
-
         const request = new GameRequest();
 
         request.status = EntityStatus.Active | EntityStatus.Pending;

@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[UserCredentials_Save] (
 	@UserId			UNIQUEIDENTIFIER,
 	@ModifiedBy		UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate	DATETIME = NULL,
+	@ModifiedDate	DATETIME2 = NULL,
 	@PasswordHash	NVARCHAR(256), 
     @PasswordSalt	NVARCHAR(256)
 )

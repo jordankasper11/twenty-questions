@@ -1,36 +1,20 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
-import { NotificationsService, AuthenticationService } from '@services';
+import { AuthenticationService } from '@services';
 import { environment } from '@environments';
-import { NotificationsEntity } from '@models';
+import { NotificationEntity, NotificationType } from '@models';
 
 @Injectable()
 export class NotificationProvider {
-    notificationsUpdated = new EventEmitter<NotificationsEntity>();
-    gameUpdated = new EventEmitter<string>();
-
-    get gamesLastChecked(): Date {
-        const value = localStorage['gamesLastChecked'];
-
-        if (value)
-            return new Date(value);
-
-        return null;
-    }
-
-    set gamesLastChecked(value: Date) {
-        const key = 'gamesLastChecked';
-
-        if (value)
-            localStorage[key] = value.toISOString();
-        else
-            localStorage.removeItem(key);
-    }
+    notificationsUpdated = new BehaviorSubject<Array<NotificationEntity>>([]);
+    refreshFriendsList = new Subject<void>();
+    refreshGame = new Subject<string>();
 
     private connection: HubConnection;
-    private notifications: NotificationsEntity;
+    private notifications: Array<NotificationEntity> = [];
 
-    constructor(private notificationsService: NotificationsService, private authenticationService: AuthenticationService) {
+    constructor(private authenticationService: AuthenticationService) {
         this.createConnection();
     }
 
@@ -52,22 +36,23 @@ export class NotificationProvider {
                 })
                 .build();
 
-            this.connection.onreconnected(async () => {
-                this.notifications = await this.getNotifications(true);
+            this.connection.on('NotificationsReceived', async (notifications: Array<NotificationEntity>) => {
+                const newNotifications = notifications.filter(n => !this.notifications.some(en => en.id == n.id));
+
+                this.notifications = notifications.concat(newNotifications);
+
+                this.notificationsUpdated.next(this.notifications);
+
+                notifications.filter(n => n.type == NotificationType.Game).forEach(n => this.refreshGame.next(n.recordId))
             });
 
-            this.connection.on('UpdateGame', async (gameId: string) => {
-                this.gameUpdated.emit(gameId);
+            this.connection.on('NotificationsRemoved', async (notifications: Array<NotificationEntity>) => {
+                this.notifications = this.notifications.filter(en => !notifications.some(n => n.id == en.id));
 
-                await this.updateNotifications();
+                this.notificationsUpdated.next(this.notifications);
             });
 
-            this.connection.on('UpdateFriendsList', async () => {
-                this.notifications = await this.getNotifications(true);
-            });
-            this.connection.on('UpdateGamesList', async () => {
-                this.notifications = await this.getNotifications(true);
-            });
+            this.connection.on('FriendsListUpdated', async (notifications: Array<NotificationEntity>) => this.refreshFriendsList.next());
 
             await this.connect();
         }
@@ -80,22 +65,5 @@ export class NotificationProvider {
         catch{
             setTimeout(async () => await this.connect(), 60 * 1000);
         }
-    }
-
-    async getNotifications(forceUpdate?: boolean): Promise<NotificationsEntity> {
-        if (!this.notifications || forceUpdate)
-            await this.updateNotifications();
-
-        return this.notifications
-    }
-
-    async updateNotifications(): Promise<void> {
-        if (this.authenticationService.isLoggedIn()) {
-            this.notifications = await this.notificationsService.get(this.gamesLastChecked).toPromise();
-
-            this.notificationsUpdated.emit(this.notifications);
-        }
-        else
-            this.notifications = null;
     }
 }

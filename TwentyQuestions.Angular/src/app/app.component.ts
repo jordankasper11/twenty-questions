@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { AuthenticationService, NotificationsService } from '@services';
+import { Subject } from 'rxjs';
+import { AuthenticationService } from '@services';
 import { NotificationProvider } from '@providers';
-import { NotificationsEntity } from '@models';
-import { Subscription } from 'rxjs';
+import { NotificationEntity, NotificationType } from '@models';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
@@ -13,9 +14,10 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
     url: string;
     menuExpanded: boolean = false;
-    notifications: NotificationsEntity;
+    friendNotifications = false;
+    gameNotifications = false;
 
-    private notificationsSubscription: Subscription;
+    private componentDestroyed = new Subject();
 
     get signedIn(): boolean {
         return this.authenticationService.isLoggedIn();
@@ -34,13 +36,20 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.url = event.url;
         });
 
-        this.notificationsSubscription = this.notificationProvider.notificationsUpdated.subscribe(notifications => this.notifications = notifications);
-        this.notifications = await this.notificationProvider.getNotifications();
+        this.notificationProvider.notificationsUpdated
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(notifications => {
+                console.log(notifications);
+                this.friendNotifications = notifications.some(n => n.type == NotificationType.Friend);
+                this.gameNotifications = notifications.some(n => n.type == NotificationType.Game);
+            });
     }
 
     ngOnDestroy(): void {
-        if (this.notificationsSubscription)
-            this.notificationsSubscription.unsubscribe();
+        this.componentDestroyed.next();
+        this.componentDestroyed.complete();
     }
 
     toggleMenu(): void {

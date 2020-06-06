@@ -2,7 +2,7 @@
 	@Id						UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status					INT,
     @ModifiedBy				UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate			DATETIME = NULL,
+	@ModifiedDate			DATETIME2 = NULL,
 	@Username				NVARCHAR(32),
 	@Email					NVARCHAR(256),
 	@AvatarFileName			NVARCHAR(256) = NULL

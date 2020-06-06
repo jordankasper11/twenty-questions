@@ -2,7 +2,7 @@
 	@Id					UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status				INT,
     @ModifiedBy			UNIQUEIDENTIFIER,
-	@ModifiedDate		DATETIME = NULL,
+	@ModifiedDate		DATETIME2 = NULL,
 	@OpponentId			UNIQUEIDENTIFIER,
 	@Subject			NVARCHAR(256) = NULL,	
 	@MaxQuestions		INT,

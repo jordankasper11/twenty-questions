@@ -2,7 +2,7 @@
 	@Id				UNIQUEIDENTIFIER = NULL OUTPUT,
 	@Status			INT,
     @ModifiedBy		UNIQUEIDENTIFIER = NULL,
-	@ModifiedDate	DATETIME = NULL,
+	@ModifiedDate	DATETIME2 = NULL,
 	@FriendId		UNIQUEIDENTIFIER = NULL
 )
 AS

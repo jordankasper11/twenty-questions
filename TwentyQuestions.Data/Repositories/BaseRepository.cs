@@ -228,7 +228,7 @@ namespace TwentyQuestions.Data.Repositories
                 if (trackedEntity != null)
                 {
                     sqlCommand.Parameters.Add(new SqlParameter("@ModifiedBy", SqlDbType.UniqueIdentifier) { Value = trackedEntity.ModifiedBy });
-                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime) { Value = trackedEntity.ModifiedDate });
+                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime2) { Value = trackedEntity.ModifiedDate });
                 }
 
                 AddInsertParameters(sqlCommand.Parameters, entity);
@@ -261,7 +261,7 @@ namespace TwentyQuestions.Data.Repositories
                 if (trackedEntity != null)
                 {
                     sqlCommand.Parameters.Add(new SqlParameter("@ModifiedBy", SqlDbType.UniqueIdentifier) { Value = trackedEntity.ModifiedBy });
-                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime) { Value = trackedEntity.ModifiedDate });
+                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime2) { Value = trackedEntity.ModifiedDate });
                 }
 
                 AddUpdateParameters(sqlCommand.Parameters, entity);
@@ -293,7 +293,7 @@ namespace TwentyQuestions.Data.Repositories
                 if (trackedEntity != null)
                 {
                     sqlCommand.Parameters.Add(new SqlParameter("@ModifiedBy", SqlDbType.UniqueIdentifier) { Value = trackedEntity.ModifiedBy });
-                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime) { Value = trackedEntity.ModifiedDate });
+                    sqlCommand.Parameters.Add(new SqlParameter("@ModifiedDate", SqlDbType.DateTime2) { Value = trackedEntity.ModifiedDate });
                 }
 
                 await sqlCommand.ExecuteNonQueryAsync();

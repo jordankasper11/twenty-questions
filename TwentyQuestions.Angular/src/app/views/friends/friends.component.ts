@@ -1,27 +1,52 @@
-import { NgModule, Component, OnInit } from '@angular/core';
+import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DurationPipeModule } from '@pipes';
+import { NotificationProvider } from '@providers';
 import { GameService, AuthenticationService, FriendService } from '@services';
-import { FriendRequest, FriendEntity, EntityStatus } from '@models';
+import { FriendRequest, FriendEntity, EntityStatus, NotificationType } from '@models';
 import { environment } from '@environments';
 
 @Component({
     selector: 'app-friends',
     templateUrl: './friends.component.html'
 })
-export class FriendsComponent implements OnInit {
+export class FriendsComponent implements OnInit, OnDestroy {
     userId: string;
     defaultAvatarUrl = environment.defaultAvatarUrl;
     invitations: Array<FriendEntity>;
     friends: Array<FriendEntity>;
 
-    constructor(private friendService: FriendService, private authenticationService: AuthenticationService) { }
+    private componentDestroyed = new Subject();
+
+    constructor(private friendService: FriendService, private authenticationService: AuthenticationService, private notificationProvider: NotificationProvider) { }
 
     async ngOnInit(): Promise<void> {
         this.userId = this.authenticationService.getAccessToken().userId;
 
+        this.notificationProvider.notificationsUpdated
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(async notifications => {
+                if (notifications.some(n => n.type == NotificationType.Friend))
+                    await this.loadFriends();
+            });
+
+        this.notificationProvider.refreshFriendsList
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(async () => await this.loadFriends());
+
         await this.loadFriends();
+    }
+
+    ngOnDestroy(): void {
+        this.componentDestroyed.next();
+        this.componentDestroyed.complete();
     }
 
     async loadFriends(): Promise<void> {

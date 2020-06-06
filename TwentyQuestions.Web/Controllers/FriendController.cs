@@ -16,19 +16,28 @@ namespace TwentyQuestions.Web.Controllers
     [Route("api/Friend")]
     public class FriendController : BaseController<IFriendRepository, FriendEntity, FriendRequest>
     {
-        private IHubContext<NotificationHub> _notificationHub;
+        private INotificationRepository NotificationRepository { get; set; }
+        private IHubContext<NotificationHub> NotificationHub { get; set; }
 
-        public FriendController(IFriendRepository repository, ConfigurationSettings configurationSettings, IHubContext<NotificationHub> notificationHub) : base(repository, configurationSettings)
+        public FriendController(IFriendRepository friendRepository, INotificationRepository notificationRepository, ConfigurationSettings configurationSettings, IHubContext<NotificationHub> notificationHub) : base(friendRepository, configurationSettings)
         {
-            _notificationHub = notificationHub;
+            this.NotificationRepository = notificationRepository;
+            this.NotificationHub = notificationHub;
         }
 
         public override async Task<ActionResult<FriendEntity>> Post([FromBody] FriendEntity entity)
         {
             var returnValue = await base.Post(entity);
-            var friend = returnValue.Value;
 
-            await _notificationHub.UpdateFriendsList(entity.FriendId, this.UserId.Value);
+            if (returnValue.Result is CreatedResult createdResult)
+            {
+                var friendship = (FriendEntity)createdResult.Value;
+                var notification = new NotificationEntity(friendship.FriendId, NotificationType.Friend, friendship.Id.Value);
+
+                notification = await this.NotificationRepository.Insert(notification);
+
+                await this.NotificationHub.SendNotifications(notification);
+            }
 
             return returnValue;
         }
@@ -38,13 +47,36 @@ namespace TwentyQuestions.Web.Controllers
             throw new NotImplementedException();
         }
 
+        public override async Task<ActionResult> Delete(Guid id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var friendship = await this.Repository.Get(id);
+
+            if (friendship == null)
+                return NotFound();
+
+            await this.Repository.Delete(id);
+            await this.NotificationHub.FriendsListUpdated(friendship.CreatedBy.Value, friendship.FriendId);
+
+            return NoContent();
+        }
+
         [HttpGet("AcceptInvitation")]
         public async Task<ActionResult> AcceptInvitation(Guid id)
         {
-            var friend = await this.Repository.Get(id);
+            var friendship = await this.Repository.Get(id);
+
+            if (friendship == null)
+                return BadRequest();
 
             await this.Repository.AcceptInvitation(id);
-            await _notificationHub.UpdateFriendsList(friend.CreatedBy.Value, this.UserId.Value);
+
+            var deletedNotifications = await this.NotificationRepository.Delete(new NotificationDeleteRequest(type: NotificationType.Friend, recordId: friendship.Id.Value));
+
+            await this.NotificationHub.RemoveNotifications(deletedNotifications?.ToArray());
+            await this.NotificationHub.FriendsListUpdated(friendship.FriendId);
 
             return Ok();
         }
@@ -52,10 +84,17 @@ namespace TwentyQuestions.Web.Controllers
         [HttpGet("DeclineInvitation")]
         public async Task<ActionResult> DeclineInvitation(Guid id)
         {
-            var friend = await this.Repository.Get(id);
+            var friendship = await this.Repository.Get(id);
+
+            if (friendship == null)
+                return BadRequest();
 
             await this.Repository.DeclineInvitation(id);
-            await _notificationHub.UpdateFriendsList(friend.CreatedBy.Value, this.UserId.Value);
+
+            var deletedNotifications = await this.NotificationRepository.Delete(new NotificationDeleteRequest(type: NotificationType.Friend, recordId: friendship.Id.Value));
+
+            await this.NotificationHub.RemoveNotifications(deletedNotifications?.ToArray());
+            await this.NotificationHub.FriendsListUpdated(friendship.FriendId);
 
             return Ok();
         }

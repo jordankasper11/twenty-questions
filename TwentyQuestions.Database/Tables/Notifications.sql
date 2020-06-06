@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Notifications]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[UserId] UNIQUEIDENTIFIER NOT NULL,
+    [CreatedDate] DATETIME2 NOT NULL, 
+	[Type] INT NOT NULL, 
+    [RecordId] UNIQUEIDENTIFIER NULL,
+	CONSTRAINT [FK_Notifications_ToUsersId] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id])
+)

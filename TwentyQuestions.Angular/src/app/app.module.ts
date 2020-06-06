@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { NotificationProvider } from '@providers';
-import { AuthenticationService, NotificationsService } from '@services';
+import { AuthenticationService } from '@services';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthenticationInterceptor } from './authentication.interceptor';
@@ -22,7 +22,6 @@ import { environment } from '../environments/environment';
     ],
     providers: [
         AuthenticationService,
-        NotificationsService,
         NotificationProvider,
         {
             provide: HTTP_INTERCEPTORS,

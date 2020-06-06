@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace TwentyQuestions.Web.Middleware
@@ -62,7 +63,12 @@ namespace TwentyQuestions.Web.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                await context.Response.WriteAsync(exception.Message);
+                var response = new StringBuilder();
+
+                response.AppendLine(exception.Message);
+                response.AppendLine(exception.StackTrace);
+
+                await context.Response.WriteAsync(response.ToString());
             }
         }
 

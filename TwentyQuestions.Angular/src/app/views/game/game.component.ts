@@ -1,16 +1,17 @@
 import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { NotificationProvider } from '@providers';
 import { GameService, AuthenticationService } from '@services';
-import { GameEntity } from '@models';
+import { GameEntity, NotificationType } from '@models';
 import { DurationPipeModule } from '@pipes';
 import { GameCompletedComponentModule } from './game-completed/game-completed.component';
 import { GameGuessingComponentModule } from './game-guessing/game-guessing.component';
 import { GameRespondingComponentModule } from './game-responding/game-responding.component';
 import { GameWaitingComponentModule } from './game-waiting/game-waiting.component';
 import { environment } from '@environments';
-import { NotificationProvider } from '@providers';
 
 enum GameMode {
     Creating,
@@ -32,7 +33,7 @@ export class GameComponent implements OnInit, OnDestroy {
     userId: string;
     game: GameEntity;
 
-    private notificationSubscription: Subscription;
+    private componentDestroyed = new Subject();
 
     get gameMode(): GameMode {
         if (this.game) {
@@ -66,15 +67,19 @@ export class GameComponent implements OnInit, OnDestroy {
                 await this.loadGame();
         });
 
-        this.notificationSubscription = this.notificationProvider.gameUpdated.subscribe(async gameId => {
-            if (gameId == this.id)
-                await this.loadGame();
-        })
+        this.notificationProvider.notificationsUpdated
+            .pipe(
+                takeUntil(this.componentDestroyed)
+            )
+            .subscribe(async notifications => {
+                if (notifications.some(n => n.type == NotificationType.Game && n.recordId == this.id))
+                    await this.loadGame();
+            });
     }
 
     async ngOnDestroy(): Promise<void> {
-        if (this.notificationSubscription)
-            this.notificationSubscription.unsubscribe();
+        this.componentDestroyed.next();
+        this.componentDestroyed.complete();
     }
 
     async loadGame(game?: GameEntity): Promise<void> {

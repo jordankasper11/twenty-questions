@@ -6,12 +6,10 @@
 
   <ItemGroup>
     <None Remove="Scripts\2019-11-28-01 Initial.sql" />
-    <None Remove="Scripts\2019-12-05 Notifications.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Scripts\2019-11-28-01 Initial.sql" />
-    <EmbeddedResource Include="Scripts\2019-12-05 Notifications.sql" />
   </ItemGroup>
 
   <ItemGroup>
