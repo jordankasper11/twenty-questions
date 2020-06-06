@@ -37,13 +37,6 @@ namespace TwentyQuestions.Web.Controllers
             this.Repository = repository;
             this.ConfigurationSettings = configurationSettings;
         }
-
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            this.Repository.Context.UserId = User.FindFirst("userId") != null ? Guid.Parse(User.FindFirst("userId").Value) : (Guid?)null;
-
-            base.OnActionExecuting(context);
-        }
     }
 
     public abstract class BaseController<TRepository, TEntity, TRequest> : BaseController<TRepository> where TRepository : IRepository<TEntity, TRequest> where TEntity : BaseEntity, new() where TRequest : BaseRequest<TEntity>

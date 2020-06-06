@@ -79,12 +79,22 @@ namespace TwentyQuestions.Web
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
+            services.AddHttpContextAccessor();
             services.AddMemoryCache();
             services.AddSingleton<ConfigurationSettings>(configurationSettings);
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddTransient<SqlConnection>(serviceProvider => new SqlConnection(configurationSettings.Database.ConnectionString));
-            services.AddScoped<IRepositoryContext, RepositoryContext>();
+            services.AddScoped<IRepositoryContext, RepositoryContext>(serviceProvider =>
+            {
+                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                var user = httpContextAccessor.HttpContext.User;
+                var repositoryContext = new RepositoryContext();
+                
+                repositoryContext.UserId = Guid.TryParse(user.FindFirst("userId")?.Value, out Guid userId) ? userId : (Guid?)null;
+
+                return repositoryContext;
+            });
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>(serviceProvider =>
             {
                 var sqlConnection = serviceProvider.GetService<SqlConnection>();
