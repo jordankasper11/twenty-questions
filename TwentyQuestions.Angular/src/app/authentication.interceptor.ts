@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
-import { Subject, Observable, throwError } from 'rxjs';
-import { catchError, switchMap, filter, take } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Subject, Observable, throwError, empty } from 'rxjs';
+import { catchError, switchMap, take } from 'rxjs/operators';
 import { AuthenticationService } from '@services';
 
 @Injectable()
@@ -9,15 +10,15 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     private refreshingToken = false;
     private refreshTokenSubject = new Subject<void>();
 
-    constructor(private authenticationService: AuthenticationService) { }
+    constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         request = this.addRequestHeaders(request);
 
-        const url = request.url.toLowerCase().replace(/https?:\/\/[^/]+/, '');
-
         return next.handle(request).pipe(
             catchError(error => {
+                const url = request.url.toLowerCase().replace(/https?:\/\/[^/]+/, '');
+
                 if (error instanceof HttpErrorResponse && error.status == 401 && url != '/api/authentication/login')
                     return this.handleUnauthorizedRequest(request, next, error);
 
@@ -38,7 +39,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
         return request;
     }
 
-    private handleUnauthorizedRequest(request: HttpRequest<any>, next: HttpHandler, error: any) {
+    private handleUnauthorizedRequest(request: HttpRequest<any>, next: HttpHandler, error: any): Observable<HttpEvent<any>> {
         if (!this.refreshingToken) {
             this.refreshingToken = true;
             this.refreshTokenSubject.next();
@@ -49,6 +50,15 @@ export class AuthenticationInterceptor implements HttpInterceptor {
                     this.refreshTokenSubject.next();
 
                     return next.handle(this.addRequestHeaders(request));
+                }),
+                catchError(error => {
+                    if (error instanceof HttpErrorResponse && error.status == 403) {
+                        this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url } });
+
+                        return empty();
+                    }
+                    else
+                        return throwError(error);
                 })
             );
 
@@ -58,8 +68,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
                 switchMap(() => {
                     if (this.authenticationService.isLoggedIn())
                         return next.handle(this.addRequestHeaders(request));
-
-                    return throwError(error);
                 })
             );
         }
