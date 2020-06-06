@@ -2,7 +2,7 @@ import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { NotificationProvider } from '@providers';
 import { GameService, AuthenticationService } from '@services';
 import { GameEntity, NotificationType } from '@models';
@@ -71,13 +71,13 @@ export class GameComponent implements OnInit, OnDestroy {
                     await this.loadGame();
             });
 
-        this.notificationProvider.notificationsUpdated
+        this.notificationProvider.refreshGame
             .pipe(
-                takeUntil(this.componentDestroyed)
+                takeUntil(this.componentDestroyed),
+                filter(id => id == this.id)
             )
             .subscribe(async notifications => {
-                if (notifications.some(n => n.type == NotificationType.Game && n.recordId == this.id))
-                    await this.loadGame();
+                await this.loadGame();
             });
     }
 

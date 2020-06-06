@@ -2,11 +2,11 @@ import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { DurationPipeModule } from '@pipes';
 import { GameService, AuthenticationService } from '@services';
 import { NotificationProvider } from '@providers';
-import { GameRequest, GameEntity, EntityStatus } from '@models';
+import { GameRequest, GameEntity, EntityStatus, NotificationType } from '@models';
 import { environment } from '@environments';
 
 @Component({
@@ -28,11 +28,13 @@ export class GamesComponent implements OnInit, OnDestroy {
     ) { }
 
     async ngOnInit(): Promise<void> {
-        this.notificationProvider.notificationsUpdated
+        this.notificationProvider.refreshGamesList
             .pipe(
                 takeUntil(this.componentDestroyed)
             )
             .subscribe(async () => await this.loadGames());
+
+        await this.loadGames();
     }
 
     async ngOnDestroy(): Promise<void> {
@@ -57,7 +59,7 @@ export class GamesComponent implements OnInit, OnDestroy {
     getStatus(game: GameEntity): string {
         if (game.completed)
             return 'Completed';
-        else if (game.modifiedBy == this.authenticationService.getAccessToken().userId)
+        else if ((game.modifiedBy == this.authenticationService.getAccessToken().userId && game.questions.length) || (game.createdBy == this.authenticationService.getAccessToken().userId && !game.questions.length))
             return 'Waiting';
         else
             return 'Your turn'

@@ -9,6 +9,7 @@ import { NotificationEntity, NotificationType } from '@models';
 export class NotificationProvider {
     notificationsUpdated = new BehaviorSubject<Array<NotificationEntity>>([]);
     refreshFriendsList = new Subject<void>();
+    refreshGamesList = new Subject<void>();
     refreshGame = new Subject<string>();
 
     private connection: HubConnection;
@@ -53,7 +54,7 @@ export class NotificationProvider {
 
                 this.notificationsUpdated.next(this.notifications);
 
-                notifications.filter(n => n.type == NotificationType.Game).forEach(n => this.refreshGame.next(n.recordId))
+                notifications.filter(n => n.type == NotificationType.Game).forEach(n => this.refreshGame.next(n.recordId));
             });
 
             connection.on('NotificationsRemoved', async (notifications: Array<NotificationEntity>) => {
@@ -63,6 +64,8 @@ export class NotificationProvider {
             });
 
             connection.on('FriendsListUpdated', async (notifications: Array<NotificationEntity>) => this.refreshFriendsList.next());
+
+            connection.on('GamesListUpdated', async (notifications: Array<NotificationEntity>) => this.refreshGamesList.next());
 
             return connection;
         }

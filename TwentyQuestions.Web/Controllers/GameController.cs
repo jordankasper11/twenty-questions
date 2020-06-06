@@ -37,6 +37,7 @@ namespace TwentyQuestions.Web.Controllers
                 notification = await this.NotificationRepository.Insert(notification);
 
                 await this.NotificationHub.SendNotifications(notification);
+                await this.NotificationHub.GamesListUpdated(game.CreatedBy.Value, game.OpponentId);
             }
 
             return returnValue;
@@ -48,6 +49,9 @@ namespace TwentyQuestions.Web.Controllers
             await this.Repository.AcceptInvitation(id);
 
             var game = await this.Repository.Get(id);
+
+            // Do not delete notifications because it is still the recipient's turn to guess
+            await this.NotificationHub.GamesListUpdated(game.CreatedBy.Value, game.OpponentId);
 
             return Ok();
         }
@@ -62,6 +66,7 @@ namespace TwentyQuestions.Web.Controllers
             var notifications = await this.NotificationRepository.Delete(new NotificationDeleteRequest(recordId: game.Id.Value));
 
             await this.NotificationHub.RemoveNotifications(notifications?.ToArray());
+            await this.NotificationHub.GamesListUpdated(game.CreatedBy.Value, game.OpponentId);
 
             return Ok();
         }
@@ -81,6 +86,7 @@ namespace TwentyQuestions.Web.Controllers
             notification = await this.NotificationRepository.Insert(notification);
 
             await this.NotificationHub.SendNotifications(notification);
+            await this.NotificationHub.GamesListUpdated(game.CreatedBy.Value, game.OpponentId);
 
             return Ok(game);
         }
@@ -100,6 +106,7 @@ namespace TwentyQuestions.Web.Controllers
             notification = await this.NotificationRepository.Insert(notification);
 
             await this.NotificationHub.SendNotifications(notification);
+            await this.NotificationHub.GamesListUpdated(game.CreatedBy.Value, game.OpponentId);
 
             return Ok(game);
         }

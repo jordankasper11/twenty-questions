@@ -2,7 +2,7 @@ import { NgModule, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { DurationPipeModule } from '@pipes';
 import { NotificationProvider } from '@providers';
 import { GameService, AuthenticationService, FriendService } from '@services';
@@ -25,15 +25,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
     async ngOnInit(): Promise<void> {
         this.userId = this.authenticationService.getAccessToken().userId;
-
-        this.notificationProvider.notificationsUpdated
-            .pipe(
-                takeUntil(this.componentDestroyed)
-            )
-            .subscribe(async notifications => {
-                if (notifications.some(n => n.type == NotificationType.Friend))
-                    await this.loadFriends();
-            });
 
         this.notificationProvider.refreshFriendsList
             .pipe(

@@ -77,5 +77,10 @@ namespace TwentyQuestions.Web.SignalR
         {
             return context.Clients.Users(userIds.Select(i => i.ToString()).ToArray()).SendAsync("FriendsListUpdated");
         }
+
+        public static Task GamesListUpdated(this IHubContext<NotificationHub> context, params Guid[] userIds)
+        {
+            return context.Clients.Users(userIds.Select(i => i.ToString()).ToArray()).SendAsync("GamesListUpdated");
+        }
     }
 }

@@ -37,6 +37,7 @@ namespace TwentyQuestions.Web.Controllers
                 notification = await this.NotificationRepository.Insert(notification);
 
                 await this.NotificationHub.SendNotifications(notification);
+                await this.NotificationHub.FriendsListUpdated(friendship.CreatedBy.Value, friendship.FriendId);
             }
 
             return returnValue;
