@@ -33,8 +33,6 @@ export class GamesComponent implements OnInit, OnDestroy {
                 takeUntil(this.componentDestroyed)
             )
             .subscribe(async () => await this.loadGames());
-
-        await this.loadGames();
     }
 
     async ngOnDestroy(): Promise<void> {
