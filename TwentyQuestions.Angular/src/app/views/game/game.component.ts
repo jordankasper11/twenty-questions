@@ -73,8 +73,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
         this.notificationProvider.refreshGame
             .pipe(
-                takeUntil(this.componentDestroyed),
-                filter(id => id == this.id)
+                filter(id => id == this.id),
+                takeUntil(this.componentDestroyed)
             )
             .subscribe(async notifications => {
                 await this.loadGame();
