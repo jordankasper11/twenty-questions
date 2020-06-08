@@ -34,9 +34,9 @@ namespace TwentyQuestions.Web
         {
             var configurationSettings = new ConfigurationSettings();
 
-            configurationSettings.Database.ConnectionString = this.Configuration["Database_ConnectionString"] ?? "Server=localhost;Database=20Q;Trusted_Connection=True;";
-            configurationSettings.Authentication.SecurityKey = this.Configuration["Authentication_SecurityKey"] ?? "20QDevSecurityKey";
-            configurationSettings.Paths.Avatars = this.Configuration["Paths_Avatars"] ?? @"C:\Projects\TwentyQuestions\TwentyQuestions.Web\Storage\avatars";
+            this.Configuration.Bind(configurationSettings);
+
+            configurationSettings.Validate();
 
             services.AddMvc()
                 .AddJsonOptions(options =>
