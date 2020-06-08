@@ -7,7 +7,7 @@ services:
       - /mnt/twentyquestions_volume01/sql:/var/opt/mssql
     environment:
       ACCEPT_EULA: 'Yes'
-      SA_PASSWORD: $20Q_SA_PASSWORD'
+      SA_PASSWORD: $20Q_SA_PASSWORD
       MSSQL_PID: 'Express'
     ports:
       - '1433:1433'
