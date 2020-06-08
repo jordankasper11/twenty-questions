@@ -1,0 +1,25 @@
+version: '3'
+services:
+  20q-sql:
+    container_name: '20q-sql'
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    volumes:
+      - /mnt/twentyquestions_volume01/sql:/var/opt/mssql
+    environment:
+      ACCEPT_EULA: 'Yes'
+      SA_PASSWORD: $20Q_SA_PASSWORD'
+      MSSQL_PID: 'Express'
+    ports:
+      - '1433:1433'
+  20q-web:
+    container_name: '20q-web'
+    image: docker.pkg.github.com/jordankasper11/twenty-questions/20q-web:latest
+    volumes:
+      - /mnt/twentyquestions_volume01/storage:/storage
+    environment:
+      Database__ConnectionString: $20Q_CONNECTIONSTRING
+      Authentication__SecurityKey: $20Q_SecurityKey
+      Paths__Avatars: '/storage/avatars'
+    ports:
+      - '80:80'
+    depends_on: ['20q-sql']

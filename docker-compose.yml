@@ -2,25 +2,26 @@ version: '3'
 services:
   20q-sql:
     container_name: '20q-sql'
-    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
-    volumes:
-      - /20q/volumes/sql:/var/opt/mssql
+    image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       ACCEPT_EULA: 'Yes'
-      SA_PASSWORD: 'M@ttNeedsSytry'
+      SA_PASSWORD: '20QDevDatabasePassword'
       MSSQL_PID: 'Express'
     ports:
       - '1433:1433'
+      
   20q-web:
     container_name: '20q-web'
-    depends_on: ['20q-sql']
+    depends_on:
+      - '20q-sql'
     build:
-      context: ./src
+      context: .
+    image: docker.pkg.github.com/jordankasper11/twenty-questions/20q-web
     volumes:
-      - /20q/volumes/storage:/storage
+      - C:\Projects\TwentyQuestions\Storage\avatars:/storage
     environment:
-      20Q_Database_ConnectionString: 'Server=20q-sql;Database=20Q;User Id=20Q;Password=BringBackTheExpos'
-      20Q_Authentication_SecurityKey: 'MikhailGrabovski#54'
-      20Q_Paths_Avatars: '/storage/avatars'
+      Database__ConnectionString: 'Server=20q-sql;Database=20Q;User ID=sa;Password=20QDevDatabasePassword;'
+      Authentication__SecurityKey: '20QDevSecurityKey'
+      Paths__Avatars: 'C:\Projects\TwentyQuestions\Storage\avatars'
     ports:
       - '80:80'
