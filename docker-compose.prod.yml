@@ -2,7 +2,7 @@ version: '3'
 services:
   20q-sql:
     container_name: '20q-sql'
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     volumes:
       - /mnt/twentyquestions_volume01/sql:/var/opt/mssql
     environment:
