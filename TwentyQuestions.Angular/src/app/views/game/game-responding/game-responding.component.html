@@ -42,9 +42,9 @@
                 </li>
                 <li *ngIf="game.questions.length >= game.maxQuestions - 1" class="response response--game-over"
                     [class.response--selected]="form.value.response === QuestionResponse.GameOver">
-                    <input type="radio" id="response-correct" name="response" [value]="QuestionResponse.Correct"
+                    <input type="radio" id="response-game-over" name="response" [value]="QuestionResponse.GameOver"
                         formControlName="response" />
-                    <label for="response-correct">Game Over</label>
+                    <label for="response-game-over">Game Over</label>
                 </li>
             </ul>
             <div *ngIf="form.controls.response.valid">
